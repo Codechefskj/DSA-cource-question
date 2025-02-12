@@ -1,0 +1,165 @@
+whenever you obtimised the question firstly think about question again what i can never used the information that have mention in the question 
+
+Q) leetcode 88 merge 2 sorted array 
+ans) approch 1 : in this approch we can used one more vector and we can copy the two vector then sort the extra array 
+     approch 2 : we used " two pointer array " ** impotant concept
+                 int i = 0 
+                 int j = 0 
+            we compare two no which are pointed in i and j .. which one is smaller 
+vector <int> aux ;
+        int i = 0 , j = 0;
+        while(i<m && j<n){
+            if(nums1[i]< nums2[j]){
+                aux.push_back(nums1[i]);
+                i++;
+            }else{
+                aux.push_back(nums2[j]);
+                j++;
+            }
+        } while(i<m){
+            aux.push_back(nums1[i]);
+            i++;
+        }
+        while(j<n){
+            aux.push_back(nums2[j]);
+            j++;
+        } // copy the elements 
+        
+        for (int idx = 0; idx < m + n; idx++) {
+            nums1[idx] = aux[idx];
+        }
+
+----> prefix sum array {** important concept}
+----> int sum = 0  ; 
+        vector<int> aux;
+        for(int i = 0 ; i< nums.size() ; i++){
+          sum += nums[i];
+          aux.push_back(sum);
+        }
+
+-----> prefix max array 
+-----> it just like prefix sum array we compare the sum integer and current array 
+      max(sum,nums[i]) 
+
+Q) given the array and M queries each queries will have an index i , we need to find max of all array element exect a[i] ?
+ans) approch 1 : find largest and second largest of the elements then check the index is equal to max then answer is second max 
+
+   approch 2 : we created the prefix sum and suffix sum the we check the condition which the mention the queries {it means max(suffix[i-1],prefix[i+1])}
+               we check the one case that we doest not check the condition above which is first and last element of array 
+
+                                                             coding question 
+Q) leetcode 2574 
+ans) in this question i am created a suffix sum and prefix sum the answer is prefix sum - suffix sum 
+
+class Solution {
+public:
+    vector<int> leftRightDifference(vector<int>& nums) {
+        int n = nums.size();
+        
+        // Create prefix sum
+        vector<int> prefix(n, 0);
+        prefix[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            prefix[i] = prefix[i - 1] + nums[i];
+        }
+        
+        // Create suffix sum
+        vector<int> suffix(n, 0);
+        suffix[n - 1] = nums[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            suffix[i] = suffix[i + 1] + nums[i];
+        }
+        
+        // Calculate the result
+        vector<int> result(n, 0);
+        for (int k = 0; k < n; k++) {
+            int leftSum = (k == 0) ? 0 : prefix[k - 1];
+            int rightSum = (k == n - 1) ? 0 : suffix[k + 1];
+            result[k] = abs(leftSum - rightSum);
+        }
+        return result;
+    }
+};
+
+Q) leetcode 2640 ?
+ans) in this question we used prefix sum technique 
+
+     class Solution {
+public:
+    vector<long long> findPrefixScore(vector<int>& nums) {
+        int n = nums.size();
+        
+        vector<int> maximum(n, 0);
+        maximum[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            maximum[i] = max(maximum[i - 1], nums[i]);
+        }
+        
+        // Calculate the final prefix score
+        vector<long long> result(n,0);
+        long long prefixSum = 0;
+        for (int j = 0; j < n; j++) {
+            prefixSum += nums[j] + maximum[j];
+            result[j] = prefixSum;
+        }
+        
+        return result;
+    }
+};
+
+Q) leetcode 2149 ?
+ans) in this question i learn the syntak  # dont copy the direct code instead of write again and again 
+
+class Solution {
+public:
+    vector<int> rearrangeArray(vector<int>& nums) {
+        int size = nums.size();
+        // creating new vector positive or negative 
+        vector <int> positive;
+        vector <int> negative;
+        for(int num : nums){
+            if(num>0){
+                positive.push_back(num);
+            }else {
+                negative.push_back(num);
+            }
+        }
+        // giving the result 
+        vector <int> result(size,0); 
+        int positiveidx = 1 ;
+        int negativeidx = 0 ;
+        result[0] = positive[0];
+        for(int i = 1 ; i<size ; i++){
+        if(i%2==0){
+            result[i]= positive[positiveidx++];
+        }else{
+            result[i]=negative[negativeidx++];
+        }
+        } return result ; 
+    }
+};
+
+Q) leetcode 2765 ?
+ans) in this questioon i am not able to solve this question 
+      i am just copy this solution but i am not able to solve this question infact 10 percent 
+      
+class Solution {
+public:
+    int alternatingSubarray(vector<int>& nums) {
+        int maxLength = -1; 
+        int currentLength = 1; 
+
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] == nums[i - 1] + 1 && (currentLength % 2 == 1) ||
+                nums[i] == nums[i - 1] - 1 && (currentLength % 2 == 0)) {
+                currentLength++;
+            } else if (nums[i] == nums[i - 1] + 1) {
+                currentLength = 2;
+            } else {
+                currentLength = 1;
+            }
+            maxLength = max(maxLength, currentLength);
+        }
+        return maxLength >= 2 ? maxLength : -1; 
+    }
+};

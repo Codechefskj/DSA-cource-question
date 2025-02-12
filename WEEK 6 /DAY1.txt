@@ -1,0 +1,33 @@
+Q1) why cpp is faster than java in cp ?
+ans) reason ->
+     1) c++ : compiler directly into native machine code which is  executed directly by hardware
+        java : compiles into bytecode which is interpreter or just- in - time (JIT) compile by java virtual machine (JVM)
+     2) cpp: offer manual memory  menagment using pointer new and delete . while this required careful programing  it allow developer to optimize memory usage and avoide garbage collection pause
+        java : relies on automatically garbage collection to manage memory , while introduce periodic pause and additive overhead during program executive 
+
+--> we cannot calculate the time directly because of three reason 1) machine(based on which programing laguage you can used ex: cpp is faster tham java)
+    2) device(which computer you can used for coding ) 3)input/output(its depends upon how big your input or output)
+
+--> Defination : time complexity : is measured of how the running time of algorithum  grow as the size of input increase 
+                 space complexity : is measured of how the running space of algorithum grow as the size of input increase 
+
+--> notation : upper bound big O
+               lower theata {theata} 
+               exact {omega}
+
+          upper bound --- it means time of algorithum never pass this time in future or anytimes 
+          lower bound --- it means time of algorithum never goes below this time
+          exaclt bound --- it means time of algorithum lies between the time 
+   
+Q2 ) why measure of time complexity  is inportant to measure ?
+ans ) most of the question the input size are given so we can assumed that computer doing 2 * 10^8 in a second so . we can check the constrants of time complexiy by doing this step 
+      input --> calculate the instruction of every complexity -->see if no of instruction is greater than 2 * 10^8 then we reject the complexity 
+
+--> always time complexity dominate over the space complexity 
+
+Q3)  Algorithm A and B have a worst-case running time of O(n) and O(logn), respectively. Therefore, algorithm B always runs faster than algorithm A.
+     True
+     False
+ans ) FALSE because big o notation describe how an algorithum runtime increase as size of input n . it does not account and constraints or other factor that are affect real world performance 
+      eg=> algo a might have runtime of 10n  o(n)
+           algo b might have runtime of 1000log n 

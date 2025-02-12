@@ -1,0 +1,318 @@
+          Kadani Algorithum
+
+  Q) "53 leetcode" given an array of integer find the maximum subarray of integer find the maximun subarray sum 
+  ans)  int current_sum ;
+        int final_sum ; 
+        for(int i = 0 ; i<nums.size() ; i++){
+          current_sum += nums[i];
+          if(current_sum<0){  
+            current_sum = 0 ;
+          } return ans ; 
+        }
+        
+        humara idea yaha hai kie hum current_sum lenga && final ans name ka integer lengae hum current_sum ko as an purse use karenga jaisa purse mai jada sa jada paisa ho wasa he hum current_sum mai jada sa jada value rakhna chahenga agar humara purse negative mai he gya to hum new subarray start kar deta hai 
+
+
+        1-4-6-(-3)- 2-1-7-(-6)-4-1 array 
+        purse -> 1 4 6 -3 11 8 11 18 12 16 17 
+        max subarray -> 1 5 11 18
+
+  Q) leetcode 1004 ?
+  ans) concept : dynamic sliding windows 
+    int zero = 0 ;
+    int l = 0 ;
+    for(int i = 1 ; i<nums.size() ; i++){
+      if(nums[i]==0){
+        zero ++ ;
+      } while (zero > k ){
+        if(nums[l]==0){
+          zero--;
+        }l++;
+        ans = max(ans,r-l+1);
+      }
+    }
+
+  
+  #whenever you see nested loop dont say O(n^2) always true 
+
+  Q) leetcode 2016 ?
+  ans) 
+  
+Dry run ->
+
+  7 || 1 5 4 
+  i    j 
+
+  int ans = -1 ;
+  int minimum = nums[0];
+  for(int i = 1 ; i< nums.size() ; i++){
+    if(nums[i]>minimum){
+      ans = max(ans , nums[i] - minimum)
+    } minimum = min(minimum,nums[i])
+  } retunr ans ; 
+
+  Q) " leetcode 1854 " maximim population type question ?
+  ans) 1st approch :  which is brute force 
+       create the vector and increase the no of year in the given vector at last count the max year 
+       
+       
+       class Solution {
+       public:
+       int maximumPopulation(vector<vector<int>>& logs) {
+        vector<int> mainvector(2051, 0); 
+        for (int i = 0; i < logs.size(); i++) {
+            for (int year = logs[i][0]; year < logs[i][1]; year++) {
+                mainvector[year]++; 
+            }
+        }
+
+        int maxYear = 1950, maxPop = 0;
+        for (int year = 1950; year <= 2050; year++) {
+            if (mainvector[year] > maxPop) {
+                maxPop = mainvector[year];
+                maxYear = year;
+            }
+        }
+
+        return maxYear;
+    }
+};
+
+
+  2nd approch : which is prefix sum 
+  create the vector and dont run nested loops instead we marked first and last elements the make the vector into prefix sum after that our works done at last step find the max year 
+
+  class Solution {
+  public:
+    int maximumPopulation(vector<vector<int>>& logs) {
+        vector<int> mainvector(101, 0); 
+        for (int i = 0; i < logs.size(); i++) {
+            mainvector[logs[i][0] - 1950]++;  
+            mainvector[logs[i][1] - 1950]--;  
+        }
+
+        for (int i = 1; i < 101; i++) {
+            mainvector[i] += mainvector[i - 1]; 
+        }
+
+        int maxYear = 1950, maxPop = mainvector[0];
+        for (int i = 1; i < 101; i++) {
+            if (mainvector[i] > maxPop) {
+                maxPop = mainvector[i];
+                maxYear = 1950 + i;  
+            }
+        }
+
+        return maxYear;
+    }
+};
+
+Q) "leetcode 2381" shifting the character 
+ans)   
+
+approch 1: prefix sum :::
+
+class Solution {
+public:
+    string shiftingLetters(string s, vector<vector<int>>& shifts) {
+        int n = s.size();
+        vector<int> mainvector(n + 1, 0);
+        for (int i = 0; i < shifts.size(); i++) {
+            int start = shifts[i][0], end = shifts[i][1], direction = shifts[i][2];
+            if (direction == 1) {
+                mainvector[start]++;   
+                mainvector[end + 1]--;
+            } else {
+                mainvector[start]--;   
+                mainvector[end + 1]++; 
+            }}
+        int shift = 0;
+        for (int i = 0; i < n; i++) {
+            shift += mainvector[i];  
+            int newChar = ((s[i] - 'a' + shift) % 26 + 26) % 26;
+            s[i] = 'a' + newChar;
+        }
+        return s;
+    }
+};
+
+In this Solution we create the vector we use prefix sum (we add the start and end but substracts 1 from next to end )... and we are add and substracts the string directly 
+
+approch 2 : brute force 
+
+class Solution {
+public:
+    string shiftingLetters(string s, vector<vector<int>>& shifts) {
+        for (int i = 0; i < shifts.size(); i++) {
+            int start = shifts[i][0], end = shifts[i][1], direction = shifts[i][2];
+                for (int j = start; j <= end; j++) {
+                if (direction == 1) {
+                    // Shift character forward (if direction is 1)
+                    s[j] = 'a' + ((s[j] - 'a' + 1) % 26); 
+                } else {
+                    s[j] = 'a' + ((s[j] - 'a' - 1 + 26) % 26); 
+                }
+            }
+        }
+        return s;
+    }
+};
+
+Q) leetcode 1248 find the nice subarray ?
+ans) in this question i learn lot of things like dynamic sliding windows . i am investing lot of time in this question but i failed how to solve in this question 
+
+     class Solution {
+     public:
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> mainvector(n, 0);
+
+        for (int i = 0; i < n; i++) {
+            mainvector[i] = (nums[i] % 2 == 1) ? 1 : 0;
+        }
+
+        int finalsubarray = 0;
+        int left = 0;
+        int temp = 0;
+        int prefixEvenCount = 0;  
+
+        for (int right = 0; right < n; right++) {
+            if (mainvector[right] == 1) {  
+                temp++; 
+                prefixEvenCount = 0; 
+            }
+
+            while (temp == k) {  
+                prefixEvenCount++;
+                if (mainvector[left] == 1) {
+                    temp--;  
+                }
+                left++;
+            }
+
+            finalsubarray += prefixEvenCount; 
+        }
+
+        return finalsubarray;
+    }
+};
+
+Q) "leetcode 560" find the subarray of the sum of k ?
+ans) 1st approch : brute force 
+
+     class Solution {
+     public:
+    int subarraySum(vector<int>& nums, int k) {
+        int n = nums.size();
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            int sum = 0;
+            for (int j = i; j < n; j++) {
+                sum += nums[j];
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+};
+
+## we cannot used sliding windows for negative no 
+## sliding windows only works good in at most condition like(<=goal) not working exact condition 
+
+Q) "leetcode 724" find pivot index 
+ans ) 
+  class Solution {
+public:
+    int pivotIndex(vector<int>& nums) {
+        // find total sum 
+        int n = nums.size();
+        int totalsum = 0 ; 
+        for(int i = 0; i<n ; i++){
+         totalsum += nums[i];
+        }
+
+        // comparing the pivot
+        int leftsum = 0 ;
+        for(int k = 0 ; k<n ; k++){
+            if(leftsum == totalsum-leftsum-nums[k]){
+              return k ; 
+            } leftsum += nums[k];
+        } return -1 ; 
+    }
+};
+
+Q) " leetcode 930 " binary subarray with exact of sum ?
+ans) we are using two sliding windows (things them streachy ropes moving from left to right)
+     windows 1 : find subarray where sum is less then goal 
+     windows 2 : find subarray where sum is at most of goal 
+     the diffrence is answer 
+     why we maintain two windows instead of once ?
+     ans) sliding windows only works good in at most condition like(<=goal) not working exact condition 
+
+
+   class Solution {
+public:
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        int left1 = 0, left2 = 0;
+        int sum1 = 0, sum2 = 0;
+        int count = 0;
+
+        for (int right = 0; right < nums.size(); right++) {
+            sum1 += nums[right];
+            sum2 += nums[right];
+
+            while (left1 <= right && sum1 > goal) {
+                sum1 -= nums[left1];
+                left1++;
+            }
+
+            while (left2 <= right && sum2 >= goal) {
+                sum2 -= nums[left2];
+                left2++;
+            }
+
+            count += (left2 - left1);
+        }
+
+        return count;
+    }
+};
+
+Q) Maximum prefix sum for a given range "gfg"
+ans) 
+
+class Solution {
+  public:
+    vector<int> maxPrefixes(vector<int>& arr, vector<int>& leftIndex,
+                            vector<int>& rightIndex) {
+        int n = arr.size();
+        vector<int> prefixSum(n);
+        vector<int> maxPrefix(n);
+        vector<int> result;
+
+        prefixSum[0] = arr[0];
+        for (int i = 1; i < n; i++) {
+            prefixSum[i] = prefixSum[i - 1] + arr[i];
+        }
+        maxPrefix[0] = prefixSum[0];
+        for (int i = 1; i < n; i++) {
+            maxPrefix[i] = max(maxPrefix[i - 1], prefixSum[i]);
+        }
+        for (int j = 0; j < leftIndex.size(); j++) {
+            int left = leftIndex[j];
+            int right = rightIndex[j];
+            int maxPrefixSum = maxPrefix[right];
+
+            if (left > 0) {
+                maxPrefixSum -= prefixSum[left - 1];
+            }
+
+            result.push_back(maxPrefixSum);
+        }
+
+        return result; 
+    }
+};

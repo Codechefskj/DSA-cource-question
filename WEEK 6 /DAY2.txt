@@ -1,0 +1,32 @@
+-->  In cpp dynamic array are vector 
+     In java dynamic array are arraylist 
+-->  we can create the vector like this :  #include<vector> 
+                                           vector<int> v1 ;
+                                           vector <int> v2(5,10);  {10,10,10.10.10}
+                                           vector <int> v3={2,4,6,33,2} 
+--> function on the vector are  : v1.push_back(4)  {add some elements}
+                                  v1.pop_back()    {delete last elements}
+                                  v1.size() 
+--> how internally vector are created 
+    there are two thins 
+    size = the current size of the array 
+    capacity = the size of the array that are using interval
+    by defalult inially array are created  the  capacity in  cpp  are null and capacity  in java are 10 
+    capacity are internally things we can see capacity in cpp but not in java 
+    suppose there are an array arr[4]= [1,2,3,4] size= 4 , capacity = 4
+    automatically capacity are are increase it twice as previous ones 
+
+    suppose we have add one more no into the array and we have satify the condition size = capacity so we can created new array of size of doubled of existence once 
+    and copy the iteam of first array into new array 
+
+--> capacity does not change once it will increases 
+
+
+
+                                                  Question practics:
+Q256 leetcode 
+ans) in this question we can used brute fource because in constraints are 10^4 so answer are in O(n^2) are ok but similar question GFG the solution are run because of constraints 
+
+Q) gfg   "https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1"
+Q) gfg   "https://www.geeksforgeeks.org/problems/array-of-alternate-ve-and-ve-nos1401/1" 
+Q) gfg   "https://www.geeksforgeeks.org/problems/common-elements1132/1"

@@ -1,0 +1,75 @@
+
+Q) " leetcode 303 " range some queries 
+ans) 
+approch 1 : prefix sum 
+class NumArray {
+public:
+    vector<int> prefixsum;
+    NumArray(vector<int>& nums) {
+        prefixsum.resize(nums.size());
+        prefixsum[0] = nums[0];
+        for(int i = 1 ; i<nums.size() ; i++){
+            prefixsum[i] = prefixsum[i-1]+nums[i];
+        }
+    }
+    
+    int sumRange(int left, int right) {
+        if(left==0){ return prefixsum[right];}
+        return prefixsum[right]-prefixsum[left-1];
+    }
+};
+
+
+note : i can used resize{  The resize() function in C++ is used to change the size of a vector. If the new size is larger than the current size, new elements are added and initialized to 0 (for integers). If the new size is smaller, elements at the end are removed.}
+
+approch 2 : brute force 
+
+Q) given an array of all zero then Q queries are given
+  -> each queries has l , r , 1 meaning 1 should be added to arr[1] , arr[l+1]...arr[r]
+  -> print the final state of array after all queries are processed 
+
+ans) -find the first and last range of the queries 
+     -put the first of the range is 1 and put last+1 put into -1 
+     -the find the prefix sum array 
+     -give the answer
+
+Q) rotate array by k toward the right side 
+ans) k=k%n; (n is the length of the array)
+     rotate the array 
+
+
+Q) " leetcode 2559 " count vowels string in the range ?
+ans) 
+class Solution {
+public:
+    vector<int> vowelStrings(vector<string>& words, vector<vector<int>>& queries) {
+        int n = words.size();
+        vector<int> vowels(n, 0);
+
+        for (int i = 0; i < n; i++) {
+            char first = words[i][0];
+            char last = words[i].back(); 
+
+            if ((first == 'a' || first == 'e' || first == 'i' || first == 'o' || first == 'u') &&
+                (last == 'a' || last == 'e' || last == 'i' || last == 'o' || last == 'u')) {
+                vowels[i] = 1;
+            }
+        }
+
+        vector<int> prefixsum(n, 0);
+        prefixsum[0] = vowels[0];
+        for (int i = 1; i < n; i++) {
+            prefixsum[i] = prefixsum[i - 1] + vowels[i];
+        }
+
+        int queriesize = queries.size();
+        vector<int> finalans(queriesize, 0);
+        for (int k = 0; k < queriesize; k++) {
+            int firstrange = queries[k][0];
+            int lastrange = queries[k][1];
+            finalans[k] = prefixsum[lastrange] - (firstrange > 0 ? prefixsum[firstrange - 1] : 0);
+        }
+
+        return finalans;
+    }
+};
