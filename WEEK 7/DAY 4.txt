@@ -58,3 +58,43 @@ class Solution {
     }
 }
 
+Q) gfg- longest substring "https://www.geeksforgeeks.org/problems/length-of-the-longest-substring3036/1"
+ans) 
+
+int lengthOfLongestSubstring(string &s) {
+    int n = s.size();
+    vector<int> repeatedstring(26, -1); // To store the last seen index of each character
+    int maxLength = 0, start = 0; 
+
+    for (int end = 0; end < n; end++) {
+        int index = s[end] - 'a'; // Convert character to index (0 to 25)
+
+        if (repeatedstring[index] != -1 && repeatedstring[index] >= start) {
+            start = repeatedstring[index] + 1; // Move start to avoid duplicate
+        }
+
+        repeatedstring[index] = end; // Update last seen index
+        maxLength = max(maxLength, end - start + 1);
+    }
+
+    return maxLength;
+}
+
+Q) leetcode 908 smallest range 1 ?
+ans) 
+
+New Difference=(maxi−k)−(mini+k) = maxi−mini−2∗𝑘
+
+class Solution {
+    public int smallestRangeI(int[] nums, int k) {
+        int n = nums.length;
+        int maxi = Integer.MIN_VALUE;
+        int mini = Integer.MAX_VALUE;
+        for(int i = 0 ; i<n ; i++){
+            maxi = Math.max(maxi, nums[i]);
+            mini = Math.min(mini , nums[i]);
+        }
+        return Math.max(0, maxi-mini - 2*k);
+    }
+}
+
