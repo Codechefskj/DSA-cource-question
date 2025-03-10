@@ -19,6 +19,7 @@ public:
     }
 };
 
+
 note : i can used resize{  The resize() function in C++ is used to change the size of a vector. If the new size is larger than the current size, new elements are added and initialized to 0 (for integers). If the new size is smaller, elements at the end are removed.}
 
 approch 2 : brute force 

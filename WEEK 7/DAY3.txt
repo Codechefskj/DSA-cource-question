@@ -111,3 +111,162 @@ public:
     }
 };
 
+Q) "leetcode 2706"  Buy Two Chocolates
+ans) nothing in this question firstly we sort the vector then put in the condition 
+     
+     class Solution {
+public:
+    int buyChoco(vector<int>& prices, int money) {
+        int n = prices.size();
+        sort(prices.begin(), prices.end());
+        if(prices[0]+prices[1]> money){
+            return money ; 
+        }
+        else 
+        return money - (prices[0]+prices[1]);
+    }
+};
+
+Q) " leetcode 3034 " Number of Subarrays That Match a Pattern I 
+ans) in this question i am using sliding windows and maintained bool condition and check condition is wrong otherwise count the answer 
+
+class Solution {
+public:
+    int countMatchingSubarrays(vector<int>& nums, vector<int>& pattern) {
+        int nums_size = nums.size();
+        int pattern_size = pattern.size();
+        int ans = 0;
+        
+        for(int s = 0, e = pattern_size - 1; e < nums_size; s++, e++) {
+            bool isMatching = true;
+            
+            for(int j = 0; j < pattern_size; j++) { // we are checking it is not goint out of bound 
+                if (s + j + 1 >= nums_size || 
+                    (pattern[j] == 1 && nums[s + j + 1] <= nums[s + j]) ||
+                    (pattern[j] == 0 && nums[s + j + 1] != nums[s + j]) ||
+                    (pattern[j] == -1 && nums[s + j + 1] >= nums[s + j])) {
+                    isMatching = false;
+                    break; 
+                }
+            }
+            
+            if (isMatching) ans++;
+        }
+        return ans;
+    }
+};
+
+Q) gfg "https://www.geeksforgeeks.org/problems/minimize-the-heights3351/1" find the mindiffrece height ?
+ans ) firstly we sort the array and inicially we set the min height and max height the iterate the whole loop  for that firstly we substract the k and add the k on minHeight and maxHeight and check which is smallest 
+
+
+class Solution {
+  public:
+    int getMinDiff(vector<int> &arr, int k) {
+        int n = arr.size();
+        if (n == 1) return 0;  
+        sort(arr.begin(), arr.end());  
+
+        int minHeight = arr[0] + k;
+        int maxHeight = arr[n - 1] - k;
+        int minDiff = arr[n - 1] - arr[0];  
+
+        for (int i = 1; i < n; i++) {
+            int minPossible = min(minHeight, arr[i] - k);
+            int maxPossible = max(maxHeight, arr[i - 1] + k);
+
+            if (minPossible < 0) continue;  
+            minDiff = min(minDiff, maxPossible - minPossible);
+        }
+
+        return minDiff;
+    }
+};
+
+Q) " leetcode 1191 " . K-Concatenation Maximum Sum ?
+ans) in this question i learn a lot of things firstly mod thins {when no are so large we modular the 10^9 + 7 so no are smaller and its give correct ans} secondPart is that maths works and used the kadani algo 
+
+class Solution {
+public:
+    const int MOD = 1e9 + 7;
+
+    int kadane(vector<int>& arr) {
+        long long current = 0, maxi = 0;
+        for (int num : arr) {
+            current += num;
+            if (current < 0) current = 0;
+            maxi = max(maxi, current);
+        }
+        return maxi % MOD;  
+    }
+
+    int kConcatenationMaxSum(vector<int>& arr, int k) {
+        long long sum = 0;
+        for (int num : arr) sum += num;
+
+        int maxSingle = kadane(arr);
+        if (k == 1) return maxSingle;
+
+        vector<int> newArr = arr;  
+        newArr.insert(newArr.end(), arr.begin(), arr.end());  
+        int maxDouble = kadane(newArr);
+
+        if (k == 2) return maxDouble;  
+
+        if (sum > 0) {
+            return (maxDouble + ((k - 2) * sum % MOD) % MOD) % MOD;
+        }
+        return maxDouble;
+    }
+};
+
+Q) "leetcode 45" jump game II ?
+ans) we used three integer current , jumps , further .... jumps ->store no of jumps taken . current -> rightmost index we can reach with current jumps .. further -> rightmost index we can reach at any point 
+
+1) Finding the Farthest Reachable Index
+
+further = max(further, nums[i] + i);
+This calculates the maximum index we can reach from index i.
+2) Jumping When We Reach the Current Boundary
+if (i == current) → If we reach the boundary of our current jump, we must jump to extend our range.
+We update current = further and increase jumps++.
+
+
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int jumps = 0 ;
+        int current = 0 ; 
+        int further = 0 ; 
+        for(int i = 0 ; i< nums.size()-1 ; i++){
+            further = max(further , nums[i]+i);
+            if(i == current){
+                current = further; 
+                jumps++;
+            }
+        } return jumps ; 
+    }
+};
+
+Q) leetcode 55 jump game 
+ans) in this question we also used the same things which is three integer current , further , jumps 
+but somewhere logic is diffrence little bit 
+ 
+ 
+ class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int jumps = 0;
+        int further = 0;
+        int current = 0;
+        for (int i = 0; i < nums.size() - 1; i++) {   // We stop processing when we reach the last index.that why we used nums.size()-1
+            further = max(further, nums[i] + i);  
+            if (i == current) {  
+                if (current == further) return false;  
+                current = further; 
+                jumps++;
+            }
+        }
+        return further >= nums.size() - 1;  
+    }
+};
