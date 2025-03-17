@@ -1,0 +1,130 @@
+IN laymen terms a function is callin itself called recursion 
+
+--> stack overflow 
+ 
+ Q) factorial of no n ;
+ ans) int factorial (int n){
+     if(n==0) return 1 ;
+     int partial = factorial(n-1);
+     int ans = n* partial;
+     return ans ; 
+ }
+
+ Q) print value of n from 1 to n ?
+ ans) 
+
+ void printN(int n, int i) {
+    if (i > n) return; // Base case: stop when i exceeds n
+    cout << i << " ";  // Print current number
+    printN(n, i + 1);  // Recursive call for the next number
+}
+
+q) print value of n from n to 1 ?
+ans) 
+voif printN( int n ){
+  if(n = 0) return ;
+  int partial = printN(n-1);
+  cout << n ;
+}
+
+Q) fibonacchi series ?
+ans) void fibo(n){
+  if(n==0 || n==1) return n ;
+  int a = fibo(n-1);
+  int b = fibo(n-2);
+  return a+b;
+}
+
+Q) a^n find pow(a,n)?
+ans) class Solution {
+public:
+    double mypowhelper(double x, long long n) {  
+        if (n == 0) return 1;
+        double partial = mypowhelper(x, n / 2);
+        if (n % 2 == 0) {
+            return partial * partial;
+        } else {
+            return partial * partial * x;
+        }
+    }
+
+    double myPow(double x, int n) {
+        long long N = n;  
+        if (N < 0) {
+            return 1 / mypowhelper(x, -N);  
+        }
+        return mypowhelper(x, N);
+    }
+};
+
+Q) what is diffrence between int and double ?
+ans) int ->	Stores whole numbers (no decimal)	
+     double -> Stores decimal numbers (floating-point)
+
+Q) leetcode 344  reverse the string ?
+ans)  
+in this question we are swap the first and last integer until left>=right 
+
+class Solution {
+public:
+    void reverseStringhelper(vector<char>& s, int left, int right) {
+        if (left >= right) return;  
+        swap(s[left], s[right]);  
+        reverseStringhelper(s, left + 1, right - 1); 
+    }
+
+    void reverseString(vector<char>& s) {
+        reverseStringhelper(s, 0, s.size() - 1);
+    }
+};
+
+Q) gfg "https://www.geeksforgeeks.org/problems/palindrome-string0817/1" palindrome string?
+ans) same with above question we can check the left == right then call the function else return false 
+
+
+class Solution {
+  public:
+    bool isPalindromehelper(string& s , int left , int right) {
+        if (left >= right) return true ;  
+        if(s[left]==s[right]){
+            return isPalindromehelper(s,left+1 , right-1);
+        }else{
+            return false ; 
+        }
+    }
+    
+    bool isPalindrome(string& s) {
+        return isPalindromehelper(s , 0 , s.size()-1);
+    }
+};
+
+Q) gfg "https://www.geeksforgeeks.org/problems/sum-of-digit-is-pallindrome-or-not2751/1" Sum of Digit is Palindrome or not?
+ans) 
+nothings is this question only we used string str = to_string(value) we used to_string function for converting integer into string 
+class Solution {
+  public:
+  
+  bool isDigitSumPalindromehelper(string &n , int left ,int right) {
+        if(left>=right) return true ;
+        if(n[left]==n[right]){
+            return isDigitSumPalindromehelper(n , left+1 , right-1);
+        } else{
+            return false ; 
+        }
+    }
+    bool isDigitSumPalindrome(int n) {
+        int sum = 0;
+        while (n > 0) {
+            sum += n % 10;  
+            n /= 10;    
+        }
+        string str = to_string(sum);
+        return isDigitSumPalindromehelper(str , 0 , str.size()-1);
+        
+        
+    }
+};
+
+Q) gfg "https://practice.geeksforgeeks.org/contest/job-a-thon-11-hiring-challenge/problems" rectangle and square ?
+
+ans) 

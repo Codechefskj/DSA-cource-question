@@ -1,0 +1,164 @@
+Q) " leetcode 326 "  Power of Three ?
+ans) in this question i just learn the Base condition 
+
+class Solution {
+public:
+    bool isPowerOfThreehelper(int n) {
+        if(n<=0) return false ;
+        if(n==1) return true ;
+        if(n%3!=0) return false ;
+        return isPowerOfThreehelper(n/3);
+    }
+
+    bool isPowerOfThree(int n) {
+        return isPowerOfThreehelper(n);
+    }
+};
+
+Q) gfg "https://www.geeksforgeeks.org/problems/searching-a-number0324/1" Searching in an Array ?
+ans) in this question we there are two type of solving but we solve minimum no of time complexity 
+
+1st approch ->  we solve the normally in this type the maximum stack depth is very large so our challenge is to decrease the depth dy divided the two party between mid 
+
+2nd approch -> 
+
+class Solution {
+public:
+    int searchhelper(int k, vector<int>& arr, int start, int end) {
+        if (start > end) return -1;  
+        if(start == end){
+            if(arr[start]==k) return start ;
+            else return -1;
+        }int mid = (start +end )/2;
+        int ans = -1 ;
+        ans = searchhelper(k,  arr,  start, mid);
+        if(ans == -1){
+        ans = searchhelper(k,  arr,mid+1, end);
+        }
+        return ans ; 
+    }
+
+    int search(int k, vector<int>& arr) {
+        int n = arr.size();
+        int ans = searchhelper(k, arr, 0, n - 1);
+        
+        return (ans == -1) ? -1 : ans + 1;
+    }
+};
+
+Q) why we consider the height of tree as an time complexity ?
+ans) the maximim value of on stack is in the max height of tree .
+
+Q) gfg "https://www.geeksforgeeks.org/problems/print-pattern3549/1" print the pattern ?
+ans) 
+
+class Solution{
+public:
+    vector <int> ans ;
+    vector<int> pattern(int n){
+    ans.push_back(n);
+        if(n<=0) return ans ;
+        pattern(n-5);
+        ans.push_back(n);
+        return ans ;
+    }
+};
+
+in this type we create the vector ans inside the pattern the we passed as an arguments 
+
+class Solution {
+public:
+    void patternhelper(int n, vector<int>& ans) {
+        ans.push_back(n);
+        if (n <= 0) return; 
+
+        patternhelper(n - 5, ans);
+        ans.push_back(n);  
+    }
+
+    vector<int> pattern(int n) {
+        vector<int> ans; 
+        patternhelper(n, ans);
+        return ans;
+    }
+};
+
+in this type of written we create the ans global ...
+///if function should return a fresh result each time ans global class variable is used clear it first 
+
+class Solution{
+public:
+    vector<int> ans;  // This persists across test cases
+
+    vector<int> patternhelper(int n){
+        ans.push_back(n);
+        if(n <= 0) return ans;  // Base case
+        
+        patternhelper(n - 5);  // Recursive call
+        ans.push_back(n);  // Push while returning
+        
+        return ans;
+    }
+    
+    vector<int> pattern(int n){
+        ans.clear();  
+        return patternhelper(n);
+    }
+};
+
+Q) gfg = "https://www.geeksforgeeks.org/problems/pascal-triangle0652/1" parcel triangle 
+ans) in this question we learn only only how to manage the loops and combination formuala for every n we just calculate the ncr and give the answer 
+
+approch : 
+
+class Solution {
+public:
+    long long factorial(int num) {
+        long long fact = 1;
+        for (int i = 2; i <= num; i++) {
+            fact *= i;
+        }
+        return fact;
+    }
+
+    vector<int> nthRowOfPascalTriangle(int n) {
+        vector<int> finalans;
+
+        for (int i = 0; i < n; i++) {
+            long long numerator = factorial(n - 1);
+            long long denominator = factorial(i) * factorial(n - 1 - i);
+            finalans.push_back(numerator / denominator);
+        }
+
+        return finalans;
+    }
+};
+
+Q) gfg "https://practice.geeksforgeeks.org/contest/job-a-thon-11-hiring-challenge/problems" rectangle and square?
+ans) we have two input A and B . A is row ans B is coloume then we move C  that colour the hole grid 
+     total grid area are A*B and we have area C*C we can select the minimum no of the move 
+
+     solution is : 
+     We need to paint a rectangular grid of size A × B using the minimum number of square tiles of any size C × C
+
+     Approach 
+     -> Start with the given dimensions (A, B).
+     -> Find the largest square size possible (which is the smaller of A and B).
+     -> Count how many such squares fit in the grid.
+     -> Reduce the remaining unpainted area and repeat until fully painted.
+     -> Return the total number of moves
+
+
+     class Solution {
+  public:
+    int minimumMoves(int A, int B) {
+        int moves = 0;                             //We initialize moves = 0 to count the number of squares used.
+        while (A > 0 && B > 0) {                   // We continue the loop while both A > 0 and B > 0.
+            int side = min(A, B);                  //  Choose the largest square possible
+            moves += (A / side) * (B / side);      //   Count number of such squares
+            if (A > B) A = A % side;               // Reduce A
+            else B = B % side;                     // Reduce B
+        }
+        return moves;
+    }
+};

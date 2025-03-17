@@ -1,0 +1,85 @@
+Q) what is sorting ?
+ans) simlyy a way of arranging data particular ways .
+
+//reason for sorting for making the searching easy 
+
+
+                                 cubic cuboidal 
+e1 and e2 are two reactangle then e1 will come before the e2 in sorted order if 
+
+e1.length*e1.breath*e1.height < e2.length*e2.breath*e2.height
+
+Q) if someone is asking for sorting then you asked the first ?
+ans) what is the basic of sorting and what is order of the sorting 
+
+Q) you have given the  integer think diffrent  comparator?
+ans) 1) increasing value of the integer
+     2) decrease value of the integer
+     3) increasing order of sum of the digit 
+     4) decrease order of sum of the digit 
+     5) sort in the lexicographical order
+
+Q)  what is inserting sorting ?
+ans) in inserting sorting iniially we take only one elements then compare the first with second elements and sort the 2 elements again we take 3 elements and iniially looping the back form and compare the elements 
+
+code: 
+
+class Solution {
+  public:
+    void insertionSort(vector<int>& arr) {
+        int n = arr.size();
+        for(int i = 0 ; i< n ; i++){
+            int currelement = arr[i];
+            int j = i-1 ;
+            while(j>=0 && arr[j]>=currelement){
+                arr[j+1] = arr[j];
+                j--;
+            } arr[j+1] = currelement;
+        }
+    }
+};
+
+Q) what is bubble sort ?
+ans)  To sort a data set using bubble sort algorithm, follow the below steps:
+
+->Start by comparing the first two elements. If they are in the wrong order, swap them.
+->Continue this process for all elements moving from left to right. After the first pass, the largest element will be at the end.
+->In the next pass, skip the last element since it’s already sorted and repeat the above steps. The ->second-largest element will move to the second-last position.
+->Repeat the steps until the entire array is sorted.
+
+
+code: 
+void bubbleSort(vector<int>& v) {
+    int n = v.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (v[j] > v[j + 1])
+                swap(v[j], v[j + 1]);
+        }
+    }
+}
+
+
+Q) what is selection sort ?
+ans) 
+It sorts an array by repeatedly selecting the smallest (or largest) element from the unsorted portion and swapping it with the first unsorted element. This process continues until the entire array is sorted.
+
+->First we find the smallest element and swap it with the first element. This way we get the smallest element at its correct position.
+->Then we find the smallest among remaining elements (or second smallest) and swap it with the second element.
+-> We keep doing this until we get all elements moved to correct position.
+Selection-Sort-Algorithm-1.webp
+
+code: 
+
+void selectionSort(vector<int> &arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; ++i) {
+        int min_idx = i;
+        for (int j = i + 1; j < n; ++j) {
+            if (arr[j] < arr[min_idx]) {
+                min_idx = j; 
+            }
+        }
+        swap(arr[i], arr[min_idx]);
+    }
+}
