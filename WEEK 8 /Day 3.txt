@@ -83,3 +83,48 @@ void selectionSort(vector<int> &arr) {
         swap(arr[i], arr[min_idx]);
     }
 }
+
+Q) " leetcode 78 " subsets ?
+ans) in this question we used backtracking 
+
+// we are always take index when we passed the index 
+
+class Solution {
+public:
+    void getallsubsets(vector<int>& nums, vector<int>& ans, int i, vector<vector<int>>& allsubsets) {
+        if (i == nums.size()) {
+            allsubsets.push_back(ans); 
+            return;
+        } 
+        ans.push_back(nums[i]);
+        getallsubsets(nums, ans, i + 1, allsubsets);
+
+        ans.pop_back();
+        getallsubsets(nums, ans, i + 1, allsubsets);
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> allsubsets;
+        vector<int> ans;
+        getallsubsets(nums, ans, 0, allsubsets);
+        return allsubsets; 
+    }
+};
+
+                      How the Function Works
+
+->Base Case: Stop when i == nums.size(), store the subset.
+->Always Move Forward (i+1) to avoid reusing previous numbers.
+   
+                      Backtracking Steps:
+
+->Include the number and recurse.
+->Remove (pop_back) the number to backtrack.
+->Exclude the number and recurse again.
+
+                      Key Observations
+
+.)Each Recursive Call Creates a New Branch (like a tree).
+.)First Include, Then Exclude to ensure correct subset generation.
+.)Order of Calls Matters to avoid duplicate subsets.
+.)Backtracking efficiently explores all possible subsets.

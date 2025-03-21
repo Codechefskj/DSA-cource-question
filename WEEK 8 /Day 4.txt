@@ -1,0 +1,149 @@
+Q) " leetcode 912 " Sort an Array?
+ans) in this question i am using merge sort to solve the question 
+     here this is the common method of merge sort 
+
+     class Solution {
+public:
+    vector<int> mergedsortedarray(vector<int> &left, vector<int> &right) {
+        int i = 0, j = 0;
+        vector<int> finalans;
+        while (i < left.size() && j < right.size()) {
+            if (left[i] <= right[j]) {
+                finalans.push_back(left[i]);
+                i++;
+            } else {
+                finalans.push_back(right[j]);
+                j++;
+            }
+        }
+        while (i < left.size()) {
+            finalans.push_back(left[i]);
+            i++;
+        }
+
+        while (j < right.size()) {
+            finalans.push_back(right[j]);
+            j++;
+        }
+
+        return finalans;
+    }
+
+    vector<int> sortArray(vector<int>& nums) {
+        int n = nums.size();
+        if (n == 1) {
+            return nums;
+        }
+        vector<int> left(nums.begin(), nums.begin() + n / 2);
+        vector<int> right(nums.begin() + n / 2, nums.end());
+
+        left = sortArray(left);
+        right = sortArray(right);
+
+        return mergedsortedarray(left, right);
+    }
+};
+
+
+firtly we divided the array into two part left and right using this function {vector<int> left(nums.begin(), nums.begin() + n / 2);
+} then we recursively sort the array the we join the two sorted array with the help of mergedsortedarray function .. this is basic for merge sort 
+
+time complexity -> 
+     T(N) = 2* t(N/2) + N  // t(N/2) because we divided  N into two parts left and right ... N for other complexity
+     2T(N/2) = 4T(N/4) + N 
+     T(N/4) = 8T(N/8) + N
+     its cut every elements except the N ... no of the N is logN times the complexity is N*logN
+space complexity -> depth of tree * no of recursively call 
+                    N * logN 
+
+
+// in recursively divide and conquer algo (like merged sort) the function recursively call the left half then processing right half . this is similar to DFS 
+
+//the merge function is only called after completely the left and right halves . it matt sun like called "withoout completetion the division " but that just because recursively call follow a DFS approch and merging happen on way back up the recursively stack 
+
+//recursively follow depth-first order meaning :
+1) we go as deep as possible on left side 
+2) once the left side fully divided we start merging 
+3) only after completely left merge we start dividing right left
+4) once right side fully divided and merged 
+
+
+
+//** general recursice call behavior 
+1) recursively call always used stack 
+2) they follow Depth-first-order
+3) the function keeps calling until a base case meet 
+4) after reaching base case the call stack unwinding (return happen reverse order)
+
+
+
+Q) " leetcode 2540 " Minimum Common Value ?
+ans) in this question i can do nothing i m just using two pointer to solve this question 
+
+     class Solution {
+public:
+    int getCommon(vector<int>& nums1, vector<int>& nums2) {
+        int i = 0, j = 0;
+        while (i < nums1.size() && j < nums2.size()) {
+            if (nums1[i] == nums2[j]) {
+                return nums1[i];  
+            }
+            else if (nums1[i] < nums2[j]) {
+                i++;  
+            }
+            else {
+                j++; 
+            }
+        }
+        return -1;
+    }
+};
+
+Q) Count Inversions of gfg ?
+ans) in this question we can see no of pair existist that left value is greater than right value ... it is similar to merger sort 
+
+--> it is compulsory to merge two halves to count Inversions ? 
+ans it is not compulsory to merge two halves in the merge sort technique but it is good practics to merge the sorted array because sometimes it goes to o(N^2) time complexity but we merge the array it goes to nlogn
+
+--> how to return an integer aking with merged array ?
+ans) option 1 ) pair<vector<int> , int >
+     option 2 ) used global /references variable 
+           
+                                                       code : 
+
+     int mergeSortedArray(vector<int> &arr, vector<int> &left, vector<int> &right) {
+        int i = 0, j = 0, k = 0;
+        int count = 0; 
+        int leftSize = left.size(), rightSize = right.size();
+
+        while (i < leftSize && j < rightSize) {
+            if (left[i] <= right[j]) {
+                arr[k++] = left[i++];
+            } else {
+                arr[k++] = right[j++];
+                count += (leftSize - i); 
+            }
+        }
+                while (i < leftSize) arr[k++] = left[i++];
+        while (j < rightSize) arr[k++] = right[j++];
+        
+        return count;
+    }
+
+    int inversionCount(vector<int> &arr) {
+        int n = arr.size();
+        if (n <= 1) return 0; 
+
+        int mid = n / 2;
+        vector<int> left(arr.begin(), arr.begin() + mid);
+        vector<int> right(arr.begin() + mid, arr.end());
+
+        int leftInversions = inversionCount(left);
+        int rightInversions = inversionCount(right);
+        int mergeInversions = mergeSortedArray(arr, left, right);
+
+        return leftInversions + rightInversions + mergeInversions;
+    }
+
+
+    we return the total leftInversions + rightInversions + mergeInversions because we leftInversions contain the first split left part aand right part is right part inverse and mergeInversions contain the main comparision of left and right 
