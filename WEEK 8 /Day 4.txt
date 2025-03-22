@@ -147,3 +147,28 @@ ans) option 1 ) pair<vector<int> , int >
 
 
     we return the total leftInversions + rightInversions + mergeInversions because we leftInversions contain the first split left part aand right part is right part inverse and mergeInversions contain the main comparision of left and right 
+
+    Q) " leetcode 136 " single no ?
+    ans) .)if they are together (sorted case)-> we can used i+=2 to skip pair 
+         .)if they are not together (unsorted case) -> we need another approch like unoreder_map pr XOR
+         .) if we iterate one by one (i++) we might make redudant checks 
+         .) if we jump (i+=2) we efficiently move our duplicate pair 
+         .) what is unique no is at last position 
+            -> we return nums[i-1] if the loops doest fiind unique no 
+
+        code:
+        class Solution {
+        public:
+        int singleNumber(vector<int>& nums) {
+           sort(nums.begin(), nums.end());
+            int n = nums.size();
+
+        for (int i = 0; i < n - 1; i += 2 ) { 
+            if (nums[i] != nums[i + 1]) {  
+                return nums[i];
+            }
+        }
+
+        return nums[n - 1]; 
+    }
+};
