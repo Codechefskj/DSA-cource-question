@@ -172,3 +172,38 @@ ans) option 1 ) pair<vector<int> , int >
         return nums[n - 1]; 
     }
 };
+
+Q) " leetcode 49 " Group Anagrams ?
+ans) this is simple question for hash map but i am not learning hash this time so i can make the vector to check which is sortedKeys it  denoted the every sorted array first words . it help for checking and grouping the same 2D vector . i learn how to write in this type of question 
+
+time complexity : O(NKlogK)+O(N^2)
+space complexity : O(N K)
+
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector<vector<string>> result;  
+        vector<string> sortedKeys;     
+
+        for (string s : strs) {  
+            string sortedStr = s;
+            sort(sortedStr.begin(), sortedStr.end());  
+
+            for (int i = 0; i < sortedKeys.size(); i++) {  
+                if (sortedKeys[i] == sortedStr) {  
+                    result[i].push_back(s);  
+                    break;
+                }
+            }
+
+            if (i == sortedKeys.size()) { 
+                sortedKeys.push_back(sortedStr);
+                result.push_back({s});
+            }
+        }
+
+        return result;
+    }
+};
+
+   
