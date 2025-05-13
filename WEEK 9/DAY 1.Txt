@@ -1,0 +1,109 @@
+Q) leetcode " 34 " Find First and Last Position of Element in Sorted Array ?
+ans) this is simple question 
+
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> finalans; 
+        for (int j = 0; j < nums.size(); j++) {
+            if (nums[j] == target) {
+                finalans.push_back(j);
+            }
+        }
+        if (finalans.size() == 0) {
+            return { -1, -1 };  
+        }
+        if (finalans.size() == 1) {
+            finalans.push_back(finalans[0]); 
+        } else {
+            return {finalans[0], finalans.back()};  
+        }
+        return finalans;  
+    }
+};
+
+Q) " leetcode 27 " Remove Element ?
+ans) we can shift the elements toward left if it not equal to value
+
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int index = 0; 
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] != val) {  
+                nums[index] = nums[i];
+                index++;
+            }
+        }
+        
+        return index;  
+    }
+};
+
+Q) " leetcode 118 " pascal triangle ?
+ans we just calculte the ncr 
+
+class Solution {
+public:
+    vector<int> generatePascalVector(int row) {
+        vector<int> temp(row + 1, 1); 
+                for (int j = 1; j < row; j++) {
+            temp[j] = temp[j - 1] * (row - j + 1) / j;
+        }
+        
+        return temp;
+    }
+    vector<vector<int>> generate(int numRows) {
+        vector<vector<int>> finalans;
+        for (int i = 0; i < numRows; i++) {
+            finalans.push_back(generatePascalVector(i));
+        }
+        return finalans;
+    }
+};
+
+Q) leetcode 287  Find the Duplicate Number?
+ans) we sort the array and using two pointer  to find out the dublicate 
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        sort(nums.begin(), nums.end()); 
+        
+        for (int i = 0; i < nums.size() - 1; i++) { 
+            if (nums[i] == nums[i + 1]) {
+                return nums[i]; 
+            }
+        }
+        return -1; 
+    }
+};
+
+Q) " leetcode 349 " Intersection of Two Arrays?
+ans) 
+
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        vector<int> ans;
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+        int i = 0, j = 0;
+        while (i < nums1.size() && j < nums2.size()) {
+            if (nums1[i] < nums2[j]) {
+                i++;
+            } 
+            else if (nums1[i] > nums2[j]) {
+                j++;
+            } 
+            else { 
+                if (ans.empty() || ans.back() != nums1[i]) {
+                    ans.push_back(nums1[i]);
+                }
+                i++;
+                j++;
+            }
+        }
+        return ans;
+    }
+};
