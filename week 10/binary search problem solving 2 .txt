@@ -1,0 +1,118 @@
+Q) the problem is given an array cointaining unique integer you need to find no of array elements which can searched using binary search algo shown in previous slide 
+ans) bool binary_search(vector<int> &arr , int target){
+  int size = arr.size();
+  int beg = 0 , ed = size-1;
+  while(beg<=end){
+    int mid = (beg +end)/2
+    if(arr[mid]= target){
+      return true;
+    }else if(arr[mid]>target){
+      end = mid -1 ;
+    }else{
+      beg = mid+1 ;
+    }return false ;
+  }
+} 
+int binary_searchable(vector<int> &arr , int  n){
+  int ans = 0 ; 
+  for(int i = 0 ; i< n ; i++){
+  if(binary_search(arr , arr[i]))
+  ans++;
+  return ans ;
+  }
+}
+int main (){
+  int n ; 
+  cin >> n 
+  vector <int> arr(n);
+}
+
+Q)^******  the problem is that given an array if unique integer we need to find how many array elements is searchable always 
+ans) everythings is left is smaller and everythings is larger and those elements is searchable 
+
+1-2-3-4  7   8-4 
+--------     ----
+max prefix    min suffex 
+this code is not correct 
+
+{int function(vector<int> &arr){
+  int n = arr.size();
+  vector<int> premax(n);
+  vector<int> suffix(n);
+  premax[0] = arr[0];
+  suffix[n-1] = arr[n-1];
+  for(int i = 1 , i<n ; i++){
+    premax[i]= max(arr[i],premax[i-1])
+  }
+  for(int i = n-2 , i>n ; i--){
+    suffix[i]= min(arr[i],suffix[i+1];)
+  }
+  int ans = 0 ; 
+  for(int i = 0 ; i< n ; i++){
+    int max_left = i==0? INT_MAX: premax[i-1];
+  }
+  int min_right = i == n-1 
+  INT_MAX ;
+  suffixmin[i+1];
+} if(arr[i]>max_left&& arr[i]<min_right) ans++; }
+
+Q) leetcode 875. Koko Eating Bananas?
+ans) 
+
+class Solution {
+public:
+    long requiredhour(vector<int>& piles, int speed) {
+        long hour = 0;
+        for(int i = 0; i < piles.size(); i++) {
+            hour += (piles[i] + speed - 1) / speed; 
+        }
+        return hour;
+    }
+
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int low = 1, high = *max_element(piles.begin(), piles.end());
+        int ans = high;
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            if(requiredhour(piles, mid) <= h) {
+                ans = mid; 
+                high = mid - 1;
+            } else {
+                low = mid + 1; 
+            }
+        }
+        return ans;
+    }
+};
+
+Q) leetcode 2187. Minimum Time to Complete Trips?
+ans) 
+class Solution {
+public:
+    long long timerequiredfortime(vector<int>& time, long long timetaken) {
+        long long totaltrip = 0; 
+        for (int i = 0; i < time.size(); i++) {
+            totaltrip += timetaken / time[i];
+        }
+        return totaltrip;
+    }
+
+    long long minimumTime(vector<int>& time, int totalTrips) {
+        long long mini = 1;
+        long long maxi = 1LL * (*min_element(time.begin(), time.end())) * totalTrips;
+        long long beg = mini, ed = maxi;
+        long long ans = maxi;
+
+        while (beg <= ed) {
+            long long mid = beg + (ed - beg) / 2;
+            long long trips = timerequiredfortime(time, mid);
+            if (trips >= totalTrips) {
+                ans = mid;       
+                ed = mid - 1;
+            } else {
+                beg = mid + 1;
+            }
+        }
+        return ans;
+    }
+};
