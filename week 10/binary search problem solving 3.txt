@@ -1,0 +1,202 @@
+Q) leetcode 1011. Capacity To Ship Packages Within D Days?
+ans) 
+class Solution {
+public:
+    int HelpershipWithinDays(vector<int>& weights, int cap) {
+        int currday = 1 , currweight = 0 ;
+        for(int i = 0 ; i< weights.size() ; i++){
+            if(weights[i]<= cap-currweight){
+                currweight += weights[i];
+            }else{
+                currday++;
+                currweight = 0 ; 
+                currweight = weights[i] ;
+            }
+        } return currday;
+    }
+    int shipWithinDays(vector<int>& weights, int days) {
+        int st = INT_MIN;
+        int ed =  0 ;
+        for(int i = 0 ; i<weights.size() ; i++){
+            st = max(st ,weights[i]);
+            ed += weights[i];
+        }
+        int ans = -1 ;
+        while(st<=ed){
+        int mid = st+(ed-st)/2;
+        int requiredDays = HelpershipWithinDays(weights, mid);
+        if(requiredDays <= days){
+            ans = mid;
+            ed = mid -1 ;
+        }else{
+            st = mid+1;
+        }
+        }
+        return ans ; 
+    }
+};
+
+Q) codechef "https://www.codechef.com/problems/HMAPPY" ?
+ans) 
+#include <bits/stdc++.h>
+using namespace std;
+
+long long reqballone(long long max_candies , vector<long long> &ballon_demand , vector<long long> &candies_per_ballon){
+    long long req_ballone = 0 ; 
+    for(int i = 0 ; i< ballon_demand.size() ; i++){
+        if(candies_per_ballon[i]==0) continue;
+        req_ballone += max((long long )0,(ballon_demand[i] - (max_candies/candies_per_ballon[i])));
+    } return req_ballone ; 
+}
+
+int main() {
+  long long  n , m ;
+  cin >> n >>m ;
+  vector <long long> ballon_demand(n);
+  vector<long long> candies_per_ballon(n);
+  for(int i = 0 ; i<n ; i++){
+      cin >> ballon_demand[i];
+  }
+  for(int i = 0 ; i<n ; i++){
+      cin >> candies_per_ballon[i];
+  }
+  long long min_threshold = 0 , max_threshold = LONG_LONG_MIN;
+  for(int i = 0 ; i< n ; i++){
+      max_threshold = max(max_threshold , ballon_demand[i]*candies_per_ballon[i]);
+  }
+  long long ans ; 
+  while(min_threshold <= max_threshold){
+      long long mid = min_threshold+(max_threshold-min_threshold)/2 ; 
+      long long  req_ballone = reqballone(mid , ballon_demand , candies_per_ballon);
+            if(req_ballone<=m){
+             ans = mid ; 
+             max_threshold = mid -1 ;
+             }else{
+                 min_threshold = mid+1;
+             }
+  }
+  cout << ans ; 
+  return 0 ; 
+}
+
+Q) gfg The Painter's Partition Problem-II
+ "https://www.geeksforgeeks.org/problems/the-painters-partition-problem1535/1"
+
+ ans) in this question i grouped the worker who worked ... how to grouped the workers that is  we pased a required time and make this logic 
+
+ class Solution {
+  public:
+  bool completemintime(const vector<int>& arr, int k, int required_time){
+      int temp = 0, painter = 1;
+      for(int i = 0; i < arr.size(); i++){
+          if(arr[i] > required_time) return false;
+
+          if(temp + arr[i] <= required_time){
+              temp += arr[i];
+          } else {
+              painter++;
+              temp = arr[i];
+          }
+      }
+      return painter <= k;
+  }
+
+  int minTime(vector<int>& arr, int k) {
+      int st = *max_element(arr.begin(), arr.end());
+      int ed = accumulate(arr.begin(), arr.end(), 0);
+      int ans = ed;
+
+      while(st <= ed){
+          int mid = st + (ed - st) / 2;
+          if(completemintime(arr, k, mid)){
+              ans = mid;
+              ed = mid - 1;
+          } else {
+              st = mid + 1;
+          }
+      }
+      return ans;
+  }
+};
+
+Q) leetcode 1658. Minimum Operations to Reduce X to Zero?
+ans)
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums, int x) {
+        int n = nums.size();
+
+        // Build suffix sums: suffix[i] = sum of last i elements
+        vector<int> suffix(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            suffix[i + 1] = suffix[i] + nums[n - 1 - i];
+        }
+
+        // Store suffix sum values in array: suffix_val[i] = sum of last i elements
+        // Now try all prefix sums and use binary search on suffix to find (x - prefix)
+        int prefix = 0;
+        int ans = INT_MAX;
+
+        // Traverse prefix from 0 to n
+        for (int i = 0; i <= n; i++) {
+            if (i > 0) prefix += nums[i - 1];
+            if (prefix > x) break;
+
+            // Find if x - prefix exists in suffix[]
+            // We need to find j such that suffix[j] == (x - prefix) and i + j <= n
+            int rem = x - prefix;
+
+            // Binary search on suffix[] from 0 to n - i (no overlap)
+            int l = 0, r = n - i;
+            while (l <= r) {
+                int mid = (l + r) / 2;
+                if (suffix[mid] == rem) {
+                    ans = min(ans, i + mid);
+                    break;
+                } else if (suffix[mid] < rem) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+        }
+
+        return (ans == INT_MAX) ? -1 : ans;
+    }
+};
+
+Q) codeforce "https://codeforces.com/contest/1324/problem/D" ?
+ans) // in this question i rewrite the condition and apply binary search for finding j > i and count the pair  
+we only want count j>i not j>=i 
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<int> a(n), b(n), diff(n);
+    for (int i = 0; i < n; ++i) cin >> a[i];
+    for (int i = 0; i < n; ++i) cin >> b[i];
+
+    for (int i = 0; i < n; ++i) {
+        diff[i] = a[i] - b[i];
+    }
+
+    sort(diff.begin(), diff.end());
+
+    long long count = 0;
+    for (int i = 0; i < n; ++i) {
+        int pos = upper_bound(diff.begin(), diff.end(), -diff[i]) - diff.begin(); // this is noe form of using binary search 
+        // We only consider j > i
+        count += n - max(pos, i + 1);
+    }
+
+    cout << count << endl;
+    return 0;
+}
+
