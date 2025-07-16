@@ -1,0 +1,171 @@
+proble in array : 
+-insertion/deletion takes time 
+-the space required need to continous
+
+ex= deletion a picture from gallery of 10k picture and 100 video (array)
+
+let inderstand linked list :
+-> every node contained the next node addredd 
+-> at last node NULL contained as an  next node
+-> there are head which indicated at first node and tail which indicated at last 
+
+good things about ll = insertion / deletion got better 
+bad things about ll = random access takes time 
+
+Q) leetcode 707. Design Linked List ?
+ans) 
+
+class MyLinkedList {
+public:
+    class Node {
+    public:
+        int data;
+        Node* next;
+        Node(int val) {
+            data = val;
+            next = nullptr;
+        }
+    };
+
+    Node* head;
+    int length;
+
+    MyLinkedList() {
+        head = nullptr;
+        length = 0;
+    }
+
+    int get(int index) {
+        if (index < 0 || index >= length) {
+            return -1;
+        }
+        Node* curr = head;
+        for (int i = 0; i < index; ++i) {
+            curr = curr->next;
+        }
+        return curr->data;
+    }
+
+    void addAtHead(int val) {
+        Node* newnode = new Node(val);
+        newnode->next = head;
+        head = newnode;
+        length++;
+    }
+
+    void addAtTail(int val) {
+        Node* newnode = new Node(val);
+        if (length == 0) {
+            head = newnode;
+        } else {
+            Node* curr = head;
+            while (curr->next != nullptr) {
+                curr = curr->next;
+            }
+            curr->next = newnode;
+        }
+        length++;
+    }
+
+    void addAtIndex(int index, int val) {
+        if (index < 0 || index > length) return;
+
+        if (index == 0) {
+            addAtHead(val);
+            return;
+        }
+
+        Node* newnode = new Node(val);
+        Node* curr = head;
+        for (int i = 0; i < index - 1; ++i) {
+            curr = curr->next;
+        }
+        newnode->next = curr->next;
+        curr->next = newnode;
+        length++;
+    }
+
+    void deleteAtHead() {
+        if (head == nullptr) return;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        length--;
+    }
+
+    void deleteAtIndex(int index) {
+        if (index < 0 || index >= length) return;
+
+        if (index == 0) {
+            deleteAtHead();
+            return;
+        }
+
+        Node* curr = head;
+        for (int i = 0; i < index - 1; ++i) {
+            curr = curr->next;
+        }
+
+        Node* temp = curr->next;
+        curr->next = curr->next->next;
+        delete temp;
+        length--;
+    }
+};
+
+Q) leetcode 206. Reverse Linked List ?
+ans) 
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* temp = nullptr ;
+        ListNode* temp1 = head ; 
+        ListNode* temp2 = nullptr;
+        while(temp1 != nullptr){
+         temp2= temp1->next ;
+         temp1->next = temp ;
+         temp = temp1 ;
+         temp1 = temp2 ;
+        } return temp ; 
+    }
+};
+
+Q) gfg Delete in a Doubly Linked List "https://www.geeksforgeeks.org/problems/delete-node-in-doubly-linked-list/1"
+
+ans) 
+class Solution {
+  public:
+    Node* deleteNode(Node* head, int x) {
+        if (head == nullptr) return head;
+
+        if (x == 1) {
+            Node* temp = head ;
+            head = head->next;
+            if(head != nullptr){
+                head->prev = nullptr;
+            }
+            delete temp ; 
+            return head ; 
+            
+        }
+
+        Node* curr = head;
+        for (int i = 1; i < x && curr != nullptr; i++) {
+            curr = curr->next;
+        }
+
+        if (curr == nullptr) return head;
+
+        Node* prevNode = curr->prev;
+        Node* nextNode = curr->next;
+
+        if (prevNode != nullptr) {
+            prevNode->next = nextNode;
+        }
+        if (nextNode != nullptr) {
+            nextNode->prev = prevNode;
+        }
+        delete curr;
+        return head;
+    }
+};
