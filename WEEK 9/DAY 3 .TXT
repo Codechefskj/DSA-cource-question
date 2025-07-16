@@ -1,0 +1,81 @@
+Q) ferris wheel ? you can given the no of ghondola and total weights ... and its given the some weights ?
+ans) 1) sort the weights 
+     2) make two pointer first and last 
+     3) check the weight condition 
+
+Q) stick length "https://codeforces.com/problemset/gymProblem/102961/I"? 
+ans) [ make absolute diffrence and find minimum absolute diffrence ]
+ 1) observation 1 : converging to a value than max(arr) doest make sense 
+ 2) observation 2 : converging to value smaller than min(arr) doest make sense 
+ 3) convergence to a value that is not part of array is also benifecial 
+
+Q) " leetcode 2740 " Find the Value of the Partition?
+ans) it is very simple question 
+     class Solution {
+public:
+    int findValueOfPartition(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+
+        int finalans = INT_MAX; 
+
+        for (int i = 1; i < n; i++) {
+            finalans = min(finalans, nums[i] - nums[i - 1]);
+        }
+
+        return finalans;
+    }
+};
+
+Q) " leetcode 2966" Divide Array Into Arrays With Max Difference?
+ans // it is also simple question but syntax is very hard i can do syntax in gpt 
+
+class Solution {
+public:
+    vector<vector<int>> divideArray(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end()); 
+
+        vector<vector<int>> result; 
+
+        for (int i = 0; i < nums.size(); i += 3) {
+            if (i + 2 >= nums.size()) return {};
+
+            int first = nums[i];
+            int second = nums[i + 1];
+            int third = nums[i + 2];
+
+            if (third - first <= k) {
+                result.push_back({first, second, third});
+            } else {
+                return {}; 
+            }
+        }
+        return result;
+    }
+};
+
+Q) "leetcode 2679" sum in the matrix 
+ans) // syntax is very hard 
+
+class Solution {
+public:
+    int matrixSum(vector<vector<int>>& nums) {
+        for (auto &row : nums) {
+            sort(row.begin(), row.end());
+        }
+
+        int finalans = 0;
+        int m = nums.size();    
+        int n = nums[0].size(); 
+
+        for (int col = 0; col < n; col++) {
+            int maxi = 0;
+            for (int row = 0; row < m; row++) {
+                maxi = max(maxi, nums[row][col]);
+            }
+            finalans += maxi;
+        }
+
+        return finalans;
+    }
+};

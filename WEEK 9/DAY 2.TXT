@@ -1,0 +1,278 @@
+Q) given an array of integer arr , find the minimum absoulte diffrence between a pair of elements abs[arr[i]-arr[j]] where i!=j 
+ans) eg = [10,15,7,20,8]
+(10,15)=5 , (10,7)=7 , (10,20)=10 , (10,8)=2 , (15,7)=8 ,(15,20)=5 ....
+
+implementation : sort the array and check which is smaller 
+
+Q) gfg 
+   N= 7 , K=3  [10,100,300,200,1000,2000]
+ans) we can used sliding windows loops condition are [i,i+k-1] 
+
+Q) hackerrank "https://www.hackerrank.com/challenges/minimum-absolute-difference-in-an-array/problem" ?
+ans) int minimumAbsoluteDifference(vector<int> arr) {
+ sort(arr.begin(), arr.end());
+ int mini = INT32_MAX;
+ for(int i = 1 ; i< arr.size() ; i++){
+    mini = min(mini, arr[i]-arr[i-1]);
+ } return mini ; 
+}
+
+Q) leetcode 1685 Sum of Absolute Differences in a Sorted Array?
+ans) leftsum = (a[i]+a[i]+a[i]+a[i]....) + (a[0]+a[1]+a[2]+a[3]....a[i-1]); 
+     rightside = a[i+1]-a[i]+a[i+2]-a[i] + ..... a[n]-a[i]
+
+     we have final ans = i*a[i]-prefix[i-1] +suffix[i+1]-(n-1-i)*a[i];
+
+class Solution {
+public:
+    vector<int> getSumAbsoluteDifferences(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> sufx(n), prefx(n);
+        
+        for (int i = 0; i < n; i++) {
+            if (i == 0) {
+                prefx[i] = nums[i];
+            } else {
+                prefx[i] = prefx[i - 1] + nums[i]; 
+            }
+        }
+
+        for (int j = n - 1; j >= 0; j--) {
+            if (j == n - 1) {
+                sufx[j] = nums[j];
+            } else {
+                sufx[j] = sufx[j + 1] + nums[j]; 
+            }
+        }
+
+        vector<int> ans(n); 
+
+        for (int i = 0; i < n; i++) {
+            int prefixsum = (i == 0) ? 0 : prefx[i - 1];
+            int suffixsum = (i == n - 1) ? 0 : sufx[i + 1];
+            int leftsum = nums[i] * i - prefixsum;
+            int rightsum = suffixsum - nums[i] * (n - 1 - i);
+            ans[i] = leftsum + rightsum;
+        }
+
+        return ans;
+    }
+};
+
+Q) " leetcode 1630 "
+ans) class Solution {
+public:
+    bool checkArithmetic(vector<int>& nums, int left, int right) {
+        vector<int> subarray(nums.begin() + left, nums.begin() + right + 1);
+        sort(subarray.begin(), subarray.end());
+        
+        int diff = subarray[1] - subarray[0];
+        for (int i = 1; i < subarray.size(); ++i) {
+            if (subarray[i] - subarray[i - 1] != diff) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    vector<bool> checkArithmeticSubarrays(vector<int>& nums, vector<int>& l, vector<int>& r) {
+        vector<bool> result;
+        for (int i = 0; i < l.size(); ++i) {
+            result.push_back(checkArithmetic(nums, l[i], r[i]));
+        }
+        return result;
+    }
+};
+
+Q) leetcode 1710 
+ans) 
+class Solution {
+public:
+    int maximumUnits(vector<vector<int>>& boxTypes, int truckSize) {
+        sort(boxTypes.begin(), boxTypes.end(), [](vector<int>& a, vector<int>& b){
+            return a[1] > b[1];
+        });
+
+        int maxUnits = 0;
+
+        for (auto& box : boxTypes) {
+            int boxCount = box[0];
+            int unitsPerBox = box[1];
+
+            int boxesTaken = min(truckSize, boxCount);
+            maxUnits += boxesTaken * unitsPerBox;
+            truckSize -= boxesTaken;
+
+            if (truckSize == 0) break;
+        }
+
+        return maxUnits;
+    }
+};
+
+Q) gfg "https://www.geeksforgeeks.org/problems/minimum-platforms-1587115620/1"
+ans) int findPlatform(vector<int>& arr, vector<int>& dep) {
+    sort(arr.begin(), arr.end());
+    sort(dep.begin(), dep.end());
+    
+    int i = 0, j = 0;
+    int count = 0;         
+    int ans = 0;           
+    int n = arr.size();
+    
+    while (i < n && j < n) {
+        if (arr[i] <= dep[j]) {
+            count++;
+            ans = max(ans, count);
+            i++;
+        } else {
+            count--;
+            j++;
+        }
+    }
+    
+    return ans;
+
+Q) leetcode " 1248 " Count Number of Nice Subarrays ?
+ans) class Solution {
+public:
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> mainvector(n, 0);
+
+        for (int i = 0; i < n; i++) {
+            mainvector[i] = (nums[i] % 2 == 1) ? 1 : 0;
+        }
+
+        int finalsubarray = 0;
+        int left = 0;
+        int temp = 0;
+        int prefixEvenCount = 0;  
+
+        for (int right = 0; right < n; right++) {
+            if (mainvector[right] == 1) {  
+                temp++; 
+                prefixEvenCount = 0; 
+            }
+
+            while (temp == k) {  
+                prefixEvenCount++;
+                if (mainvector[left] == 1) {
+                    temp--;  
+                }
+                left++;
+            }
+
+            finalsubarray += prefixEvenCount; 
+        }
+
+        return finalsubarray;
+    }
+};
+// in this question i am creating one vector  which indicate all index which are odd and even and compare the element with the help of  prefixEvenCount 
+
+Q) "leetcode 452" Minimum Number of Arrows to Burst Balloons ?
+ans) class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& points) {
+        if (points.empty()) return 0;
+
+        sort(points.begin(), points.end(), [](const vector<int>& a, const vector<int>& b) {
+            return a[1] < b[1];
+        });
+
+        int arrows = 1;
+        int arrowPos = points[0][1];
+
+        for (int i = 1; i < points.size(); ++i) {
+            if (points[i][0] > arrowPos) {
+                arrows++;
+                arrowPos = points[i][1];
+            }
+        }
+
+        return arrows;
+    }
+};
+// we can sort the 2D point on first element and find out the answer 
+
+Q) https://www.geeksforgeeks.org/problems/minimum-swaps/1
+ans) class Solution {
+  public:
+   int minSwaps(vector<int>& arr) {
+    int n = arr.size();
+    vector<pair<int, int>> vec(n);
+    for (int i = 0; i < n; i++) {
+        vec[i] = {arr[i], i};  
+    }
+    sort(vec.begin(), vec.end());
+    vector<bool> visited(n, false);
+    int swaps = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (visited[i] || vec[i].second == i)
+            continue;
+        int cycle_size = 0;
+        int j = i;
+        while (!visited[j]) {
+            visited[j] = true;
+            j = vec[j].second;
+            cycle_size++;
+        }
+        if (cycle_size > 1)
+            swaps += (cycle_size - 1);
+    }
+    return swaps;
+}
+};
+// in this question we cannot do just like bbrute force we can create the bool function which is visited or not and check into the cycle 
+
+Q) "leetcode 493"  reversed the pair ?
+ans // in this question i can used the merge sort and adding the count pair logic you can see and easily understand .. we used long long for prevent owerflow and we can also write long long in this shortcutt like ll 
+
+class Solution {
+public:
+    int count = 0;
+
+    void merge(vector<int>& nums, int low, int mid, int high) {
+        int j = mid + 1;
+        for (int i = low; i <= mid; i++) {
+            while (j <= high && (long long)nums[i] > 2LL * nums[j]) {
+                j++;
+            }
+            count += (j - (mid + 1));
+        }
+        
+        // normal mergeSort
+        
+        vector<int> temp;
+        int left = low, right = mid + 1;
+        while (left <= mid && right <= high) {
+            if (nums[left] <= nums[right]) {
+                temp.push_back(nums[left++]);
+            } else {
+                temp.push_back(nums[right++]);
+            }
+        }
+        while (left <= mid) temp.push_back(nums[left++]);
+        while (right <= high) temp.push_back(nums[right++]);
+
+        for (int i = low; i <= high; i++) {
+            nums[i] = temp[i - low];
+        }
+    }
+
+    void mergeSort(vector<int>& nums, int low, int high) {
+        if (low >= high) return;
+        int mid = (low + high) / 2;
+        mergeSort(nums, low, mid);
+        mergeSort(nums, mid + 1, high);
+        merge(nums, low, mid, high);
+    }
+
+    int reversePairs(vector<int>& nums) {
+        count = 0;
+        mergeSort(nums, 0, nums.size() - 1);
+        return count;
+    }
+};
