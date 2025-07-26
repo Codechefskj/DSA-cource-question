@@ -1,0 +1,55 @@
+Q) create the no which contained the 2,3,5 .. give the nth no of the contained no ?
+ans) we create the new queue which contained the [2,3,5,2*10+2, 2*10+3 , 2*10+5 .....]
+     iteration 
+     [2,3,5]
+     [2,3,5,22,33,25]
+     [3,5,22,33,25,32,33,35]
+     [5,22,33,25,32,33,35 ,52,53,55]
+     [22,33,25,32,33,35 ,52,53,55,222,223,225] 
+     [33,25,32,33,35 ,52,53,55,222,223,225 , 332,333,335]
+     [25,32,33,35,52,53,55,222,223,225,332,333,335,252,253,255]
+
+     int main (){
+      int n ;
+      cin >>n ;
+      queue<int> q;
+      q.push(2);
+      q.push(3);
+      q.push(5);
+      for(int i = 0 ; i< n-1 ; i++){
+        int x = q.front();
+      q.pop();
+      q.push(10* x +2);
+      q.push(10 * x +3);
+      q.push(10* x +5);
+      }
+      cout << q.front <<endl;
+     }
+
+Q) leetcode 239. Sliding Window Maximum ?
+ans) 
+
+// we can create one deque and push index of element into decreasing order and one things i used to remember that q.front() <= i-k ; condition for checking the windows size()
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> ans ; 
+        deque<int> q ; 
+        for(int i = 0 ; i< nums.size() ; i++){
+            // push the elements 
+            while(!q.empty() && nums[q.back()]<= nums[i]){
+                q.pop_back();
+            }
+            q.push_back(i);
+            // check front element in the windows or not 
+            if(q.front() <= i-k){
+                q.pop_front();
+            }
+            // put into the ans
+            if(i >= k-1){
+                ans.push_back(nums[q.front()]);
+            }
+        }return ans ; 
+    }
+};
