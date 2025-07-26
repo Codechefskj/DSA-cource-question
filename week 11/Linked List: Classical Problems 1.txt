@@ -1,0 +1,217 @@
+Q) leetcode 876. Middle of the Linked List ?
+ans) 
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* curr = head ;
+        int length = 0 ;
+        while(curr != nullptr){
+         curr = curr->next;
+         length++;
+        }
+        int half = length/2;
+        curr = head ; 
+        while(half--){
+        curr = curr->next ;
+        } return curr ;
+    }
+};
+
+------ or --------------
+
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* slowpointer = head;
+        ListNode* fastpointer = head;
+
+        while (fastpointer != nullptr && fastpointer->next != nullptr) {
+            fastpointer = fastpointer->next->next;
+            slowpointer = slowpointer->next;
+        }
+        return slowpointer;
+    }
+};
+
+Q) leetcode 141. Linked List Cycle ?      // floyd cycle 
+ans) class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode* fast = head;
+        ListNode* slow = head;
+
+        while (fast != nullptr && fast->next != nullptr) {
+            fast = fast->next->next;
+            slow = slow->next;
+
+            if (fast == slow) return true; 
+        }
+
+        return false; 
+    }
+};
+
+Q) leetcode 25. Reverse Nodes in k-Group?
+ans) 
+class Solution {
+public:
+    void reverse(ListNode* start, ListNode* end) {
+        ListNode* prev = nullptr;
+        ListNode* curr = start;
+        ListNode* stop = end->next; // one past the end node
+
+        while (curr != stop) {
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+    }
+
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if (k == 1 || head == nullptr || head->next == nullptr) return head;
+
+        // Check if there are at least k nodes ahead
+        ListNode* start = head;
+        ListNode* end = head;
+        for (int i = 1; i < k; ++i) {
+            end = end->next;
+            if (end == nullptr) return head; // Less than k nodes, don't reverse
+        }
+
+        // Reverse current k-group
+        ListNode* nextGroupHead = end->next;
+        reverse(start, end);
+
+        // Recurse on the rest and connect
+        start->next = reverseKGroup(nextGroupHead, k);
+
+        // `end` is now the head of the reversed segment
+        return end;
+    }
+};
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 19. Remove Nth Node From End of List ?
+ans) 
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        // Step 1: Count the length of the list
+        int len = 0;
+        ListNode* curr = head;
+        while (curr != nullptr) {
+            len++;
+            curr = curr->next;
+        }
+
+        // Step 2: If we need to remove the head node
+        if (n == len) {
+            ListNode* newHead = head->next;
+            delete head;
+            return newHead;
+        }
+
+        // Step 3: Go to the node just before the node to delete
+        curr = head;
+        for (int i = 1; i < len - n; i++) {
+            curr = curr->next;
+        }
+
+        // Step 4: Delete the nth node from end
+        ListNode* nodeToDelete = curr->next;
+        curr->next = curr->next->next;
+        delete nodeToDelete;
+
+        return head;
+    }
+};
+
+Q) leetcode 234. Palindrome Linked List ?
+ans) 
+class Solution {
+public:
+    ListNode* reverseheadnode(ListNode*  head){
+        ListNode* newhead = nullptr ; 
+        while(head != nullptr){
+            ListNode* newNode = new ListNode(head->val);
+            newNode->next = newhead ; 
+            newhead = newNode ;
+            head = head->next ; 
+        }return newhead ; 
+    }
+
+    bool isPalindrome(ListNode* head) {
+        ListNode* newreversehead = reverseheadnode(head);
+
+        ListNode* p1 = head;
+        ListNode* p2 = newreversehead;
+
+        while (p1 != nullptr && p2 != nullptr) {
+            if (p1->val != p2->val) {
+                return false;
+            }
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+     return true ; 
+    }
+};
+
+Q) leetcode 2. Add Two Numbers ?
+ans) 
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* i = l1 ;
+        ListNode* j = l2 ;
+        int carry = 0 ; 
+        ListNode* dummy = new ListNode(0);
+        ListNode* curr = dummy ; 
+
+        while(i != nullptr && j != nullptr){
+        int temp = i->val + j->val + carry;
+        ListNode* temp1 = new ListNode(temp%10);
+        curr->next = temp1 ;
+        carry = temp/10;
+        curr= curr->next ;
+        i = i->next ;
+        j= j->next ;
+        }
+
+        while(i!=nullptr){
+        int temp = i->val + carry;
+        ListNode* temp1 = new ListNode(temp%10);
+        curr->next = temp1 ;
+        curr= curr->next ;
+        carry = temp/10;
+        i = i->next ;
+        }
+
+        while(j!=nullptr){
+       int temp = j->val + carry;
+        ListNode* temp1 = new ListNode(temp%10);
+        curr->next = temp1 ;
+        curr= curr->next ;
+        carry = temp/10;
+        j = j->next ;
+        }
+
+        if(carry>0) {
+            ListNode* temp1 = new ListNode(carry);
+            curr->next = temp1;
+        }
+        return dummy->next ; 
+    }
+};

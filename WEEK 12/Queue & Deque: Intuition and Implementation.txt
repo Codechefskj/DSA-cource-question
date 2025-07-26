@@ -1,0 +1,174 @@
+->Queue is basically the things that start whatever i stand 
+->worked on principle FIFO 
+->some real life example 
+1) Queue in monitization 
+2) queue in food line 
+3) flash sale 
+4) task scheduling
+
+-> operation 
+1) push 
+2) top
+3) pop
+4) size
+5) empty 
+6) clear  
+
+Q) leetcode 232. Implement Queue using Stacks ?
+ans) 
+class MyQueue {
+public:
+    vector<int> arr;
+    int front;
+
+    MyQueue() {
+        front = 0;
+    }
+
+    void push(int x) {
+        arr.push_back(x);
+    }
+
+    int pop() {
+        int frontElement = arr[front];
+        front++;
+        return frontElement;
+    }
+
+    int peek() {
+        return arr[front];
+    }
+
+    bool empty() {
+        return front >= arr.size();
+    }
+};
+
+#####queue is not exactly is a data structures . it is a concept because it queue used array , ll they doest stored data in diffrent style 
+
+                deqeue (pronounce as a deck)
+its like double queue 
+there are new operation are added in deqeue we added and remove the element into both side 
+frount
+-> push front 
+-> pop 
+-> front 
+
+back 
+-> push_back
+->pop_back 
+-> back 
+
+---------------how to Implement stack using the queue ----------------------
+we take two queue 
+Q1-> 1->2->3->4->5 (in stack and queue both are same in pushing but diffrent in pop)
+Q2-> [] we used second queue for doing pop function we continous pop the element until last one is poping and the element which we remove the then continous push in first queue 
+
+-------------how to Implement queue using stack ------------------------------
+we take two stack (1->2->3->4->5)
+Q1 -> 1->2->3->4->5
+Q2 5->4->3->2->1(pop the 1 and back the q1)
+Q1 -> 2->3->4->5
+
+-------------Implement queue using stack in better option ---------------------
+firstly we tranfer some element into the stack whatever we pop we just pop in stack 1 and whenever we are doing push operation we are doing in stack 1 (definetely the time complexity decreased into compared to 1st approch)
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) gfg Queue Reversal "https://www.geeksforgeeks.org/problems/queue-reversal/1" ?
+ans) 
+class Solution {
+  public:
+    queue<int> reverseQueue(queue<int> &q) {
+        stack <int> st;
+        while(!q.empty()){
+            int temp = q.front();
+            q.pop();
+            st.push(temp);
+        }
+        while(!st.empty()){
+            int temp1 = st.top();
+            q.push(temp1);
+            st.pop();
+        } return q ; 
+    }
+};
+
+Q) leetcode 2073. Time Needed to Buy Tickets ?
+ans) 
+class Solution {
+public:
+    int timeRequiredToBuy(vector<int>& tickets, int k) {
+        int time = 0;
+
+        for (int i = 0; i < tickets.size(); i++) {
+            if (i <= k)
+                time += min(tickets[i], tickets[k]);
+            else
+                time += min(tickets[i], tickets[k] - 1);
+        }
+
+        return time;
+    }
+};
+
+Q) leetcode 1700. Number of Students Unable to Eat Lunch?
+ans) 
+class Solution {
+public:
+    int countStudents(vector<int>& students, vector<int>& sandwiches) {
+        int n = students.size();
+        stack<int> sand;
+        queue<int> stu;
+        int ans = 0;
+        for (int i = sandwiches.size() - 1; i >= 0; i--) {
+            sand.push(sandwiches[i]);}
+        for (int j = 0; j < students.size(); j++) {
+            stu.push(students[j]);
+        }
+        int attempts = 0;  
+        while (!stu.empty() && !sand.empty()) {
+            if (stu.front() == sand.top()) {
+                stu.pop();
+                sand.pop();
+                attempts = 0; 
+            } else {
+                stu.push(stu.front());
+                stu.pop();
+                attempts++;
+            }
+            if (attempts == stu.size()) {
+                break;
+            }
+        }
+        return stu.size(); 
+    }
+};
+-----------or------------------
+
+class Solution {
+public:
+    int countStudents(vector<int>& students, vector<int>& sandwiches) {
+        int wantZero = 0;  
+        int wantOne = 0;  
+        for (int i = 0; i < students.size(); i++) {
+            if (students[i] == 0) wantZero++;
+            else wantOne++;
+        }
+        for (int i = 0; i < sandwiches.size(); i++) {
+            if (sandwiches[i] == 0) {
+                if (wantZero == 0) {
+                    return wantOne;
+                }
+                wantZero--;  
+            } else {  
+                if (wantOne == 0) {
+                    return wantZero;
+                }
+                wantOne--;  
+            }
+        }
+        return 0;
+    }
+};
+

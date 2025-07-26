@@ -1,0 +1,288 @@
+Q) leetcode 21. Merge Two Sorted Lists ?
+ans) 
+// main things of recursion is that we cannot things how its works just remember recursion function only gives sorted array thats all 
+
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        if(list1==NULL) return list2;
+        if(list2 == NULL) return list1 ; 
+        if(list1->val < list2->val){
+            list1->next = mergeTwoLists(list1->next , list2);
+            return list1 ;  
+        }else{
+            list2->next = mergeTwoLists(list2->next , list1);
+            return list2;
+        }
+    }
+};
+
+Q) leetcode 160. Intersection of Two Linked Lists ?
+ans) 
+class Solution {
+public:
+   int getlength(ListNode* temp){
+   ListNode* curr = temp ;
+   int len = 0 ; 
+   while(curr!=NULL){
+     curr= curr->next ;
+     len++;
+   }return len ;
+   }
+
+   ListNode* listtheedge(ListNode* node , int extra){
+   while(extra--){
+    node = node->next ;
+   } return node ; 
+   }
+
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        int len1 = getlength(headA);
+        int len2 = getlength(headB);
+        ListNode* curr1 = headA;
+        ListNode* curr2 = headB;
+
+        if(len1 > len2){
+            curr1 = listtheedge(headA , len1-len2);
+        }else{ 
+            curr2 = listtheedge(headB , len2-len1);
+        }
+        while(curr1 != curr2){
+        curr1 = curr1->next ;
+        curr2 = curr2->next ; 
+        }
+        return curr1 ; 
+    }
+};
+
+Q) leetcode 138. Copy List with Random Pointer?
+ans) 
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if (!head) return nullptr;
+
+        Node* curr = head;
+
+        // Step 1: Clone each node and insert it after the original node
+        while (curr) {
+            Node* copy = new Node(curr->val);
+            copy->next = curr->next;
+            curr->next = copy;
+            curr = copy->next;
+        }
+
+        // Step 2: Set random pointers for the cloned nodes
+        curr = head;
+        while (curr) {
+            if (curr->random)
+                curr->next->random = curr->random->next;
+            curr = curr->next->next;
+        }
+
+        // Step 3: Separate the cloned list from the original list
+        Node* dummy = new Node(0);
+        Node* copyCurr = dummy;
+        curr = head;
+
+        while (curr) {
+            copyCurr->next = curr->next;
+            curr->next = curr->next->next;
+
+            curr = curr->next;
+            copyCurr = copyCurr->next;
+        }
+
+        return dummy->next;
+    }
+};
+
+-----------------------------------------------------------------------------------------------------------------------
+Q) leetcode 92. Reverse Linked List II ?
+ans) 
+class Solution {
+public:
+    void reverse(ListNode* left, ListNode* right) {
+        ListNode* prev = nullptr;
+        ListNode* curr = left;
+        ListNode* stopping = right->next;
+        while (curr != stopping) {
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+    }
+
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        if (left == right) return head;
+
+        // Dummy node to handle edge case where head is part of reversed segment
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+
+        ListNode* prev = dummy;
+
+        // Move prev to node before 'left'
+        for (int i = 1; i < left; ++i) {
+            prev = prev->next;
+        }
+
+        // Define start and end of the segment to be reversed
+        ListNode* start = prev->next;
+        ListNode* end = start;
+        for (int i = left; i < right; ++i) {
+            end = end->next;
+        }
+
+        ListNode* after = end->next;
+
+        // Reverse the segment
+        reverse(start, end);
+
+        // Reconnect the reversed segment
+        prev->next = end;
+        start->next = after;
+
+        return dummy->next;
+    }
+};
+
+Q) leetcode 2130. Maximum Twin Sum of a Linked List ?
+ans) 
+class Solution {
+public:
+    ListNode* reverse(ListNode* head){
+    ListNode* prev = nullptr;
+    ListNode* curr = head ;
+    while(curr!= nullptr){
+    ListNode* next = curr->next ;
+    curr->next = prev ;
+    prev = curr;
+    curr= next ;
+    }
+    return prev;
+    }
+
+    int pairSum(ListNode* head) {
+        // i am just creating the exact copy of ll 
+        ListNode* dummy = new ListNode(0);
+        ListNode* dummy_trav = dummy;
+        ListNode* curr = head ;
+        while(curr!= nullptr){
+            ListNode* temp = new ListNode(curr->val);
+            dummy_trav->next = temp;
+            dummy_trav = dummy_trav->next; 
+            curr= curr->next ;
+        }
+        // reverse the dummy 
+        ListNode* copyhead = reverse(dummy->next);
+        //calculte the length of ll 
+
+        int len = 0 ; 
+         curr = head ;
+         while(curr!=nullptr){
+            curr = curr->next;
+            len++;
+         }
+
+        // find maxi of the pair 
+        int maxi = -1;
+        int half = len/2;
+        curr = head ;
+        dummy_trav = copyhead ;
+        int temp = 0 ;
+        while(half--){
+            temp = dummy_trav->val + curr->val ;
+            maxi = max(maxi , temp);
+            dummy_trav = dummy_trav->next ;
+            curr = curr->next ;
+        } return maxi ; 
+    }
+};
+Q) leetcode 328. Odd Even Linked List ?
+ans) 
+
+//create new node first odd and even 
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if (!head) return nullptr;
+
+        ListNode* finalans = new ListNode(0); // dummy node
+        ListNode* finalans_trav = finalans;
+
+        // Step 1: Add odd-indexed nodes (1-based)
+        ListNode* curr = head;
+        int pos = 1;
+        while (curr != nullptr) {
+            if (pos % 2 == 1) { // odd position
+                finalans_trav->next = new ListNode(curr->val);
+                finalans_trav = finalans_trav->next;
+            }
+            curr = curr->next;
+            pos++;
+        }
+
+        // Step 2: Add even-indexed nodes
+        curr = head;
+        pos = 1;
+        while (curr != nullptr) {
+            if (pos % 2 == 0) { // even position
+                finalans_trav->next = new ListNode(curr->val);
+                finalans_trav = finalans_trav->next;
+            }
+            curr = curr->next;
+            pos++;
+        }
+
+        return finalans->next;
+    }
+};
+
+        ------------------or--------------------
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if (!head || !head->next) return head;
+
+        ListNode* odd = head;
+        ListNode* even = head->next;
+        ListNode* evenHead = even;  
+
+        while (even && even->next) {
+            odd->next = even->next;
+            odd = odd->next;
+
+            even->next = odd->next;
+            even = even->next;
+        }
+        odd->next = evenHead;
+
+        return head;
+    }
+};
+
+Q) leetcode 2181. Merge Nodes in Between Zeros ?
+ans) 
+class Solution {
+public:
+    ListNode* mergeNodes(ListNode* head) {
+        ListNode* dummy = new ListNode(0);  
+        ListNode* trav = dummy;            
+        ListNode* curr = head->next;       
+
+        while (curr != nullptr) {
+            int ans = 0;
+            while (curr->val != 0) {
+                ans += curr->val;
+                curr = curr->next;
+            }
+            trav->next = new ListNode(ans);
+            trav = trav->next;
+            curr = curr->next;
+        }
+
+        return dummy->next;  
+    }
+};

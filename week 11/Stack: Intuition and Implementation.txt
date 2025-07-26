@@ -1,0 +1,182 @@
+stack (LILO) 
+example of stack is :
+1) undo Operations 
+2)  redo as well 
+3) our very own call stack 
+
+Operations :
+1) push 
+2) peek/top 
+3) pop
+4) size
+5) empty
+6) clear
+
+-->stack is implemented into two type one is normal array or vector and another is linked list 
+
+Q) leetcode 20. Valid Parentheses
+ans) 
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == '(' || s[i] == '{' || s[i] == '[') {
+                st.push(s[i]);
+            } else {
+                if (st.empty()) return false;
+
+                char top = st.top();
+                if ((s[i] == ')' && top == '(') ||
+                    (s[i] == '}' && top == '{') ||
+                    (s[i] == ']' && top == '[')) {
+                    st.pop();
+                } else {
+                    return false;
+                }
+            }
+        }
+        return st.empty(); 
+    }
+};
+
+Q) leetcode 155. Min Stack?
+ans) 
+class MinStack {
+public:
+   stack <int> s1 , s2 ;
+    MinStack() {
+        
+    }
+    
+    void push(int val) {
+        s1.push(val);
+        if(s2.size()==0){
+        s2.push(val);
+        }else{
+        s2.push(min(s2.top(), val));
+        }
+    }
+    
+    void pop() {
+        s1.pop();
+        s2.pop();
+        }
+    
+    int top() {
+        return s1.top();
+    }
+    
+    int getMin() {
+        return s2.top();
+    }
+};
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 844. Backspace String Compare ?
+ans) 
+class Solution {
+public:
+    bool backspaceCompare(string s, string t) {
+        stack<char> s1, s2;
+        // Process first string
+        for (char ch : s) {
+            if (ch == '#') {
+                if (!s1.empty()) s1.pop();
+            } else {
+                s1.push(ch);
+            }
+        }
+        // Process second string
+        for (char ch : t) {
+            if (ch == '#') {
+                if (!s2.empty()) s2.pop();
+            } else {
+                s2.push(ch);
+            }
+        }
+        // Compare both stacks
+        return s1 == s2;
+    }
+};
+
+Q) leetcode 2390. Removing Stars From a String?
+ans) 
+class Solution {
+public:
+    string removeStars(string s) {
+        stack<char> st;
+        for (char ch : s) {
+            if (ch == '*') {
+                if (!st.empty()) st.pop(); 
+            } else {
+                st.push(ch);
+            }
+        }
+        string result;
+        while (!st.empty()) {
+            result += st.top();
+            st.pop();
+        }
+        reverse(result.begin(), result.end()); 
+        return result;
+    }
+};
+
+Q) leetcode 1544. Make The String Great?
+ans) 
+class Solution {
+public:
+    string makeGood(string s) {
+        stack <char> str ;
+        //create stackk 
+        for(int i =0  ; i< s.size() ; i++){
+            if(!str.empty() && abs(s[i]- str.top())==32){
+              str.pop();
+            }
+            else{
+                str.push(s[i]);
+            }
+        } 
+        //create string ;
+        string finalans ; 
+        while(!str.empty()){
+        char top = str.top();
+        finalans += top;
+        str.pop();
+        }
+        //reverse the string 
+        reverse(finalans.begin(), finalans.end());
+        return finalans ; 
+    }
+};
+
+Q) codeforces "https://codeforces.com/contest/26/problem/B"
+ans) 
+#include <iostream>
+#include <stack>
+using namespace std ; 
+int main (){
+  string s ;
+  cin >> s ; 
+  int finalans = 0 ;
+  stack <char> str ;
+   for(int i = 0 ; i< s.size(); i++){
+   if(s[i]=='('){
+   str.push(s[i]); 
+   }else{
+    if(!str.empty()){
+    str.pop();
+    finalans += 2 ;
+   }else{
+    continue;
+   }
+   }
+   }
+   cout<< finalans<<endl ; 
+}
+
+Q) leetcode 503. Next Greater Element II ?
+ans) 
