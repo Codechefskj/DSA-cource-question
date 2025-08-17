@@ -1,0 +1,130 @@
+Q) let say (a+b)%m  , a= 10^15 -1 , b = 10^15 -1 , m = 10^15 in this case we cannot hold the integer 
+ans) 
+
+x^n ---> x^n/2 * x^n/2 (odd no)
+    ---> x^n/2 * x^n/2 * n (even no)
+
+long long addundermodulo(long a , long b ,long m){
+  if(b==0) return 0;
+  long halfans = addundermodulo(a,b/2,m);
+  if(b%2==0){
+    return (halfans+halfans)%m;
+  }
+  else{
+    return ((halfans +halfans)%m + a )%m
+  }
+}
+
+space and time complexity is (log b)
+
+Q) codeforces D. Divide and Equalize "https://codeforces.com/problemset/problem/1881/D"?
+ans)
+// in this question we calculate the total no of frequency of the elements and see we can equally divide the prime factor 
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+unordered_map<int,int> factors(const vector<int>& temp){
+    unordered_map<int,int> ans;
+    for(int x : temp){
+        for(int j = 2; j*j <= x; j++){
+            while(x % j == 0){
+                ans[j]++;
+                x /= j;
+            }
+        }
+        if(x > 1) ans[x]++; 
+    }
+    return ans;
+}
+
+int main(){
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> no(n);
+        for(int i=0; i<n; i++) cin >> no[i];
+
+        unordered_map<int,int> isfactor = factors(no);
+
+        bool isvalid = true;
+        for(auto m : isfactor){
+            if(m.second % n != 0){ 
+                isvalid = false;
+                break; 
+            }
+        }
+        if(isvalid) cout << "YES\n";
+        else cout << "NO\n";
+    }
+}
+
+Q) codechef Strange Number "https://www.codechef.com/APRIL20B/problems/STRNO"?
+ans) 
+
+#include <iostream>
+using namespace std;
+
+int main(){
+    int t;
+    cin >> t;
+    while(t--){
+        int x, k;
+        cin >> x >> k;  
+        int primeCount = 0;
+        int temp = x;
+
+        for(int num = 2; num*num <= temp; num++){
+            while(temp % num == 0){
+                primeCount++;
+                temp /= num;
+            }
+        }
+        if(temp > 1) primeCount++; 
+
+        if(primeCount >= k){
+            cout << 1 << endl;
+        } else {
+            cout << 0 << endl;
+        }
+    }
+}
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+Q) leetcode 2470. Number of Subarrays With LCM Equal to K?
+ans) 
+// we used LCM(a,b)= a*b/gcd(a,b) for every elements into subarray 
+
+class Solution {
+public:
+    int gcd(int a , int b){
+        if(min(a,b)==0){
+            return max(a,b);
+        }
+        int mini = min(a,b);
+        int maxi = max(a,b);
+        return gcd(mini, maxi % mini);
+    }
+
+    int subarrayLCM(vector<int>& nums, int k) {
+        int ans = 0; 
+        for(int left = 0; left < nums.size(); left++){
+            long long val = nums[left];  
+            for(int right = left; right < nums.size(); right++){
+                val = (val * nums[right]) / gcd(val, nums[right]);  
+                if(val == k) ans++;        
+                else if(val > k) break;   
+            }
+        }
+        return ans;     
+    }
+};
+
+
+
+

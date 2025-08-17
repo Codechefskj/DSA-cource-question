@@ -1,0 +1,139 @@
+integer => -10,-2,-3,-4,0 ,1,2,3,4,5,6.....
+whole no => 0,1,2,3,4,5,6,7.........
+natural no => 1,2,3,4,5,6.......
+
+given a no N find sigma d/N  d^2 => 1=divides 
+d divides N => d is factor of N 
+N is multiple of d (n%d==0)
+
+Fundamental theorum of arithematics 
+-----------------------------------
+
+N= 24  we can write 2^3 * 3^1
+every integer  can be uniquely represented as a product of primes
+
+Q) given a no can we find formula to find its no of divisors 
+ans) N= p1^alpha * p2^alpha2 * p3^alpa3...........
+
+      d(N) = (alpha+1)(alpha2+1)(alpha3+1)(alpha4+1).....(alpha k + k)
+
+      600 = 2^3 * 3^1 * 5^2
+      4*2*3=24
+
+Q) finding if a no is prime 
+ans) 
+N= a * b 
+
+under root n < }
+under root n < }   how can their product be equal to N 
+
+approch for finding the no is prime 
+1) 
+if(n==1) return false 
+for(i=2 ; i<n ; i++){
+  if(n%i==0)
+  return false 
+  return true ;
+}
+
+2) if(n==1) return false 
+  for(i=2 ; i*i<=N ; i++){
+    if(n%i==0)
+    return true ;
+  }
+
+3) we can count the frequency of every no is and count the frequency of every no 
+
+unordered_map<int,int> pfactor ;
+int ans ;
+for(i=2 ; i*i<=N ; i++){
+  if(n%i){
+    continue 
+  }
+  int c = 0 ; 
+  while(n%i==0){
+    n/=i 
+    c++
+  }ans.put(i,c);
+  if(n>1) ans.put(n,i);
+  return ans ; 
+}
+
+               sieve of eratosthene introduction 
+
+suppose there are vector of 100 and we know that that 0 , 1 , 2 are prime no so we iterate the 2,3, of multiple of i 
+
+code is :
+vector <bool> isprime(int n ){
+vector <bool> ans(n, false);
+ans[0]=ans[1]=ans[2]= true ;
+for(int i = 0 ; i*i<=n ; i++){
+  if(ans[i]== false){
+    continue ;
+  }
+  for(int j = i*i ; j<= n ; j+=i){
+    ans[j]= false;
+  }
+} return ans ; 
+}
+
+time taken : log N
+
+Q) leetcode 204. Count Primes?
+ans) 
+class Solution {
+public:
+    vector<bool> isprime(int n){
+        vector<bool> ans(n, true);  
+
+        if (n > 0) ans[0] = false;
+        if (n > 1) ans[1] = false;
+
+        for(int i = 2; i * i < n; i++){
+            if(!ans[i]) continue;
+            for(int j = i * i; j < n; j += i){
+                ans[j] = false;
+            }
+        }
+        return ans; 
+    }
+
+    int countPrimes(int n) {
+        if(n <= 2) return 0;
+        vector<bool> primes = isprime(n);
+        int count = 0;
+        for(int i = 2; i < n; i++){
+            if(primes[i]) count++;
+        }
+        return count; 
+    }
+};
+
+Q) leetcode 1390. Four Divisors ?
+ans) // in this question we only check the 1 to sqrt(size of no) and add both pair 
+
+class Solution {
+public:
+    int sumFourDivisors(vector<int>& nums) {
+        int ans = 0;
+        for (auto x : nums) {
+            int cnt = 0, sum = 0;
+            for (int i = 1; i * i <= x; i++) {
+                if (x % i == 0) {
+                    cnt++;
+                    sum += i;
+                    if (i != x / i) { 
+                        cnt++;
+                        sum += x / i;
+                    }
+                    if (cnt > 4) break; 
+                }
+            }
+            if (cnt == 4) ans += sum;
+        }
+        return ans;
+    }
+};
+
+Q) codeforce  A. Almost Prime "https://codeforces.com/contest/26/problem/A" ?
+ans) 

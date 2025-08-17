@@ -1,38 +1,27 @@
 #include <iostream>
-#include <string>
 using namespace std;
 
-bool correct(string s) {
-    for (int i = 2; i < s.size(); i++) {
-        if ((s[i - 2] == 'F' && s[i - 1] == 'F' && s[i] == 'T') ||
-            (s[i - 2] == 'N' && s[i - 1] == 'T' && s[i] == 'T')) {
-            return false;
-        }
-    }
-    return true;
-}
-
-string correctans(string s) {
-    for (int i = 2; i < s.size(); i++) {
-        if (s[i - 2] == 'F' && s[i - 1] == 'F' && s[i] == 'T') {
-            swap(s[i - 1], s[i]); 
-        } else if (s[i - 2] == 'N' && s[i - 1] == 'T' && s[i] == 'T') {
-            swap(s[i - 2], s[i - 1]); 
-        }
-    }
-    return s;
-}
-
-int main() {
+int main(){
     int t;
     cin >> t;
-    while (t--) {
-        string s;
-        cin >> s;
-        while (!correct(s)) {
-            s = correctans(s);
-        }
+    while(t--){
+        int x, k;
+        cin >> x >> k;  
+        int primeCount = 0;
+        int temp = x;
 
-        cout << s << endl;
+        for(int num = 2; num*num <= temp; num++){
+            while(temp % num == 0){
+                primeCount++;
+                temp /= num;
+            }
+        }
+        if(temp > 1) primeCount++; 
+
+        if(primeCount >= k){
+            cout << 1 << endl;
+        } else {
+            cout << 0 << endl;
+        }
     }
-    }
+}

@@ -144,6 +144,9 @@ public:
         return stu.size(); 
     }
 };
+
+time complexity : O(n)
+space complexity : O(k)
 -----------or------------------
 
 class Solution {

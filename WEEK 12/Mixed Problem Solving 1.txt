@@ -1,0 +1,232 @@
+Q)^***********  leetcode 84. Largest Rectangle in Histogram ?
+ans) 
+1st method :
+try all the height and find the best possible case 
+2st method :
+try all subarray and try to find Maximum area
+
+class Solution {
+public:
+    vector<int> previoussmaller(vector<int> &temp) {
+        int n = temp.size();
+        vector<int> ans(n);
+        stack<int> q;
+        for (int i = 0; i < n; i++) {
+            while (!q.empty() && temp[q.top()] >= temp[i]) {
+                q.pop();
+            }
+            ans[i] = q.empty() ? -1 : q.top();
+            q.push(i);
+        }
+        return ans;
+    }
+
+    vector<int> nextsmaller(vector<int> &temp) {
+        int n = temp.size();
+        vector<int> ans(n);
+        stack<int> q;
+        for (int i = n - 1; i >= 0; i--) {
+            while (!q.empty() && temp[q.top()] >= temp[i]) {
+                q.pop();
+            }
+            ans[i] = q.empty() ? n : q.top();
+            q.push(i);
+        }
+        return ans;
+    }
+
+    int largestRectangleArea(vector<int>& heights) {
+        vector<int> previous = previoussmaller(heights);
+        vector<int> next = nextsmaller(heights);
+        int ans = 0;
+        for (int i = 0; i < heights.size(); i++) {
+            int width = next[i] - previous[i] - 1;
+            int area = width * heights[i];
+            ans = max(ans, area);
+        }
+        return ans;
+    }
+};
+
+Q)^********* leetcode 1499. Max Value of Equation ?
+ans) 
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 739. Daily Temperatures?
+ans) 
+// i used monotonic stack and create Maximum for that 
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        int n = temperatures.size();
+        vector<int> ans(n);
+        stack<int> q;
+        for(int i = n-1 ; i>=0 ; i--){
+            while(!q.empty() && temperatures[q.top()]<= temperatures[i]){
+                q.pop();
+            }
+            ans[i]= q.empty()? 0 : q.top()-i;
+            q.push(i);
+        } return ans ; 
+    }
+};
+
+Q) leetcode 402. Remove K Digits?
+ans) 
+class Solution {
+public:
+    string removeKdigits(string num, int k) {
+        if(k == num.size()) return "0"; 
+        
+        stack<char> q; 
+        for(char digits : num){
+            while(!q.empty() && digits < q.top() && k > 0){
+                q.pop();
+                k--;
+            }
+            q.push(digits);
+        }
+
+        while (k > 0 && !q.empty()) {
+            q.pop();
+            k--;
+        }
+
+        string ans; 
+        while (!q.empty()) {
+            ans += q.top();  
+            q.pop();
+        }
+
+        reverse(ans.begin(), ans.end());
+
+        int idx = 0; 
+        while(idx < ans.size() && ans[idx] == '0'){
+            idx++;
+        }
+        
+        ans = ans.substr(idx);
+        return ans.empty() ? "0" : ans;
+    }
+};
+
+Q) leetcode 907. Sum of Subarray Minimums?
+ans) 
+// we check the individual element and see how much subarray has that smaller no 
+class Solution {
+public:
+    vector<int> nextsmaller(vector<int>& temp) {
+        int n = temp.size();
+        vector<int> ans(n);
+        stack<int> q;
+        for (int i = n - 1; i >= 0; i--) {
+            while (!q.empty() && temp[q.top()] > temp[i]) {
+                q.pop();
+            }
+            ans[i] = q.empty() ? n : q.top();
+            q.push(i);
+        }
+        return ans;
+    }
+
+    vector<int> prevsmaller(vector<int>& temp) {
+        int n = temp.size();
+        vector<int> ans(n);
+        stack<int> q;
+        for (int i = 0; i < n; i++) {
+            while (!q.empty() && temp[q.top()] >= temp[i]) {
+                q.pop();
+            }
+            ans[i] = q.empty() ? -1 : q.top();
+            q.push(i);
+        }
+        return ans;
+    }
+
+    int sumSubarrayMins(vector<int>& arr) {
+        const int MOD = 1e9 + 7;
+        vector<int> next = nextsmaller(arr);
+        vector<int> prev = prevsmaller(arr);
+        
+        long long total = 0;
+        int n = arr.size();
+        for (int i = 0; i < n; i++) {
+            long long left = i - prev[i];
+            long long right = next[i] - i;
+            total = (total + arr[i] * left % MOD * right % MOD) % MOD;
+        }
+        return (int)total;
+    }
+};
+
+Q) leetcode 42. Trapping Rain Water ?
+ans) 
+class Solution {
+public:
+vector<int> getLeftMax(const vector<int>& height) {
+        int n = height.size();
+        vector<int> leftMax(n);
+        leftMax[0] = height[0];
+        for (int i = 1; i < n; i++) {
+            leftMax[i] = max(leftMax[i - 1], height[i]);
+        }
+        return leftMax;
+    }
+
+    vector<int> getRightMax(const vector<int>& height) {
+        int n = height.size();
+        vector<int> rightMax(n);
+        rightMax[n - 1] = height[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            rightMax[i] = max(rightMax[i + 1], height[i]);
+        }
+        return rightMax;
+    }
+    int trap(vector<int>& height) {
+        int n = height.size();
+        if (n == 0) return 0;
+
+        vector<int> leftMax = getLeftMax(height);
+        vector<int> rightMax = getRightMax(height);
+
+        int totalWater = 0;
+        for (int i = 0; i < n; i++) {
+            totalWater += min(leftMax[i], rightMax[i]) - height[i];
+        }
+
+        return totalWater;
+    }    
+};
+
+Q) gfg First negative in every window of size k "https://www.geeksforgeeks.org/problems/first-negative-integer-in-every-window-of-size-k3345/1"?
+ans) 
+//used same logic behind the max sliding window 
+
+class Solution {
+  public:
+    vector<int> firstNegInt(vector<int>& arr, int k) {
+        vector<int> ans;
+        deque<int> q;  
+
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr[i] < 0) {
+                q.push_back(i);
+            }
+
+            if (!q.empty() && q.front() <= i - k) {
+                q.pop_front();
+            }
+            if (i >= k - 1) {
+                if (!q.empty()) {
+                    ans.push_back(arr[q.front()]); 
+                } else {
+                    ans.push_back(0);  
+                }
+            }
+        }
+
+        return ans;
+    }
+};

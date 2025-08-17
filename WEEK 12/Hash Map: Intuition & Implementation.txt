@@ -1,0 +1,292 @@
+example why we create unordered_map into :
+remember the ticks we used to store the frequency of characters into string 
+remember creating store frequency | last index/ first index etc for element of integer array 
+
+-> unordered_map is also called the dictionery into python 
+
+unordered_map operation :
+->put 
+->size;
+->get
+->empty
+->erase
+->clear
+
+let looks into in build implemention first :-
+unordered_map<int , int> m ;
+m.insert({1,5})
+or
+m[5] = 2
+
+if(m.count(10));
+e.erase(10);
+
+Q) leetcode 2404. Most Frequent Even Element ?
+ans) 
+class Solution {
+public:
+    int mostFrequentEven(vector<int>& nums) {
+        unordered_map<int, int> m;
+
+        for (int num : nums) {
+            if (num % 2 == 0) {
+                m[num]++;    // this is way to insert element into unordered_map 
+            }
+        }
+
+        int maxFreq = 0;
+        int element = -1;
+
+        for (auto& p : m) {  // auto is ways to iterate the unordered_map 
+            int key = p.first; // this is way to get key 
+            int freq = p.second; // this is the way to get the value 
+
+            if (freq > maxFreq || (freq == maxFreq && key < element)) {
+                maxFreq = freq;
+                element = key;
+            }
+        }
+
+        return element;
+    }
+};
+
+how unordered_map working behind:
+implemented using the ll ->
+we can implemented unordered_map using ll but operation like get , erase costs o(n) time complexity 
+implemented using dynamic array ->
+we cannot implemented unordered_map using the dynamic array 
+most optimal approch ->
+"abcd" -------> hash function ---------> integer value 
+
+1) hash the key & find the resultant  index
+2) check if key is already present in the linked list at that index 
+
+    yes-> just update the value 
+    no -> add the key value pair to ll 
+
+    // idea is create array with linked list 
+
+    looks like
+
+    ----------------------------------
+    |"striver" | "mrbeast" | "pulkit" |
+    |20000000  | 8298298   | 7282828  |
+    ----------------------------------
+       |           |             |
+       |           |             |
+      ---        -----        -------
+      | |        |   |        |      |
+      ---        -----        --------
+
+
+Q) leetcode 706. Design HashMap ?
+ans) 
+class MyHashMap {
+private:
+    static const int SIZE = 10007; 
+    vector<pair<int, int>> buckets[SIZE];
+
+    int hash(int key) {
+        return key % SIZE;
+    }
+
+public:
+    MyHashMap() {
+    }
+
+    void put(int key, int value) {
+        int h = hash(key);
+        for (auto& pair : buckets[h]) {
+            if (pair.first == key) {
+                pair.second = value; 
+                return;
+            }
+        }
+        buckets[h].push_back({key, value}); 
+    }
+
+    int get(int key) {
+        int h = hash(key);
+        for (auto& pair : buckets[h]) {
+            if (pair.first == key) {
+                return pair.second;
+            }
+        }
+        return -1; 
+    }
+
+    void remove(int key) {
+        int h = hash(key);
+        for (auto it = buckets[h].begin(); it != buckets[h].end(); ++it) {
+            if (it->first == key) {
+                buckets[h].erase(it);
+                return;
+            }
+        }
+    }
+};
+
+------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 1512. Number of Good Pairs?
+ans) 
+class Solution {
+public:
+    int numIdenticalPairs(vector<int>& nums) {
+        unordered_map<int,int> m ;
+        for(int num : nums){
+            m[num]++;
+        }
+
+        int ans = 0 ; 
+        for(auto p : m){
+            int frequency = p.second;
+            if(frequency > 1){
+                ans += (frequency * (frequency - 1)) / 2;
+            }
+        }
+        return ans ; 
+    }
+};
+
+Q) leetcode 29. Unique Email Addresses ?
+ans) 
+// we used brute force only 
+class Solution {
+public:
+    int numUniqueEmails(vector<string>& emails) {
+        unordered_set<string> unique;
+        for (string& email : emails){
+            string local;
+            int i = 0;
+            while (i < email.size() && email[i] != '@') {
+                if (email[i] == '+') {
+                    break; 
+                } else if (email[i] != '.') {
+                    local += email[i];
+                } 
+                i++;
+            }
+
+            while (i < email.size() && email[i] != '@') i++;
+            string domain = email.substr(i);
+            string cleaned = local + domain;
+            unique.insert(cleaned);
+        }
+        return unique.size();
+    }
+};
+
+ 
+Q) gfg Zero Sum Subarrays "https://www.geeksforgeeks.org/problems/zero-sum-subarrays1825/1" ?
+ans) 
+//same logic with previous onces 
+class Solution {
+public:
+    int findSubarray(vector<int>& a) {
+        int n = a.size();
+        vector<int> prefixsum(n);
+        prefixsum[0] = a[0];
+        for (int i = 1; i < n; i++) {
+            prefixsum[i] = prefixsum[i - 1] + a[i];
+        }
+        unordered_map<int, int> freq;
+        int count = 0;
+
+        for (int j = 0; j < n; j++) {
+            if (prefixsum[j] == 0) count++; 
+            if (freq.find(prefixsum[j]) != freq.end()) {
+                count += freq[prefixsum[j]];
+            }
+            freq[prefixsum[j]]++;
+        }
+
+        return count;
+    }
+};
+
+Q) leetcode 1512. Number of Good Pairs ?
+ans) 
+// learn no of pair form in particular integer is f*(f-1)/2
+class Solution {
+public:
+    int numIdenticalPairs(vector<int>& nums) {
+        unordered_map<int,int> m ;
+        for(int num : nums){
+            m[num]++;
+        }
+
+        int ans = 0 ; 
+        for(auto p : m){
+            int frequency = p.second;
+            if(frequency > 1){
+                ans += (frequency * (frequency - 1)) / 2;
+            }
+        }
+        return ans ; 
+    }
+};
+
+Q) gfg Subarrays with equal 1s and 0s "https://www.geeksforgeeks.org/problems/count-subarrays-with-equal-number-of-1s-and-0s-1587115620/1"?
+
+ans) 
+// in this question we convert the 0 into -1 the calculate the zero sum subarray 
+
+class Solution {
+  public:
+    int countSubarray(vector<int>& arr) {
+        //convert 0 into -1
+        for(int i = 0 ; i< arr.size() ; i++){
+            if(arr[i]==0){
+                arr[i]=-1;
+            }
+        }
+        
+        // create the prefixsum 
+        vector<int> prefixsum(arr.size());
+        prefixsum[0]= arr[0];
+        for(int i = 1 ; i< arr.size();i++){
+            prefixsum[i] = prefixsum[i-1]+arr[i];
+        }
+        // count the subarray 
+        unordered_map<int,int> m ;
+        int count = 0 ; 
+        for(int j = 0 ; j< arr.size() ; j++){
+            int val = prefixsum[j];
+            if(val == 0){
+                count++;
+            }
+            if(m.find(val) != m.end()){
+                count += m[val];
+            }
+            m[prefixsum[j]]++;
+        } return count ; 
+    }
+};
+
+Q) leetcode 13. Roman to Integer?
+ans) 
+class Solution {
+public:
+    int romanToInt(string s) {
+        unordered_map<char, int> mp = {
+            {'I', 1},
+            {'V', 5},
+            {'X', 10},
+            {'L', 50},
+            {'C', 100},
+            {'D', 500},
+            {'M', 1000}
+        };
+        int total = 0 ;
+        for(int i = 0 ; i<s.size() ; i++){
+            if(i+1<s.size() && mp[s[i]]<mp[s[i+1]]){
+             total -= mp[s[i]];
+            }else{
+                total+=mp[s[i]];
+            }
+        }return total ; 
+    }
+};
+

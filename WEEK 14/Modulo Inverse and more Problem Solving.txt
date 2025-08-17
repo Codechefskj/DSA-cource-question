@@ -1,0 +1,106 @@
+addition inverse 
+(x=>-x) 5=>-5
+        0=>0
+        -10=>10
+
+multiple inverse 
+(x=>1/x) 5=> 1/5
+         -10 => 1/-10
+         0--> not defined 
+
+modulo inverse of no a is basically the no x such that 
+(x*a)= 1(mod m)
+
+eg a = 2 , m = 15 
+   x=1 =>2%15 =>2
+  x=2  => 4%15 = 4
+  x=3  => 6%15 = 6 
+  .
+  .
+  .
+  .
+  .
+  x=7 => 14%15 = 14
+  x=8 =>16%15 = 1
+
+  inv(a)= 8 
+
+  why its needed 
+  (a+b)%m = ((a%m)+(b%m))%m
+  (a-b)%m = ((a%m)-(b%m)+m)%m
+  (a*b)%m = ((a%m)*(b%m))%m 
+  (a\b)%m  != (a%m/b%m)%m 
+
+  so in divisor we used the inverse modulo
+  [num/den  * den * inv(den)]
+  [(num%den) * inv(den%mod)]%mod 
+
+  how it find 
+  extended euclid algo 
+  x*a +y*b = gcd(a,b)
+  eg -> a = 10 , b = 15 , g=5
+         2*10 +(-1)*15 = 5
+
+
+    it is always possible 
+    a , b=0 =>gcd=a .... x = 1 , y= 0
+  
+
+  x*b + y*(a%b)=g
+  x*b + y*(a-[a/b]*b)=g 
+  y*a + (x-y*[a/b]*b)= g 
+  
+  
+  x= y1 
+  y = x-y*[a/b]
+
+
+  code:
+  int mod = 1000000007
+  pair<int,int> extendedeuclid(int a , int b){
+    if(!b){
+      return {a,b};
+    }
+    pair<int ,int> partialsol = extendedeuclid(b,a%b);
+    int xpartial = partialsol.first;
+    int ypartial = partialsol.second;
+    return {ypartial , xpartial-ypartial*[a/b]};
+  }
+
+  int modinverse(int a , int m){
+    if(__gcd(a,m)!=1){
+      return -1 ;
+    }
+    int x = extendedeuclid(a,m).first;
+    return (x%m + m)%m 
+  }
+
+Q) given a string s where 1<= len(s) <= 10^5 find the no of distinct anagram of given string since ans may large pring ans%(mod 10^9 +7)
+
+ans) 
+eg abc ,acb,bac,bca,cab,cba(3!)
+
+ = (N!)/f1! * f2! * f3! * f4!
+
+ long long  fact(int n){
+  long long ans = 1 ; 
+  for(int i = 1 ; i<=n ; i++){
+    ans = (ans*i)%mod;
+  }
+  return ans ;
+ }
+
+ int countanagramword(string s){
+  unordered_map<char,int> f;
+  for(char ch : s){
+    f[ch]++;
+  }
+  long long ans = fact(n);
+  for(auto p : f){
+    int currfreq = p.second;
+    long long currfreq = fact(currfreq);
+    ans = (ans * modinverse(currfreq%mod))%mod ;
+  }
+  return ans ; 
+ }
+ 

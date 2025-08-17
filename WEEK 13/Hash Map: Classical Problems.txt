@@ -1,0 +1,139 @@
+Q) leetcode 560. Subarray Sum Equals K ?
+ans)
+//brute force 
+space complexity : o(n^2)
+int ans = 0 ;
+for(int i = 0 ; i< n ; i++){
+    int sum = 0 ;
+    for(int j = 0 ; j< n ; j++){
+    sum += nums[i];
+    if(sum == k) ans++;
+    }
+}
+return ans 
+
+// optimize method 
+time complexity = o(n);
+space complexity = o(n);
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        vector<int> prefixsum(nums.size());
+        prefixsum[0] = nums[0];
+        for (int i = 1; i < nums.size(); i++) {
+            prefixsum[i] = prefixsum[i - 1] + nums[i];
+        }
+
+        int count = 0;
+        unordered_map<int, int> m;
+
+        for (int j = 0; j < nums.size(); j++) {
+            if (prefixsum[j] == k) {
+                count++;
+            }
+            int val = prefixsum[j] - k;
+            if (m.find(val) != m.end()) {
+                count += m[val];
+            }
+            m[prefixsum[j]]++;
+        }
+
+        return count;
+    }
+};
+
+// if we  need to sort the map we used vector of pair vector<pair<int,int>> ... it is same as unordered_map 
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 1. Two Sum?
+ans)
+// return the ans into unordered_map 
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> m ;
+        vector<int> ans ; 
+        for(int i = 0 ;i< nums.size() ;i++){
+            int val = target-nums[i];
+            if(m.find(val) != m.end()){
+              ans.push_back(m[val]);
+              ans.push_back(i);
+              return ans ;
+            }
+            m[nums[i]] = i;
+        }return ans ;
+    }
+};
+
+Q) leetcode 1160. Find Words That Can Be Formed by Characters ?
+ans) 
+// in this question i created two map and compared the frequency thats it 
+
+class Solution {
+public:
+    int countCharacters(vector<string>& words, string chars) {
+        unordered_map<char , int> mp;
+        for(int i = 0  ; i< chars.size() ; i++){
+                    mp[chars[i]]++;
+        }
+        int ans = 0 ; 
+        for(string p : words){
+            unordered_map<char , int> s ;
+            bool istrue = true ; 
+            for(int j = 0 ; j< p.size() ; j++){
+              s[p[j]]++;
+              if(s[p[j]] > mp[p[j]]){
+               istrue = false ; 
+              }
+            }
+            if(istrue){
+            ans += p.size();
+            }
+        }return ans ;
+    }
+};
+
+Q) leetcode 3. Longest Substring Without Repeating Characters ?
+ans) 
+// we maintaining the hashmap which contain the char and its index 
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> lastindex ; 
+        int left = 0 ;
+        int maxlength = 0 ;
+        for(int right = 0 ; right<s.size(); right++){
+        char elements = s[right];
+        if(lastindex.find(elements) != lastindex.end() && left <= lastindex[elements]){
+        left = lastindex[elements] +1;
+        }
+        lastindex[elements] = right;
+        maxlength = max(maxlength , right-left+1);
+        }return maxlength ; 
+    }
+};
+
+Q) leetcode 347. Top K Frequent Elements?
+ans) 
+// in this question i learn only how to sort the map only 
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> m;
+        for (int i = 0; i < nums.size(); i++) {
+            m[nums[i]]++;
+        }
+        vector<pair<int, int>> temp(m.begin(), m.end());
+        sort(temp.begin(), temp.end(), [](pair<int, int>& a, pair<int, int>& b) {
+            return a.second > b.second;
+        }); 
+
+        vector<int> ans;
+        for (int i = 0; i < k; i++) {
+            ans.push_back(temp[i].first);
+        }
+        return ans;
+    }
+};
+

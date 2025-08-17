@@ -1,0 +1,210 @@
+leetcode 146. LRU Cache?
+ans) 
+// in this question i created double linkedlist ... and map follows the keytonode value 
+class Node{
+    public:
+    int value ; 
+    int key ;
+    Node* next ;
+    Node* prev ; 
+
+    Node(int val , int keys ){
+    value = val ;
+    key = keys;
+    next = nullptr;
+    prev = nullptr ; 
+    }
+};
+
+class LRUCache {
+public:
+    int cap ;
+    Node* head ;
+    Node* tail ; 
+    unordered_map <int , Node*> keytonode; 
+
+    void removeNode(Node* node){
+    Node* before = node->prev ;
+    Node* after = node->next  ; 
+    before->next = after;
+    after->prev = before;
+    }
+
+    void insertatfront(Node* node){
+    node->next = head->next;
+    node->prev = head;
+    head->next->prev = node;
+    head->next = node;
+    }
+
+    LRUCache(int capacity) {
+        cap = capacity ; 
+        head = new Node(-1,-1);
+        tail = new Node(-1,-1);
+        head->next = tail; 
+        tail->prev = head;
+    }
+    
+    int get(int key) {
+        if(keytonode.find(key) != keytonode.end()){
+            Node* node = keytonode[key];
+            removeNode(node);
+            insertatfront(node);
+            return node->value ; 
+        }
+        else{
+            return -1; 
+        }
+    }
+    
+    void put(int key, int value) {
+        if(keytonode.find(key) != keytonode.end(key)){
+        Node * existence = keytonode[key];
+        removeNode(existence);
+        existence->value = value ; 
+        insertatfront(existence);
+        }
+        else{
+            if(keytonode.size() == cap){
+                Node* node = tail->prev;
+                keytonode.erase(node->key);
+                removeNode(node);
+                delete node;
+            }
+            Node* newnode = new Node(value,key);
+            insertatfront(newnode);
+            keytonode[key] = newnode;
+        }
+    }
+};
+
+Q) leetcode 460. LFU Cache ?
+ans) 
+// in first time i m only know the logic behind it ... i dont know how to write 
+class LFUCache {
+    int capacity;
+    int minFreq;
+
+    // key -> {value, frequency}
+    unordered_map<int, pair<int, int>> keyToValFreq;
+
+    // frequency -> list of keys (maintaining recency)
+    unordered_map<int, list<int>> freqToKeys;
+
+    // key -> iterator pointing to its position in freqToKeys[freq] list
+    unordered_map<int, list<int>::iterator> keyToIter;
+
+public:
+    LFUCache(int capacity) {
+        this->capacity = capacity;
+        minFreq = 0;
+    }
+
+    int get(int key) {
+        if (keyToValFreq.find(key) == keyToValFreq.end()) return -1;
+
+        // Get value and frequency
+        int val = keyToValFreq[key].first;
+        int freq = keyToValFreq[key].second;
+
+        // Remove from old frequency list
+        freqToKeys[freq].erase(keyToIter[key]);
+
+        // If freq list is empty and it's the minFreq, increase minFreq
+        if (freqToKeys[freq].empty()) {
+            freqToKeys.erase(freq);
+            if (minFreq == freq) minFreq++;
+        }
+
+        // Update frequency
+        freq++;
+        keyToValFreq[key].second = freq;
+        freqToKeys[freq].push_back(key);
+        keyToIter[key] = --freqToKeys[freq].end();
+
+        return val;
+    }
+
+    void put(int key, int value) {
+        if (capacity == 0) return;
+
+        // If key exists, update value and frequency
+        if (get(key) != -1) {
+            keyToValFreq[key].first = value;
+            return;
+        }
+
+        // If cache is full, remove LFU
+        if (keyToValFreq.size() == capacity) {
+            int keyToEvict = freqToKeys[minFreq].front();
+            freqToKeys[minFreq].pop_front();
+            if (freqToKeys[minFreq].empty()) freqToKeys.erase(minFreq);
+
+            keyToValFreq.erase(keyToEvict);
+            keyToIter.erase(keyToEvict);
+        }
+
+        // Insert new key with freq = 1
+        keyToValFreq[key] = {value, 1};
+        freqToKeys[1].push_back(key);
+        keyToIter[key] = --freqToKeys[1].end();
+        minFreq = 1;
+    }
+};
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 567. Permutation in String ?
+ans)
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        int size1 = s1.size();
+        int size2 = s2.size();
+        if (size1 > size2) return false;
+
+        unordered_map<char,int> m; 
+        for (char c : s1) {
+            m[c]++;
+        }
+        for (int left = 0, right = size1 - 1; right < size2; left++, right++) {
+            unordered_map<char,int> tempMap = m; 
+            bool match = true;
+
+            for (int j = left; j <= right; j++) {
+                char ch = s2[j];
+                if (tempMap.find(ch) == tempMap.end() || tempMap[ch] == 0) {
+                    match = false;
+                    break;
+                }
+                tempMap[ch]--;
+            }
+
+            if (match) return true;
+        }
+
+        return false;
+    }
+};
+
+Q) leetcode 347. Top K Frequent Elements?
+ans) 
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> m;
+        for (int i = 0; i < nums.size(); i++) {
+            m[nums[i]]++;
+        }
+        vector<pair<int, int>> temp(m.begin(), m.end());
+        sort(temp.begin(), temp.end(), [](pair<int, int>& a, pair<int, int>& b) {
+            return a.second > b.second;
+        }); 
+         
+        vector<int> ans;
+        for (int i = 0; i < k; i++) {
+            ans.push_back(temp[i].first);
+        }
+        return ans;
+    }
+};

@@ -1,0 +1,62 @@
+smallest prime factor (SPF)
+
+vector <int> smallestprimefactor(vector<int> &temp){
+vector<int> smallestPrimeFactor(int n) {
+    vector<int> spf(n + 1);
+
+    // Step 1: Initialize spf[i] = i
+    for (int i = 0; i <= n; i++) {
+        spf[i] = i;
+    }
+
+    // Step 2: Mark SPF for even numbers
+    for (int i = 2; i <= n; i += 2) {
+        spf[i] = 2;
+    }
+
+    // Step 3: Process odd numbers
+    for (int j = 3; j * j <= n; j++) {
+        if (spf[j] == j) { // j is prime
+            for (int k = j * j; k <= n; k += j) {
+                if (spf[k] == k) { // not updated yet
+                    spf[k] = j;
+                }
+            }
+        }
+    }
+    return spf;
+}
+}
+-----------------------------------------------------------------------------------------------------------------------
+Q) leetcode 566. Reshape the Matrix?
+ans) 
+class Solution {
+public:
+    bool isvalid(vector<vector<int>>& mat, int &r, int &c){
+    int noofelements = mat.size()*mat[0].size();
+    int elementsrequired = r*c;
+    return noofelements==elementsrequired ; 
+    }
+
+    vector<vector<int>> matrixReshape(vector<vector<int>>& mat, int r, int c) {
+        if(!isvalid(mat,r,c)){
+            return mat ; 
+        }
+
+        // create one d array 
+        vector<int> temp ; 
+        for(int i = 0 ; i<mat.size(); i++){
+            for(int j = 0 ; j<mat[0].size();j++){
+                 temp.push_back(mat[i][j]);
+            }
+        }
+        // reshap the matrix 
+        vector<vector<int>> ans(r,vector<int>(c));
+        int k = 0;
+        for(int i = 0 ; i<r ; i++){
+            for(int j = 0; j<c ; j++){
+                ans[i][j]= temp[k++];
+            }
+        }return ans ; 
+    }
+};
