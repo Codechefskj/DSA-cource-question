@@ -21,12 +21,92 @@
 
 --> capacity does not change once it will increases 
 
-
-
+-----------------------------------------------------------------------------------------------------------------------
                                                   Question practics:
-Q256 leetcode 
+Q 256 leetcode 
 ans) in this question we can used brute fource because in constraints are 10^4 so answer are in O(n^2) are ok but similar question GFG the solution are run because of constraints 
 
 Q) gfg   "https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1"
+ans) 
+class Solution {
+public:
+    int missingNum(vector<int>& arr) {
+        long long sum = 0; 
+        long long n = arr.size() + 1;   
+        long long expected = n * (n + 1) / 2; 
+
+        for (int i = 0; i < arr.size(); i++) {
+            sum += arr[i];
+        }
+
+        return expected - sum; 
+    }
+};
+
 Q) gfg   "https://www.geeksforgeeks.org/problems/array-of-alternate-ve-and-ve-nos1401/1" 
+ans) 
+class Solution {
+public:
+    void rearrange(vector<int> &arr) {
+        int n = arr.size();
+        stack<int> negative;
+        stack<int> positive;
+
+        for (int i = n - 1; i >= 0; i--) {  
+            if (arr[i] >= 0) {
+                positive.push(arr[i]);
+            } else {
+                negative.push(arr[i]);
+            }
+        }
+
+        arr.clear();
+        int i = 0;
+        while (!positive.empty() && !negative.empty()) {
+            if (i % 2 == 0) {   // even index → positive
+                arr.push_back(positive.top());
+                positive.pop();
+            } else {            // odd index → negative
+                arr.push_back(negative.top());
+                negative.pop();
+            }
+            i++;
+        }
+
+        while (!positive.empty()) {
+            arr.push_back(positive.top());
+            positive.pop();
+        }
+
+        while (!negative.empty()) {
+            arr.push_back(negative.top());
+            negative.pop();
+        }
+    }
+};
+
 Q) gfg   "https://www.geeksforgeeks.org/problems/common-elements1132/1"
+ans) 
+class Solution {
+  public:
+    vector<int> commonElements(vector<int> &arr1, vector<int> &arr2,
+                               vector<int> &arr3) {
+        unordered_map<int,int> m;
+        unordered_set<int> s1(arr1.begin(), arr1.end());
+        for (auto x : s1) m[x]++;
+        
+        unordered_set<int> s2(arr2.begin(), arr2.end());
+        for (auto x : s2) m[x]++;
+        
+        unordered_set<int> s3(arr3.begin(), arr3.end());
+        for (auto x : s3) m[x]++;
+        
+        vector<int> ans;
+        for (auto &p : m) {
+            if (p.second == 3) ans.push_back(p.first);
+        }
+        
+        sort(ans.begin(), ans.end()); 
+        return ans;
+    }
+};

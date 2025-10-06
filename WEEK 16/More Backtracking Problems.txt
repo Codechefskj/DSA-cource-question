@@ -1,0 +1,158 @@
+Q) tower of hanoi ?
+ans) 
+
+Q) gfg Rat in a Maze Problem - I "https://www.geeksforgeeks.org/problems/rat-in-a-maze-problem/1&selectedLang=python3"?
+ans) 
+class Solution {
+  public:
+    vector<string> ans ; 
+    void ratmazehelper(int i , int j ,vector<vector<int>>& maze, int n ,string& dir){
+        if(i == -1 || j == -1 || i==n || j==n || maze[i][j]==0) return ; 
+        if(i == n-1 && j == n-1){
+            ans.push_back(dir);
+            return ; 
+        }
+        maze[i][j]= 0 ; 
+        // up 
+        dir.push_back('U');
+        ratmazehelper(i-1 , j , maze , n, dir);
+        dir.pop_back();
+        //down  
+        dir.push_back('D');
+        ratmazehelper(i+1 , j , maze , n, dir);
+        dir.pop_back();
+        // right
+        dir.push_back('R');
+        ratmazehelper(i , j+1 , maze , n, dir);
+        dir.pop_back();
+        // left
+        dir.push_back('L');
+        ratmazehelper(i , j-1 , maze , n, dir);
+        dir.pop_back();
+        
+        maze[i][j]= 1 ; 
+        return ; 
+        
+    }
+    
+    vector<string> ratInMaze(vector<vector<int>>& maze) {
+        if(maze[0][0] == 0) return {};
+        int n = maze.size();
+        string dir = "";
+        ratmazehelper(0,0,maze,n , dir);
+        sort(ans.begin(), ans.end());
+        return ans ; 
+        
+    }
+};
+
+Q) leetcode 51. N-Queens ?
+ans) 
+class Solution {
+public:
+    vector<vector<string>> ans ; 
+    bool issafe(int row , int col , vector<string>board , int n ){
+    // vertical 
+    for(int j = 0 ; j <n;j++){
+        if(board[j][col]=='Q'){
+            return false ; 
+        }
+    }
+    // right diagonal 
+    for(int i = row , j = col ; i>=0 && j<n ; i-- , j++){
+    if(board[i][j]=='Q'){
+        return false ; 
+    }
+    }
+    // left 
+    for(int i = row , j = col ; i>=0 && j>=0 ; i--, j--){
+        if(board[i][j]=='Q'){
+            return false ; 
+        }
+    }
+    return true ;
+    }
+
+    void solveNQueenshelper(int row , vector<string> &board , int n){
+    if(row==n){
+        ans.push_back(board);
+        return ; 
+    }
+    for(int j = 0 ; j<n ; j++){
+        if(issafe(row, j , board , n)){
+            board[row][j]='Q';
+            solveNQueenshelper(row+1 , board , n);
+            board[row][j]='.';
+        }
+    }
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        vector<string> board(n,string(n,'.')) ; 
+        solveNQueenshelper(0 , board , n);
+        return ans ; 
+    }
+};
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcoad 39. Combination Sum ?
+ans) 
+// in this question we can used unlimeted times of dublicates no
+
+class Solution {
+public:
+    void combinationSumhelper(vector<int>& can, int target, int idx,vector<int>& comb, vector<vector<int>>& ans) {
+        if (target == 0) {
+            ans.push_back(comb);
+            return;
+        }
+        if (idx >= can.size() || target < 0) return;
+
+        comb.push_back(can[idx]);
+        combinationSumhelper(can, target - can[idx], idx, comb, ans); 
+        comb.pop_back();
+
+        combinationSumhelper(can, target, idx + 1, comb, ans);
+    }
+    
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<int> comb;
+        vector<vector<int>> ans; 
+        combinationSumhelper(candidates, target, 0, comb, ans);
+        return ans;
+    }
+};
+
+Q) leetcoad 40. Combination Sum II ?
+ans) 
+// in this question we have dubticates in candidates we dont used it 
+
+class Solution {
+public:
+    vector<vector<int>> ans ;
+    void combinationSum2helper(vector<int>&candidates, int target , int idx , vector<int>&temp){
+    if(target==0){
+        ans.push_back(temp);
+        return ;
+    }
+    if(idx >= candidates.size() || target<0) return ; 
+
+    for(int i = idx ; i< candidates.size() ; i++){
+        if( i > idx && candidates[i]==candidates[i-1]) continue ; 
+        if (candidates[i] > target) break; 
+        temp.push_back(candidates[i]);
+        combinationSum2helper(candidates , target-candidates[i] , i+1 , temp);
+        temp.pop_back();
+    }
+    }
+
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<int> temp ; 
+        combinationSum2helper(candidates , target , 0 , temp);
+        return ans ; 
+    }
+};
+
+

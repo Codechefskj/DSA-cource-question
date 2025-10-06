@@ -125,6 +125,112 @@ public:
     }
 };
 
-Q) 
+Q) leetcode 2514. Count Anagrams ?
+ans) 
+// logic are simple but syntax is hard 
+class Solution {
+public:
+    int mod = 1000000007;
+
+    pair<long long,long long> extendedeuclid(long long a , long long b){
+        if(b == 0) return {1, 0};
+        auto partial = extendedeuclid(b, a % b);
+        long long x = partial.second;
+        long long y = partial.first - (a / b) * partial.second;
+        return {x, y};
+    }
+
+    long long modinverse(long long a , long long m){
+        if(__gcd(a,m) != 1) return -1;
+        long long x = extendedeuclid(a,m).first;
+        return (x % m + m) % m;
+    }
+
+    long long factorial(long long d){
+        long long ans = 1;
+        for(long long i = 1 ; i <= d ; i++){
+            ans = (ans * i) % mod;
+        }
+        return ans;
+    }
+
+    long long countpermulation(string s){
+        unordered_map<char,int> m;
+        for(char c : s) m[c]++;
+
+        long long num = factorial(s.size());
+        long long den = 1;
+        for(auto &p : m){
+            den = (den * factorial(p.second)) % mod;
+        }
+        long long inv = modinverse(den, mod);
+        return (num * inv) % mod;
+    }
+
+    int countAnagrams(string s) {
+        string st = "";
+        long long ans = 1;
+        for(int i = 0; i < s.size(); i++){
+            if(s[i] == ' '){
+                ans = (ans * countpermulation(st)) % mod;
+                st = "";
+            } else {
+                st.push_back(s[i]);
+            }
+        }
+        if(!st.empty()){
+            ans = (ans * countpermulation(st)) % mod;
+        }
+        return ans;
+    }
+};
 
 
+
+Q) codeforces Row GCD ? "https://codeforces.com/contest/1459/problem/C"
+ans) in this question we find 
+gj​=GCD(a1​+bj​,a2​+bj​,…,an​+bj​) but i noticed that euclid formula 
+gj​=GCD(a1​+bj​,(a2​+bj​)−(a1​+bj​),(a3​+bj​)−(a1​+bj​),…) ans simplify to gj​=GCD(a1​+bj​,a2​−a1​,a3​−a1​,…,an​−a1​)
+
+final formula is gj​=GCD(a1​+bj​,G) and G is G=GCD(∣a2​−a1​∣,∣a3​−a1​∣,…,∣an​−a1​∣)
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+
+int gcd(int x , int y){
+if(min(x,y)==0){
+    return max(x,y);
+}
+int mini = min(x,y);
+int maxi = max(x,y);
+return gcd(mini , maxi%mini);
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<long long> a(n), b(m);  
+
+    for (int i = 0; i < n; i++) cin >> a[i];
+    for (int j = 0; j < m; j++) cin >> b[j];
+
+    // Step 1: compute G = gcd of differences (relative to a[0])
+    long long G = 0;
+    for (int i = 1; i < n; i++) {
+        G = gcd(G, abs(a[i] - a[0]));
+    }
+
+    // Step 2: answer queries
+    for (int j = 0; j < m; j++) {
+        cout << gcd(a[0] + b[j], G) << " ";
+    }
+    cout << "\n";
+
+    return 0;
+}
+
+
+
+                      
