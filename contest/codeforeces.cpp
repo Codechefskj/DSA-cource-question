@@ -1,27 +1,33 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
-int main(){
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     int t;
     cin >> t;
-    while(t--){
-        int x, k;
-        cin >> x >> k;  
-        int primeCount = 0;
-        int temp = x;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<int> p(n);
+        for (int i = 0; i < n; ++i) cin >> p[i];
 
-        for(int num = 2; num*num <= temp; num++){
-            while(temp % num == 0){
-                primeCount++;
-                temp /= num;
+        int l = 0, r = n - 1;
+        bool ok = true;
+        for (int x = 1; x <= n; ++x) {
+            if (l <= r && p[l] == x) {
+                ++l;
+            } else if (l <= r && p[r] == x) {
+                --r;
+            } else {
+                ok = false;
+                break;
             }
         }
-        if(temp > 1) primeCount++; 
 
-        if(primeCount >= k){
-            cout << 1 << endl;
-        } else {
-            cout << 0 << endl;
-        }
+        cout << (ok ? "YES\n" : "NO\n");
     }
+    return 0;
 }

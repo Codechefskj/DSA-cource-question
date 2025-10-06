@@ -1,0 +1,70 @@
+Q) gfg Job Sequencing Problem "https://www.geeksforgeeks.org/problems/job-sequencing-problem-1587115620/1"
+ans) 
+
+Q) gfg Minimum Platforms "https://www.geeksforgeeks.org/problems/minimum-platforms-1587115620/1"
+ans) 
+// 
+
+in this question our intution is 
+1)sort the train by arrival time 
+2) iterate over the train 
+3) if smallest dep time is our DS < curr arival time 
+     get rid of that train 
+     reverse the platforms => add dep time to ds 
+
+     else{
+      add the dep time to curr time to the ds (create new platform)
+     }
+
+     // multiset is priority queue in cpp 
+
+
+class Solution {
+public:
+    int findPlatform(vector<int>& arr, vector<int>& dep) {
+        int n = arr.size();
+        vector<pair<int,int>> train(n);
+        for (int i = 0; i < n; i++) {
+            train[i] = {arr[i], dep[i]};
+        }
+        sort(train.begin(), train.end());
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for (auto tr : train) {
+            int currStart = tr.first;
+            int currEnd = tr.second;
+            if (!pq.empty() && pq.top() < currStart) {
+                pq.pop();
+            }
+            pq.push(currEnd);
+        }
+        return pq.size();
+    }
+};
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcoad 179. Largest Number ?
+ans) 
+// in this question there are new approch which is (a+b)>(b+a) are true then sort and give the ans ; 
+
+class Solution {
+public:
+    static bool compare(int a , int b){
+      return to_string(a)+to_string(b) > to_string(b)+to_string(a);
+    }
+
+    string largestNumber(vector<int>& nums) {
+        string ans = "";
+        sort(nums.begin(), nums.end(), compare);
+        if(nums[0]==0) return "0";
+        for(int i : nums){
+            ans += to_string(i);
+        }
+        return ans ; 
+    }
+};
+

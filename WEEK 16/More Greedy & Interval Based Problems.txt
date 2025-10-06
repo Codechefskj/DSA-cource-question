@@ -1,0 +1,119 @@
+Q) gfg Minimum Platforms "https://www.geeksforgeeks.org/problems/minimum-platforms-1587115620/1" ?
+ans)
+//we just sort the array based on arrival and deprature 
+
+class Solution {
+  public:
+    int findPlatform(vector<int>& arr, vector<int>& dep) {
+        vector<pair<int ,int>> info ; 
+        for(int i = 0 ; i< arr.size() ; i++){
+            int arrinfo = arr[i];
+            int depinfo = dep[i];
+            info.push_back({arrinfo, 0});
+            info.push_back({depinfo , 1});
+        }
+        
+        sort(info.begin(), info.end(),[](const auto& x , const auto &y){
+            if(x.first != y.first){
+                return x.first < y.first ;
+            }else{
+                return x.second<y.second;
+            }
+        });
+        
+        int maxcount = 0 ; 
+        int nooftrain = 0 ;
+        for(auto p : info){
+            int firstcount = p.second ; 
+            if(firstcount == 0) {
+             nooftrain++;
+            } else {
+            nooftrain--;
+            }
+            maxcount = max(maxcount , nooftrain);
+        }
+        return maxcount ; 
+    }
+};
+
+Q) leetcoad 56. Merge Intervals ?
+ans) 
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> ans;
+        sort(intervals.begin(), intervals.end());
+        
+        int s = intervals[0][0];
+        int e = intervals[0][1];
+        
+        for (int i = 1; i < intervals.size(); i++) {
+            if (intervals[i][0] <= e) {
+                e = max(e, intervals[i][1]);
+            } else {
+                ans.push_back({s, e});
+                s = intervals[i][0];
+                e = intervals[i][1];
+            }
+        }
+        
+        ans.push_back({s, e});
+        return ans;
+    }
+};
+
+Q) spoi https://www.spoj.com/problems/DEFKIN/ 
+ans) 
+// do it on second time 
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcoad 729. My Calendar I ?
+ans) 
+class MyCalendar {
+private:
+    vector<pair<int,int>> bookings;  
+
+public:
+    MyCalendar() {
+    }
+    
+    bool book(int startTime, int endTime) {
+        for (auto &p : bookings) {
+            int s = p.first;
+            int e = p.second;
+            
+            if (max(startTime, s) < min(endTime, e)) {
+                return false; 
+            }
+        }
+
+        bookings.push_back({startTime, endTime});
+        return true;
+    }
+};
+
+Q) leetcoad 452. Minimum Number of Arrows to Burst Balloons ?
+ans) 
+// we just check overlapping only i take startpoint and endpoint and used them 
+
+class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& points) {
+        sort(points.begin(), points.end() , [](const auto &x , const auto &y){
+            return x[1]< y[1];
+        });
+        int ans = 1 ; 
+        int existence = points[0][1];
+        for(int i = 1 ; i<points.size() ; i++){
+            if(existence < points[i][0]){
+              ans++;
+              existence = points[i][1];
+            }
+        }return ans ; 
+    }
+};
+

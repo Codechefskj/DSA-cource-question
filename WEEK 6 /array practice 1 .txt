@@ -33,11 +33,26 @@ ans) we can solve this uing "sliding windows" method
 Q) leetcoad 448 
 ans) this is new type of question "in place making" 
      in this type of question we used indexing and mark the visited ground 
-      for(int i = 0 ; i < size ; i++){
+      
+      class Solution {
+public:
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        int n = nums.size();
+        for(int i = 0 ; i<n ; i++){
             int index = abs(nums[i])-1;
-            if(nums[index] > 0){
-                nums[index] *= -1;
-            }
+            if(nums[index]>0){
+            nums[index] *= -1;
+        }
+        }
+        vector<int> missingno;
+        for(int i = 0 ; i< nums.size(); i++){
+            if(nums[i] >0){
+            missingno.push_back(i+1);
+        }
+        }return missingno ; 
+    }
+};
+
 Q) gfg "https://www.geeksforgeeks.org/problems/cyclically-rotate-an-array-by-one2614/1"
 ans) there are three type of answer 
      1) first approch

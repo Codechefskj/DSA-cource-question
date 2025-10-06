@@ -1,0 +1,168 @@
+Q) gfg  Activity Selection "https://www.geeksforgeeks.org/problems/activity-selection-1587115620/1" ?
+ans) 
+// first we sort finish time and check the finish time < start time 
+
+class Solution {
+  public:
+    int activitySelection(vector<int> &start, vector<int> &finish) {
+        int n = start.size();
+        if(n==0) return 0 ;
+        
+        vector<pair<int,int>> a(n);
+        for(int i = 0 ; i<n ; i++){
+            a[i]={finish[i],start[i]};
+        }
+        
+        sort(a.begin(),a.end() , [](const auto& x , const auto&y){
+            if(x.first != y.first){
+                return x.first<y.first;
+            }
+            else{
+                return x.second < y.second;
+            }
+        });
+        int ans = 1 ; 
+        int lastfinish = a[0].first;
+        for(int i = 1 ; i< n ; i++){
+            if(a[i].second > lastfinish){
+                ans++;
+                lastfinish = a[i].first;
+            }
+        }
+        return ans ; 
+    }
+};
+
+
+Q) gfg Fractional Knapsack  "https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1"?
+ans) 
+// in this quetion i used to store ratio of val/wt with index into vector pair 
+// in this question we cannot used unordered_map because of duplicates 
+
+
+class Solution {
+  public:
+    double fractionalKnapsack(vector<int>& val, vector<int>& wt, int capacity) {
+        vector<pair<double,int>> temp ; 
+        for(int i = 0 ; i< val.size(); i++){
+            temp.push_back({(double)val[i] / wt[i], i});
+        }
+        // sort the vector 
+        sort(temp.begin(), temp.end() , [](auto &x , auto &y){
+            return x.first>y.first;
+        });
+        double ans = 0.0;
+        for(auto p : temp){
+            int index = p.second;
+            if(wt[index]<= capacity){
+                ans += val[index];
+                capacity -= wt[index];
+            }else{
+                ans += ((double)val[index]/wt[index]) * capacity;
+                break ; 
+            }
+        }
+        return ans ; 
+    }
+};
+
+
+Q) job scheduling to mining ?
+we will given N jobs 
+ti => time taked to complete ith job 
+di =? deadline to complete ith job 
+we need to do all N job we can do only one job in the time . minimize the maximum lateness of all job 
+eg -> N=4 
+t = [3,1,2,5]
+d= [4,10,2,8]
+if we do j1->j2->j3->j4
+3,4,6,11
+0,0,4,3 
+return 4 
+
+ans ) first we sort deadline in ascending order 
+and check the lateness and give it 
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcoad 860. Lemonade Change ?
+ans) 
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+        int five = 0, ten = 0; 
+        for (int c : bills) {
+            if (c == 5) {
+                five++;
+                } 
+            else if (c == 10) {
+                if (five > 0) {
+                    five--;
+                    ten++;
+                } else {
+                    return false;
+                }
+            } 
+            else { 
+                if (ten > 0 && five > 0) {
+                    ten--;
+                    five--;
+                } 
+                else if (five >= 3) {
+                    five -= 3;
+                } 
+                else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+};
+
+Q) leetcoad 435. Non-overlapping Intervals ?
+ans) 
+// in this question i sort the ending and check p.first > existence then it ok 
+
+class Solution {
+public:
+   int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+    vector<pair<int,int>> m; 
+    for (auto &inte : intervals) {
+        m.push_back({inte[1], inte[0]}); 
+    }
+    sort(m.begin(), m.end());
+
+    int ans = 0; 
+    int endpoint = m[0].first;  
+
+    for (int i = 1; i < m.size(); i++) {
+        if (m[i].second < endpoint) {
+            ans++;
+        } else {
+            endpoint = m[i].first;
+        }
+    }
+    return ans;
+}
+};
+
+Q) leetcoad 2486. Append Characters to String to Make Subsequence ?
+ans) 
+// we used two pointer 
+class Solution {
+public:
+    int appendCharacters(string s, string t) {
+        int n = s.size(), m = t.size();
+        int i = 0 , j = 0 ; 
+        while(i<n && j < m){
+            if(s[i]==t[j]){
+                j++;
+            }else{
+                i++;
+            }
+        } return t.size()-j;
+    }
+};

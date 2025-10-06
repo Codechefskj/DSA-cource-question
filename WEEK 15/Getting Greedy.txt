@@ -1,0 +1,177 @@
+any algorithum follow the problem solving heuristic of making the locally optimal choices at each stage is called greedy 
+
+best step foR take dicision at that time
+
+example : [v1,v2,v3,v4,v5.....vn]
+          [w1,w2,w3,w4,w5......wn]
+
+          capacity of bag is K 
+
+          we take the value/weight to put into bag  
+
+Q) frog jump  N= 5  and value id [5,3,1,2,8]?
+ans) 
+ int n , k , cin >> n , cin>>k ;
+ vector<int> d(n);
+ for(int i = 0 ; i< n ; i++)
+ {
+  cin >> d[i];
+ }
+
+ int currid = 0 ; 
+int minjump = 0 ; 
+while(currid < n){
+  int next_id = currid ;
+  int currdis = 0 ;
+  while(next_id+1<=n && currdis+ d[next_id<=k]){
+    currdis+=d[next_id] , next_id++;
+  }
+
+    if(next_id == currid){
+      cout << -1 <<endl;
+    } 
+
+    currid= next_id;
+    minjump++;
+  }
+  cout<<minjump <<endl ; 
+
+
+prove : "greedy stay after ahead "
+step 1 : proof of existence 
+         stuck at ith lily pad  (dist[i& (i+1) > k])
+
+      i(<i)      (i)       j(>=i+1)
+
+step 2 : proof of optimality (using greedy stay after ahead method)
+
+lets say p[j] represent the position of frog after jump in greedy strategy 
+p*(j) => in any other strategy p(j) >= p*(j) 
+
+j=0  p(0)=>0
+     p*(0) =>0 
+
+     p(0) >= p*(0)  => hold true 
+
+assume p(j) >= p*(j) try to prove 
+p(j+1)  >= p*(j+1) 
+case 1 : p(j) >=p*(j+1) 
+altready proves 
+p(j+1) >= p*(j+1)
+
+case2 : p(j)<p*(j+1)
+p*(j+1) <= p*(j)+k  
+p*(j+1) <= p(j)+k 
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Q) leetcoad 409. Longest Palindrome ?
+ans) 
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        if(s.size() == 1) return 1 ; 
+        if(s.empty()) return 0 ; 
+        unordered_map<char , int> m ; 
+        for(auto p : s){
+          m[p]++;
+        }
+        int ans = 0 ; 
+        for(auto p : m){
+          if(p.second % 2==0){
+              ans += p.second;
+          }
+          if(p.second > 1 && p.second%2 != 0){
+            ans += p.second -1 ; 
+          }
+        }
+        if(ans != s.size()){
+          ans += 1 ; 
+        }
+            return ans ; 
+    }
+};
+
+Q) leetcoad 561. Array Partition ?
+ans) 
+class Solution {
+public:
+    int arrayPairSum(vector<int>& nums) {
+       sort(nums.begin(), nums.end());
+       int ans = 0;
+       for (int i = 0; i < nums.size(); i += 2) {
+           ans += nums[i];   
+       }
+       return ans; 
+    }
+};
+
+Q) leetcoad 605. Can Place Flowers ?
+ans) 
+class Solution {
+public:
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        int count = 0;
+        for (int i = 0; i < flowerbed.size(); i++) {
+            if (flowerbed[i] == 0 &&
+                (i == 0 || flowerbed[i-1] == 0) &&
+                (i == flowerbed.size()-1 || flowerbed[i+1] == 0)) {
+                flowerbed[i] = 1;
+                count++;
+            }
+        }
+        return count >= n;
+    }
+};
+
+Q) leetcoad 1877. Minimize Maximum Pair Sum in Array ?
+ans) 
+class Solution {
+public:
+    int minPairSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int st = 0 ;
+        int ed = nums.size()-1;
+        vector<int> temp ;
+        while(st <= ed){
+            temp.push_back(nums[st] + nums[ed]);
+            st++;
+            ed--;
+        }
+        int maxi = INT_MIN;
+        for(int i = 0 ; i<temp.size() ;i++){
+        maxi = max(maxi , temp[i]);
+        }
+        return maxi ; 
+    }
+};
+
+Q) leetcoad 2383. Minimum Hours of Training to Win a Competition ?
+ans) 
+class Solution {
+public:
+    int minNumberOfHours(int initialEnergy, int initialExperience, vector<int>& energy, vector<int>& experience) {
+        int n = energy.size();
+        long long totalHours = 0;
+        
+        long long requiredEnergy = 0;
+        for (int e : energy) requiredEnergy += e;
+        
+        if (initialEnergy <= requiredEnergy) {
+            totalHours += (requiredEnergy - initialEnergy + 1);
+        }
+        
+        long long currentExp = initialExperience;
+        for (int i = 0; i < n; i++) {
+            if (currentExp <= experience[i]) {
+                long long extra = experience[i] - currentExp + 1;
+                totalHours += extra;
+                currentExp += extra; 
+            }
+            currentExp += experience[i]; 
+        }
+        
+        return totalHours;
+    }
+};
