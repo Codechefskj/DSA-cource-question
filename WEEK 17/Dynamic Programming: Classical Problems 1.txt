@@ -1,0 +1,129 @@
+Q) leetcode 62. Unique Paths ?
+ans) 
+class Solution {
+public: 
+    int uniquePathshelper(int m, int n, int i, int j, vector<vector<int>> &dp) {
+        if (i == m - 1 && j == n - 1) return 1; 
+        if (i >= m || j >= n) return 0;    
+        if (dp[i][j] != -1) return dp[i][j];
+        int pathFromRight = uniquePathshelper(m, n, i + 1, j, dp);
+        int pathFromDown  = uniquePathshelper(m, n, i, j + 1, dp);
+        return dp[i][j] = pathFromRight + pathFromDown;
+    }
+
+    int uniquePaths(int m, int n) {
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return uniquePathshelper(m, n, 0, 0, dp);
+    }
+};
+
+Q) leetcode 63. Unique Paths II ?
+ans) 
+// this is same question in above i solved only diffrence is there are obstracle are there which indicates 1 
+
+class Solution {
+public:
+    int uniquePathsWithObstacleshelper(vector<vector<int>>& obstacleGrid, int i, int j, vector<vector<int>>& dp, int m, int n) {
+        if(i == m - 1 && j == n - 1){
+         if(obstacleGrid[i][j]==1){
+            return 0;
+        }
+        else{
+            return 1 ; 
+        }
+        }
+        if (i >= m || j >= n || obstacleGrid[i][j] == 1) return 0;
+        if (dp[i][j] != -1) return dp[i][j];
+        int right = uniquePathsWithObstacleshelper(obstacleGrid, i + 1, j, dp, m, n);
+        int down  = uniquePathsWithObstacleshelper(obstacleGrid, i, j + 1, dp, m, n);
+        return dp[i][j] = right + down;
+    }
+
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return uniquePathsWithObstacleshelper(obstacleGrid, 0, 0, dp, m, n);
+    }
+};
+
+Q) leetcode 1143. Longest Common Subsequence ?
+ans) 
+// in this question there are two option first char is matched then we do i+1 , j+1 if not matched then there are two option opt1 is 
+i+1 and opt2 is j+1 ;
+
+class Solution {
+public:
+    int longestCommonSubsequencehelper(int i , int j ,string& text1, string& text2,vector<vector<int>>&dp){
+    if(i==text1.size() || j == text2.size()) return 0 ;
+    if(dp[i][j] != -1) return dp[i][j]; 
+    if(text1[i]==text2[j]){
+        return dp[i][j] = 1+longestCommonSubsequencehelper(i+1,j+1,text1 , text2 , dp);
+    }
+    else{
+        int opt1 = longestCommonSubsequencehelper(i+1,j , text1 , text2,dp);
+        int opt2 = longestCommonSubsequencehelper(i,j+1,text1,text2,dp);
+        return dp[i][j]=max(opt1 , opt2);
+    }
+    }
+
+    int longestCommonSubsequence(string text1, string text2) {
+        vector<vector<int>> dp(text1.size(), vector<int>(text2.size(), -1));
+        return longestCommonSubsequencehelper(0,0, text1,text2 , dp);
+    }
+};
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 416. Partition Equal Subset Sum ?
+ans) 
+class Solution {
+public:
+    bool canPartitionhelper(vector<int>& nums , int target , int i , vector<vector<int>> &dp){
+    if(target == 0) return true ; 
+    if(i>= nums.size() || target < 0) return false;
+    if(dp[i][target] != -1) return dp[i][target];
+    // take the elements 
+    bool opt1 = canPartitionhelper(nums , target-nums[i] , i+1 , dp);
+    // leave the elements 
+    bool opt2 = canPartitionhelper(nums, target , i+1 , dp);
+    return dp[i][target] = opt1 || opt2 ;
+    }
+
+    bool canPartition(vector<int>& nums) {
+        int sum = 0 ; 
+        for(int i = 0 ; i< nums.size(); i++){
+            sum += nums[i];
+        }
+        vector<vector<int>> dp(nums.size() , vector<int>(sum/2+1 , -1));
+
+        if(sum%2==0){
+        return canPartitionhelper(nums,sum/2 , 0 , dp);
+        }
+        else{
+            return false ; 
+        }
+    }
+};
+
+Q) leetcode 3147. Taking Maximum Energy From the Mystic Dungeon ?
+ans) 
+class Solution {
+public:
+    int maximumEnergyhelper(vector<int>& energy, int k, int i , vector<int>&dp) {
+        if(i >= energy.size()) return 0; 
+        if(dp[i] != -1) return dp[i];
+        return dp[i] = energy[i] + maximumEnergyhelper(energy, k, i + k , dp);
+    }
+
+    int maximumEnergy(vector<int>& energy, int k) {
+        int n = energy.size();
+        int ans = INT_MIN;
+        vector<int> dp(n,-1);
+        for(int i = 0; i < n; i++) {
+            ans = max(ans, maximumEnergyhelper(energy, k, i , dp));
+        }
+        return ans;
+    }
+};
+

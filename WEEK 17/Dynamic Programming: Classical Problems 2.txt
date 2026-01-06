@@ -1,0 +1,82 @@
+leetcode 72. Edit Distance ?
+ans) 
+class Solution {
+public:
+    int minDistancehelper(string &word1, string &word2 , int i , int j , vector<vector<int>>&dp) {
+        if(i>= word1.size() && j>= word2.size()) return 0 ;
+        if(i==word1.size()) return word2.size()-j ; 
+        if(j==word2.size()) return word1.size()-i;
+        if(dp[i][j] != -1) return dp[i][j];
+        if(word1[i]==word2[j]){
+            return minDistancehelper(word1 , word2 , i+1,j+1, dp);
+        }else{
+            // insert the character 
+            int opt1 = 1+minDistancehelper(word1 , word2 , i , j+1,dp);
+            //delete the char 
+            int opt2 = 1+ minDistancehelper(word1 , word2 , i+1 , j ,dp);
+            // replace the char 
+            int opt3 = 1+minDistancehelper(word1 , word2 , i+1 , j+1 , dp);
+            return dp[i][j] = min({opt1 , opt2 , opt3});
+        }
+    }
+
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> dp(word1.size() , vector<int>(word2.size(),-1));
+        return minDistancehelper(word1 , word2 , 0 , 0 , dp);
+    }
+};
+
+
+
+// for bottom to top order we used to things like this 
+
+we take buffer of both side 
+then we saw the base condition what its mentioned. and filled that in this question the base condition is 
+if(i==word1.size()) return word2.size()-j ; 
+if(j==word2.size()) return word1.size()-i ;
+
+then we check the condition for every matrix which written in the question 
+
+Q) leetcode 300. Longest Increasing Subsequence ?
+ans)
+
+//for dp
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        int maxi = 0 ; 
+        vector<int> dp(n,1);
+        for(int i = 0 ; i< nums.size() ; i++){
+            for(int j = 0 ; j< i ; j++){
+                if(nums[i]> nums[j]){
+                    dp[i]= max(dp[i], dp[j]+1);
+                }
+            }maxi = max(maxi,dp[i]);
+        }return maxi;
+    }
+};
+
+// normal 
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> temp;
+        temp.push_back(nums[0]);
+        for(int i = 1; i< n ; i++){
+          if(nums[i]>temp.back()){
+            temp.push_back(nums[i]);
+          }else{
+            for(int j = 0 ; j<temp.size() ; j++){
+                if(temp[j]>=nums[i]){
+                    temp[j] = nums[i];
+                    break ; 
+                }
+            }
+          }
+        }
+        return temp.size();
+    }
+};
+

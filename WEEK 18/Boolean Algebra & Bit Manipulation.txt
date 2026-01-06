@@ -1,0 +1,232 @@
+--how to store the no internally 
+find the 2s complements of x -> 
+-find 1s complements of x(flip all digit)
+- add 1 on the resultant 
+
+--AND Operation (&):
+a= 19 
+b = 57 
+
+a= 00000....10011
+b= 00000....001110011
+
+a&b = ...010001
+
+a&b<=min(a,b)  
+if(a,b >0);
+
+
+--OR Operation(|):
+a= 19 
+b = 57 
+a= 00000....10011
+b= 00000....001110011
+
+a|b = 0.....1110011
+a|b>=max(a,b) if(a,b>0);
+
+--XOR Operation (^):
+a= 19 
+b = 57 
+a= 00000....10011
+b= 00000....001110011
+a^b = .....101010
+
+a^b = a+b 
+
+
+--left shift (<<): it means everyvalue is shifted by one 
+#it also means multiply by 2 
+a=(a<<i) a=a*2^i;
+
+--right shift (>>) : it means everyvalue is shifted by one on right side 
+#it also means divide bt 2 
+a =(a>>i) =  a/2^i
+
+--set the ith bit of A ( A|=(1<<i))
+a= 1011 (i=1) ==> 1011
+a = 1011 (i=5) ==>101011 (43)
+
+--toogle the ith bit of a 
+A^=(i<<i)
+
+--wheather check a is even or odd without using % Operation
+if(a&1==0) even otherwise odd
+
+---given a we need to change the last bit of a is 0 
+a= 44 = 101100 --- 101000
+a= (a-1)& a 
+
+count no of set bit 
+while(a>0) a&=(a-1) count++;
+
+--a check wheather is power of 2 or not 
+if(a&(a-1)==0) yes power of 2 
+otherwise not a power of 2 
+
+Q) leetcode 136. Single Number?
+ans) 
+we know properties of xor which is if we xor the same no we get 0 
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int ans = 0 ; 
+        for(int num : nums){
+            ans ^= num;
+        }
+        return ans ;
+    }
+};
+
+Q) gfg Non-Repeating Element "https://www.geeksforgeeks.org/problems/non-repeating-element3958/1"?
+ans) 
+class Solution {
+  public:
+    int firstNonRepeating(vector<int>& arr) {
+        unordered_map<int,int> freq;
+
+        for(int x : arr) {
+            freq[x]++;
+        }
+
+        for(int x : arr) {
+            if(freq[x] == 1) {
+                return x;
+            }
+        }
+
+        return 0;
+    }
+};
+
+Q) leetcode 78. Subsets 
+ans) 
+// in this question we have say 2^n (1<<n) and (mask&(1<<i)) 
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> ans ; 
+        int n = nums.size();
+        for(int mask = 0 ; mask<(1<<n) ; mask++){
+            vector<int> temp ; 
+            for(int i = 0 ; i<n ; i++){
+                if(mask &(1<<i)){                // means it give element which is one 
+                    temp.push_back(nums[i]);
+                }
+            }
+            ans.push_back(temp);
+        }
+        return ans ; 
+    }
+};
+
+--------------------------------------------------------------------------------------------------------------------------------
+Q) leetcode 191. Number of 1 Bits
+ans) 
+class Solution {
+public:
+    int hammingWeight(int n) {
+        int ans = 0 ; 
+        for(int i = 0 ; i< 32 ; i++){
+           if(n&(1<<i)){
+            ans++;
+           }
+        }
+        return ans ; 
+    }
+};
+
+# We loop 32 only when the task is to inspect individual bits of a single integer.
+We don’t loop 32 when the problem works on arrays or whole numbers.
+
+      or 
+
+int ans = 0 ; 
+while(n!=0){
+    n = n & (n-1);
+    ans++;
+}
+return ans ; 
+
+Q) leetcode 342. Power of Four?
+ans) 
+class Solution {
+public:
+    bool isPowerOfFour(int n) {
+        if(n <= 0) return false;
+
+        if((n & (n - 1)) != 0) return false;
+
+        return (n & 0x55555555);
+    }
+};
+# 0 * 55555555 is mask which give 10101010 . n&(0*555555) which tells us 1 is even no of position bit 
+#A number is a power of four if it is a power of two and its only set bit lies at an even position, which can be checked using bit masking.
+
+Q) leetcode 898. Bitwise ORs of Subarrays?
+ans) 
+// we take three things current which is include the arr[i] and or of previous ones 
+// in prev one we take upade the things 
+// and we take the set for count unique things 
+
+class Solution {
+public:
+    int subarrayBitwiseORs(vector<int>& arr) {
+        unordered_set<int> ans;
+        unordered_set<int> prev, curr;
+
+        for(int i = 0; i < arr.size(); i++) {
+            curr.clear();
+
+            curr.insert(arr[i]);
+            ans.insert(arr[i]);
+
+            for(int x : prev) {           
+                int num = arr[i] | x;
+                curr.insert(num);
+                ans.insert(num);
+            }
+
+            prev = curr;
+        }
+        return ans.size();
+    }
+};
+
+Q) leetcode 2564. Substring XOR Queries ?
+ans) // in this question we take the map to store the things which is vector or pair then we calculate the value of substring by 
+      val += val*2 + bit 
+
+class Solution {
+public:
+    vector<vector<int>> substringXorQueries(string s, vector<vector<int>>& queries) {
+        unordered_map<int, pair<int,int>> mp;
+        int n = s.size();
+        for(int i = 0; i < n; i++) {
+        int val = 0;
+        for(int j = i; j < n && j < i + 30; j++) {
+        val = (val << 1) + (s[j] - '0');
+        int len = j - i + 1;
+        if(mp.find(val) == mp.end() ||
+           len < (mp[val].second - mp[val].first + 1)) {
+            mp[val] = {i, j};
+        }
+    }
+}
+        vector<vector<int>> ans;
+        for(auto &q : queries) {
+            int first = q[0];
+            int second = q[1];
+
+            int required = first ^ second;
+
+            if(mp.find(required) != mp.end()) {
+                ans.push_back({mp[required].first, mp[required].second});
+            } else {
+                ans.push_back({-1, -1});
+            }
+        }
+        return ans;
+    }
+};
+
