@@ -1,0 +1,130 @@
+// advised complete atcoder dp contest question https://atcoder.jp/contests/dp/tasks
+
+Q) gfg Matrix Chain Multiplication "https://www.geeksforgeeks.org/problems/matrix-chain-multiplication0303/1"?
+ans)
+// in this question the main things is the cost of multiply by two part 
+class Solution {
+  public:
+    int matrixMultiplicationhelper(vector<int> &arr , int i , int j , vector<vector<int>>&dp){
+        if(i>=j) return 0 ; 
+        if(dp[i][j] != -1) return dp[i][j];
+        int ans = INT_MAX;
+        for(int k = i ; k<j ; k++){
+            int cost = matrixMultiplicationhelper(arr, i , k , dp) + matrixMultiplicationhelper(arr, k+1 , j , dp) + (arr[i - 1] * arr[k] * arr[j]);
+            ans = min(ans,cost);
+        }
+        return dp[i][j] = ans ; 
+    }
+    
+    int matrixMultiplication(vector<int> &arr) {
+        vector<vector<int>> dp(102, vector<int>(102, -1));
+        return matrixMultiplicationhelper(arr, 1 , arr.size()-1 , dp);
+    }
+};
+
+Q) leetcode 132. Palindrome Partitioning II ?
+ans) 
+// in this question we used two dp for solving the question 
+
+class Solution {
+public:
+    bool isPal(string &s, int i, int j, vector<vector<int>> &dp) {
+        if (i >= j) return true;
+        if (dp[i][j] != -1) return dp[i][j];
+        if (s[i] == s[j])
+            return dp[i][j] = isPal(s, i + 1, j - 1, dp);
+        return dp[i][j] = false;
+    }
+    int minCutHelper(string &s, int i, vector<int> &dp, vector<vector<int>> &palDp) {
+        int n = s.size();
+        if (i == n || isPal(s, i, n - 1, palDp)) return 0;
+        if (dp[i] != -1) return dp[i];
+        int ans = INT_MAX;
+        for (int j = i; j < n; j++) {
+            if (isPal(s, i, j, palDp)) {
+                ans = min(ans, 1 + minCutHelper(s, j + 1, dp, palDp));
+            }
+        }
+        return dp[i] = ans;
+    }
+    int minCut(string s) {
+        int n = s.size();
+        vector<vector<int>> palDp(n, vector<int>(n, -1));
+        vector<int> dp(n, -1);
+        return minCutHelper(s, 0, dp, palDp);
+    }
+};
+----------------------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 2140. Solving Questions With Brainpower
+ans) 
+// top to down approch 
+class Solution {
+public:
+    long long mostPointshelper(vector<vector<int>>& questions , int i , vector<long long> &dp){
+        if(i>=questions.size()) return 0 ; 
+        if(dp[i] != -1) return dp[i];
+        long long  opt1 , opt2;
+        // take the elements
+        int idx = i + questions[i][1] +1;
+        opt1 = questions[i][0] + mostPointshelper(questions , idx , dp);
+        // skip the elements 
+        opt2 = mostPointshelper(questions , i+1 , dp);
+        return dp[i] = max(opt1 , opt2);
+    }
+
+    long long mostPoints(vector<vector<int>>& questions) {
+        int n = questions.size();
+        vector<long long> dp(n , -1);
+        return mostPointshelper(questions, 0 , dp);
+    }
+};
+
+// bottom to up approch 
+class Solution {
+public:
+    long long mostPoints(vector<vector<int>>& questions) {
+        int n = questions.size();
+        vector<long long> dp(n + 1, 0); 
+
+        for(int i = n - 1; i >= 0; i--) {
+            long long nextIndex = i + questions[i][1] + 1;
+            long long solve = questions[i][0] + (nextIndex < n ? dp[nextIndex] : 0);
+            long long skip = dp[i + 1];
+            dp[i] = max(solve, skip);
+        }
+
+        long long ans = dp[0]; 
+        return ans;
+    }
+};
+
+Q) leetcode 516. Longest Palindromic Subsequence?
+ans)
+class Solution {
+public:
+    int longestPalindromeSubseqhelper(string &s , int i , int j , vector<vector<int>>&dp){
+     if(i>j) return 0 ; 
+     if(i==j) return 1 ;
+     if(dp[i][j] != -1) return dp[i][j];
+     if(s[i]==s[j]){
+        return dp[i][j] = 2 + longestPalindromeSubseqhelper(s,i+1 , j-1 , dp);
+     }
+     else{
+        int opt1 = longestPalindromeSubseqhelper(s,i+1,j,dp);
+        int opt2 = longestPalindromeSubseqhelper(s, i , j-1 , dp);
+        return dp[i][j] = max(opt1 , opt2); 
+     }
+    }
+
+    int longestPalindromeSubseq(string s) {
+        int n = s.size();
+        vector<vector<int>>dp(n , vector<int>(n,-1));
+        return longestPalindromeSubseqhelper(s, 0 , n-1 , dp);
+    }
+};
+
+//bottom to top approch
+
+Q) codeforces "https://codeforces.com/problemset/problem/245/H"?
+ans)

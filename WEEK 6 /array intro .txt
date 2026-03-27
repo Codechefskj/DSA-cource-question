@@ -21,6 +21,23 @@
 
 --> capacity does not change once it will increases 
 
+q) leetcode 268 ;
+ans) 
+    class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int acturalsum = 0 ; 
+        int presentsum = 0 ; 
+        for(int i = 0 ; i< nums.size() ; i++){
+        presentsum += nums[i];
+        }
+        for(int i = 0 ; i<= nums.size() ; i++){
+            acturalsum += i ;
+        }
+        return acturalsum - presentsum ; 
+    }
+};
+
 -----------------------------------------------------------------------------------------------------------------------
                                                   Question practics:
 Q 256 leetcode 

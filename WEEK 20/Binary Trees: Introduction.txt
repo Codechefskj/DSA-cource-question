@@ -1,0 +1,241 @@
+->binary tree is stored only two children 
+-> trenary tree stored the three children 
+
+--> height of binary tree is measured at two things : no of node , no of edges at last node 
+
+--> there are two type of binary tree are there 
+
+1) full binary tree : every binary either two children or no child at all 
+2) complete binary tree : all level of binary tree are filled except the last level . last level is partically filled the left once 
+3) perect binary tree : all level are complete filled include the last level also 
+
+calculate the no of node on perect binary tree : 2^h - 1; 
+
+4) degenerate binary tree : every node is either 1 or no children at all 
+
+how to stored the node 
+treenode{
+    int data ;
+     TreeNode* left ;
+    TreeNode* right ; 
+}
+
+class TreeNode{
+    public : 
+    int data ; 
+    TreeNode* left ;
+    TreeNode& right ; 
+
+    TreeNode(int val ){
+        data = val ; 
+        left = null ;
+        right = null ;
+    }   
+}
+int main (){
+    TreeNode* ptr = new TreeNode(5);
+    TreeNode node(10);
+}
+
+traversal of tree : 1) in order traversal 
+                    firstly we traversal in left then root and then right 
+                    class Solution {
+public:
+    void inorderTraversalHelper(TreeNode* root, vector<int>& ans) {
+        if (root == nullptr) return;
+
+        inorderTraversalHelper(root->left, ans);
+        ans.push_back(root->val);          
+        inorderTraversalHelper(root->right, ans);
+    }
+
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        inorderTraversalHelper(root, ans);
+        return ans;
+    }
+};
+
+
+                    2) pre order traversal 
+                    firstly root then left then right 
+                    class Solution {
+public:
+    void helper(TreeNode* root , vector<int>&ans){
+    if(root == nullptr) return ;
+    ans.push_back(root->val); 
+    helper(root->left , ans);
+    helper(root->right,ans);
+    }
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        helper(root,ans);
+        return ans ; 
+    }
+};
+
+                    3) postorder traversal 
+                    firstly left then right then root  
+                    class Solution {
+public:
+    void helper(TreeNode* root , vector<int> &ans){
+       if(root==nullptr) return ; 
+       helper(root->left , ans);
+       helper(root->right, ans);
+       ans.push_back(root->val);
+
+    }
+
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> ans ; 
+        helper(root , ans);
+        return ans ; 
+    }
+};
+
+                    4) level order traversal :
+                    breath first search : we cover all children first then traversal .. we used queue 
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+
+        vector<vector<int>> ans;
+        if (root == nullptr) return ans;
+
+        queue<TreeNode*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+            int size = q.size();
+            vector<int> level;
+
+            for (int i = 0; i < size; i++) {
+                TreeNode* candidate = q.front();
+                q.pop();
+
+                level.push_back(candidate->val);
+
+                if (candidate->left != nullptr) {
+                    q.push(candidate->left);
+                }
+                if (candidate->right != nullptr) {
+                    q.push(candidate->right);
+                }
+            }
+
+            ans.push_back(level);
+        }
+
+        return ans;
+    }
+};
+
+------------------------------------------------------------------------------------------------------v----------------------------------
+
+Q) leetcode 637. Average of Levels in Binary Tree ?
+ans) 
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<double> averageOfLevels(TreeNode* root) {
+        queue<TreeNode*> q ; 
+        vector<double> ans ;
+        q.push(root);
+        while(!q.empty()){
+           int sz = q.size();
+           long long sum = 0 ; 
+           for(int i = 0 ; i<sz; i++){
+            TreeNode* temp = q.front();
+            q.pop();
+            sum += temp->val ; 
+            if(temp->left) q.push(temp->left);
+            if(temp->right) q.push(temp->right);
+           }
+           ans.push_back((double)sum/sz);
+        }
+        return ans ; 
+    }
+};
+
+Q) leetcode 617. Merge Two Binary Trees?
+ans) 
+class Solution {
+public:
+    TreeNode* helper(TreeNode* root1, TreeNode* root2) {
+        if (root1 == nullptr && root2 == nullptr) return nullptr;
+        if(root1==nullptr) return root2 ;
+        if(root2==nullptr) return root1 ; 
+        TreeNode* node = new TreeNode(root1->val + root2->val);
+        node->left = helper(root1->left , root2->left);
+        node->right = helper(root1->right , root2->right);
+        return node ; 
+    }
+
+    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+        return helper(root1 , root2);
+    }
+};
+
+Q) leetcode 104. Maximum Depth of Binary Tree ?
+ans) 
+class Solution {
+public:
+    int helper(TreeNode* root){
+        if(root==nullptr) return 0 ; 
+        int x = helper(root->left);
+        int y = helper(root->right);
+        return max(x,y)+1; 
+    }
+
+    int maxDepth(TreeNode* root) {
+        return helper(root);
+    }
+};
+
+Q) leetcode 404. Sum of Left Leaves
+ans) 
+class Solution {
+public:
+    int helper(TreeNode* root) {
+        if(root==nullptr) return 0 ; 
+        int sum = 0 ; 
+        if(root->left && root->left->left == nullptr && root->left->right==nullptr){
+            sum += root->left->val ;
+        }
+        sum += helper(root->left);
+        sum+=helper(root->right);
+        return sum ; 
+    }
+
+    int sumOfLeftLeaves(TreeNode* root) {
+        return helper(root);
+    }
+};
+
+Q) leetcode 1379. Find a Corresponding Node of a Binary Tree in a Clone of That Tree ?
+ans) 
+class Solution {
+public:
+    TreeNode* getTargetCopy(TreeNode* original, TreeNode* cloned, TreeNode* target) {
+        if (original == nullptr) return nullptr;
+        if (original == target) {
+            return cloned;
+        }
+
+        TreeNode* left = getTargetCopy(original->left, cloned->left, target);
+        if (left != nullptr) return left;
+
+        return getTargetCopy(original->right, cloned->right, target);
+    }
+};
+

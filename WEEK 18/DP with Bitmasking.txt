@@ -1,0 +1,13 @@
+// for recognizes the problem in dp with bit masking then we check the constrains . we can check the the soln must be 2^n then we 
+   think abut bit masking 
+given an N no :
+dp[m]= represent the answer for a subset of given set coresponding to the mask m 
+
+Q) best permulation 
+given an integer N . assume there are array =>[1,2,3,4,.....N-1] . given ans 2d array of size N*N 
+raw[i][j] => reward point if the final position of no i 
+
+N= 3  a =[0,1,2]
+permulation = [1,2,0]
+reward are m[1][0]+m[2][1]+m[0][2]
+find the maximum reward we get are 

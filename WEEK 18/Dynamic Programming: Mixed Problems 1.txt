@@ -1,0 +1,50 @@
+Q) codeforces "D. Make The Fence Great Again". "https://codeforces.com/problemset/problem/1221/D"?
+ans)
+#include <iostream>
+#include <vector>
+#include <climits>   
+#include <algorithm> 
+using namespace std;
+long long  solveFence(int i, int inc, const vector<long long>& a, const vector<long long>& b, vector<vector<long long>>& dp) {
+    int n = a.size();
+
+    // Base case
+    if (i == n - 1)
+        return inc * b[i];
+
+    // Memoization check
+    if (dp[i][inc] != -1)
+        return dp[i][inc];
+
+    long long ans = INT_MAX;
+
+    // Try all possible increases for the next board
+    for (int next_inc = 0; next_inc <= 2; next_inc++) {
+        if (a[i] + inc != a[i + 1] + next_inc) {
+            ans = min(ans, inc * b[i] + solveFence(i + 1, next_inc, a, b, dp));
+        }
+    }
+
+    return dp[i][inc] = ans;
+}
+int main() {
+    int q;
+    cin >> q;
+    while (q--) {
+        int n;
+        cin >> n;
+        vector<long long> a(n), b(n);
+        for (int i = 0; i < n; i++) {
+            cin >> a[i] >> b[i];
+        }
+        vector<vector<long long>> dp(n, vector<long long>(3, -1));
+        long long ans = min({
+            solveFence(0, 0, a, b, dp),
+            solveFence(0, 1, a, b, dp),
+            solveFence(0, 2, a, b, dp)
+        });
+        cout << ans << "\n";
+    }
+
+    return 0;
+}
