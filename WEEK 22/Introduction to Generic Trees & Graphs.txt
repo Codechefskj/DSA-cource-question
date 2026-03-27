@@ -1,0 +1,97 @@
+graph can seen as network of object called NODES
+some of these node may be connected with each other via EDGES
+
+type of graph 
+1)in the basis of direction of edges : undirected , directed 
+directed : example of facebook .. in facebook you follow only those people who follow you back 
+undirected : example of instagram .. in insta you can follow anyone but it not compulasary tha person also follow you back
+
+2) on the basis of edges weight 
+  unweigted : example of facebook .. in facebook there are no weight are present 
+  weighted : the flight cost of bom to delhi is 12k ... 12k is weight of two graph  
+
+// in normal condition graph always has undirected unweighter graph and there is no seft loop 
+   
+// there are edge between each pair of node : complete graph 
+
+// no of edge are connected the node are N node : Nc2 => N(N+1)/2; 
+
+few terminalogy : 
+1)connected graph: if the connected components in a graph is 1 
+
+// is there are N node . min no of edges for a graph to the connected which is N-1
+
+// star node = one node is connected to N-1
+
+ degree of node : no of edge of a node (this is for undirected graph)
+ in degree : no of incoming edge {directed graph}
+ out degree : no of outgoing edge {directed graph}
+
+ no of node = N and , M edge then sum of all node are 2 EDGE 
+
+ Q) let say there are few node with odd degree . No of such node will be 
+     . always a multiple of 3 
+     . always a even [correct]
+     . always a odd 
+     . none of the above 
+
+cycle : when node are complete packed 
+
+Q) a connected graph with n node with N-1 edge 
+   . will definately have a cycle 
+   . may or may be not cycle 
+   . not a cycle [correct]
+
+
+
+
+
+   What is tree : a connected graph with no cycle is called tree 
+   tree can be : Binary/ generic 
+                 rooted/unrooted 
+                 weigted / unweighter
+
+
+tree terminalogy (in case of rooted) : 
+Node: A point that stores data.
+Root: Top node (starting point).
+Edge: Line connecting two nodes.
+Parent: Node above another node.
+Child: Node below a parent.
+Siblings: Nodes with same parent.
+Leaf Node: Node with no children (last node).
+Internal Node: Node that has children.
+Degree: Number of children a node has.
+Path: Route from one node to another.
+Level: Position of node from top.
+Depth: Distance from root to node.
+Height: Distance from node to bottom.
+Ancestor: Nodes above a node.
+Descendant: Nodes below a node.
+Subtree: Small tree inside a tree.
+Forest: Group of separate trees.
+
+
+
+for a generic rooted tree haveing N nodes what is min & max heights 
+if(N==1){
+    min = 1; 
+    max = 1; 
+}else{
+    min = 2;
+    max = N;
+}
+
+
+way of represent the generic / Graph 
+1)we used adjacent matrix 
+problem of adjacent matrix : lot of inicial time taken 
+disadvantage of adjacent matrix : checking for specific edge is O(1)
+
+2) adjacent list 
+we made the vector<vector<int>> 
+
+3) we create the class node also 
+not in the common used 
+
+4) parent array : in this method we store the information of parent tree 

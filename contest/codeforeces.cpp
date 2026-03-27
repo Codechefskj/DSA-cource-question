@@ -1,33 +1,66 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+class TrieNode{
+public:
+vector<TrieNode*> temp = vector<TrieNode*>(26, nullptr);
+bool flag = false ;
+};
 
-    int t;
-    cin >> t;
-    while (t--) {
-        int n;
-        cin >> n;
-        vector<int> p(n);
-        for (int i = 0; i < n; ++i) cin >> p[i];
-
-        int l = 0, r = n - 1;
-        bool ok = true;
-        for (int x = 1; x <= n; ++x) {
-            if (l <= r && p[l] == x) {
-                ++l;
-            } else if (l <= r && p[r] == x) {
-                --r;
-            } else {
-                ok = false;
-                break;
-            }
-        }
-
-        cout << (ok ? "YES\n" : "NO\n");
+class Trie{
+    TrieNode* root ; 
+    public : 
+    Trie(){
+        root = new TrieNode;
     }
-    return 0;
+
+    void insert(string word){
+       TrieNode* node = root ; 
+       for(int i = 0 ; i< word.size(); i++){
+        if(node->temp[word[i]-'a']){
+         node = node->temp[word[i]-'a'];
+        }
+        else{
+            node->temp[word[i]-'a'] = new TrieNode;
+            node = node->temp[word[i]-'a'];
+        }
+       }
+       node->flag= true ; 
+    }
+
+    bool search(string word){
+        TrieNode* node = root ; 
+        for(int i = 0 ; i< word.size(); i++){
+           if(node->temp[word[i]-'a'] != nullptr){
+             node = node->temp[word[i]-'a'];
+           }
+           else{
+            return false ;
+           }
+        }
+        return node->flag;
+    }
+
+    void remove(string word){
+    TrieNode* node = root;
+    for(int i = 0; i < word.size(); i++){
+        if(node->temp[word[i] - 'a'] != nullptr){
+            node = node->temp[word[i] - 'a'];
+        }
+    }
+    node->flag = false;
+}
+
+};
+
+
+int main() {
+Trie h ; 
+h.insert("apple");
+h.insert("hell");
+h.insert("car");
+h.insert("cars");
+cout << h.search("carsss")<<endl;
+cout << h.search("car")<<endl;
+cout << h.search("apple")<<endl;
 }

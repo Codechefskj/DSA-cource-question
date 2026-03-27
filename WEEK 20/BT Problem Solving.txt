@@ -1,0 +1,131 @@
+balanced binary tree : a tree called balanced when the height of left subtree and right subtree is one 
+
+Q) leetcode 110 
+ans) 
+// it take o(n^2)
+class Solution {
+public:
+    int helper(TreeNode* root) {
+        if (root == nullptr) return 0;
+        return max(helper(root->left), helper(root->right)) + 1;
+    }
+
+    bool isBalanced(TreeNode* root) {
+        if (root == nullptr) return true;
+
+        int lh = helper(root->left);
+        int rh = helper(root->right);
+
+        if (abs(lh - rh) > 1) return false;
+
+        return isBalanced(root->left) && isBalanced(root->right);
+    }
+};
+
+// optimised technique 
+class Solution {
+public:
+    pair<int,bool> helper(TreeNode* root) {
+        if (root == nullptr) return {0,true};
+        pair<int,bool> lh = helper(root->left);
+        pair<int,bool> rh = helper(root->right);
+        int diff = abs(lh.first-rh.first);
+        int height = max(lh.first , rh.first)+1;
+        if(diff>1) return {height,false};
+        return {height, lh.second && rh.second};
+    }
+
+    bool isBalanced(TreeNode* root){
+        pair<int, bool> ans = helper(root);
+        return ans.second; 
+    }
+};
+
+Q) leetcode 105. Construct Binary Tree from Preorder and Inorder Traversal ?
+ans) 
+
+class Solution {
+public:
+    int search(vector<int>& inorder , int left , int right , int val){
+    for(int i = left ; i<=right ; i++){
+        if(inorder[i]==val){
+            return i ; 
+        }
+    }
+    return -1; 
+    }
+
+    TreeNode* helper(vector<int>& preorder, vector<int>& inorder, int &idx , int left , int right) {
+        if(left>right){
+            return nullptr ; 
+        }
+        TreeNode* root = new TreeNode(preorder[idx]);
+        int x = search(inorder,left,right, preorder[idx]);
+        idx++;
+        root->left = helper(preorder, inorder, idx, left, x - 1);
+        root->right = helper(preorder,inorder,idx , x+1,right);
+        return root ; 
+    }
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int idx = 0 ; 
+        return helper(preorder,inorder,idx,0 , preorder.size()-1);
+    }
+};
+
+------------------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 106. Construct Binary Tree from Inorder and Postorder Traversal ?
+ans) 
+class Solution {
+public:
+    unordered_map<int, int> mp;
+    int postIndex;
+    TreeNode* build(vector<int>& inorder, vector<int>& postorder, int left, int right) {
+        if (left > right) return nullptr;
+
+        // Root from postorder
+        int rootVal = postorder[postIndex--];
+        TreeNode* root = new TreeNode(rootVal);
+
+        // Find root in inorder
+        int idx = mp[rootVal];
+
+        // Build RIGHT first, then LEFT
+        root->right = build(inorder, postorder, idx + 1, right);
+        root->left  = build(inorder, postorder, left, idx - 1);
+
+        return root;
+    }
+
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        int n = inorder.size();
+        postIndex = n - 1;
+        for (int i = 0; i < n; i++) {
+            mp[inorder[i]] = i;
+        }
+
+        return build(inorder, postorder, 0, n - 1);
+    }
+};
+
+Q) leetcode 199. Binary Tree Right Side View ?
+ans) 
+// in this question 
+class Solution {
+public:
+    vector<int> ans ; 
+    vector<int> helper(TreeNode* root , int level) {
+        if(root==nullptr) return ans ; 
+        if(ans.size()==level){
+            ans.push_back(root->val);
+        }
+        helper(root->right , level+1);
+        helper(root->left , level +1);
+        return ans; 
+    }
+
+    vector<int> rightSideView(TreeNode* root) {
+        return helper(root, 0);
+    }
+};

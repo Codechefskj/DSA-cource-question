@@ -1,0 +1,310 @@
+Binary heap :  
+A Binary Heap is a complete binary tree that satisfies a special property called the heap property.
+Key points:
+- It is a binary tree (each node has at most 2 children).
+- It is a complete tree:
+- All levels are completely filled except possibly the last level.
+- The last level is filled from left to right.
+- It follows a heap property:
+- Either Max Heap property or Min Heap property.
+- It is usually implemented using an array instead of pointers.
+- Used in Priority Queue implementation.
+- Common operations: Insert , Delete , Heapify , Extract Min / Extract Max
+- Time complexity for insertion and deletion: O(log n).
+
+Maxheap : A Max Heap is a type of binary heap where the parent node is always greater than or equal to its children.
+Property : Parent ≥ Left Child
+           Parent ≥ Right Child
+Uses
+-Priority Queue
+-Heap Sort
+-Finding kth largest element 
+
+Min Heap : 
+A Min Heap is a type of binary heap where the parent node is always smaller than or equal to its children.
+Property
+Parent ≤ Left Child
+Parent ≤ Right Child
+
+
+
+node are n 
+complete binary tree height h = log2(n)
+insertion : O(logn)
+deletion : O(logn)
+
+Binary Heap Array Representation Formulas: left chid == i*2
+                                           right chile == i*2+1
+                                           root node == i/2
+
+we always implementation binary heap using array 
+heap is conceptual binary tree topic but we implementation heap using array because 
+Using an array gives many advantages:
+>No need for pointers
+>Less memory usage
+>Fast access using index
+>Easy calculation of parent and children
+>Used in Priority Queue and Heap Sort
+
+
+| Structure      | Property                              |
+| -------------- | ------------------------------------- |
+| Binary Heap    | Parent-child ordering                 |
+| Priority Queue | Always gives highest priority element |
+| Sorted Array   | All elements sorted                   |
+
+Q) Implemented of Min heap ?
+ans) 
+#include<iostream>
+#include<vector>
+using namespace std;
+
+class minheap{
+    vector<int> temp;
+
+public:
+
+    minheap(){
+        temp.push_back(-1);  
+    }
+
+    bool isEmpty(){
+        return temp.size() == 1;
+    }
+
+    int top(){
+        if(isEmpty()) return -1;
+        return temp[1];
+    }
+
+    void insert(int a){
+
+        temp.push_back(a);
+        int i = temp.size() - 1;
+
+        while(i > 1 && temp[i/2] > temp[i]){
+            swap(temp[i], temp[i/2]);
+            i = i/2;
+        }
+    }
+
+    int pop(){
+
+        if(isEmpty()) return -1;
+
+        int high = temp[1];
+
+        swap(temp[1], temp.back());
+        temp.pop_back();
+
+        int i = 1;
+        int n = temp.size();
+
+        while(i < n){
+
+            int left = i * 2;
+            int right = i * 2 + 1;
+            int smallest = i;
+
+            if(left < n && temp[left] < temp[smallest])
+                smallest = left;
+
+            if(right < n && temp[right] < temp[smallest])
+                smallest = right;
+
+            if(smallest != i){
+                swap(temp[i], temp[smallest]);
+                i = smallest;
+            }
+            else
+                break;
+        }
+
+        return high;
+    }
+};
+
+int main(){
+
+    minheap h;
+
+    h.insert(10);
+    h.insert(5);
+    h.insert(15);
+    h.insert(2);
+
+    cout << h.pop() << endl;
+    cout << h.pop() << endl;
+}
+
+Q) Implemented of Max heap ?
+ans) 
+#include<iostream>
+#include<vector>
+using namespace std;
+
+class maxheap{
+    vector<int> temp;
+public:
+    maxheap(){
+        temp.push_back(-1); 
+    }
+    bool is_empty(){
+        return temp.size() == 1;
+    }
+    int top(){
+        if(is_empty()) return -1;
+        return temp[1];
+    }
+    int pop(){
+        if(is_empty()) return -1;
+        int high = temp[1];
+        swap(temp[1], temp.back());
+        temp.pop_back();
+        int i = 1;
+        int n = temp.size();
+        while(true){
+            int left = i*2;
+            int right = i*2+1;
+            int largest = i;
+            if(left < n && temp[left] > temp[largest])
+                largest = left;
+            if(right < n && temp[right] > temp[largest])
+                largest = right;
+            if(largest != i){
+                swap(temp[i], temp[largest]);
+                i = largest;
+            }
+            else
+                break;
+        }
+        return high;
+    }
+
+    void insert(int a){
+        temp.push_back(a);
+        int i = temp.size()-1;
+        while(i>1 && temp[i/2] < temp[i]){
+            swap(temp[i], temp[i/2]);
+            i = i/2;
+        }
+    }
+};
+
+int main(){
+    maxheap h;
+    h.insert(2);
+    h.insert(3);
+    h.insert(10);
+    h.insert(31);
+    cout << h.top() << endl;
+    h.pop();
+    cout << h.top() << endl;
+}
+
+
+Q) leetcode 215. Kth Largest Element in an Array?
+ans) 
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int, vector<int> , greater<int>> temp ; 
+        for(int i = 0 ; i< nums.size(); i++){
+            temp.push(nums[i]);
+            if(temp.size()>k){
+                temp.pop();
+            }
+        }
+        return temp.top();
+    }
+};
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Q) leetcode 1094. Car Pooling ?
+ans) // we used the differ for merged type of question
+class Solution {
+public:
+    bool carPooling(vector<vector<int>>& trips, int capacity) {
+        vector<int> differ(1001);
+        for(int i = 0 ; i< trips.size(); i++){
+          int x = trips[i][0];
+          int y = trips[i][1];
+          int z = trips[i][2];
+          differ[y] += x;
+          differ[z] -= x;
+        }
+        int currsum= 0 ; 
+        for(auto x : differ){
+            currsum += x ; 
+            if(currsum > capacity){
+                return false ; 
+            }
+        }
+        return true ; 
+    }
+};
+
+Q) leetcode 703. Kth Largest Element in a Stream?
+ans) 
+class KthLargest {
+public:
+    priority_queue<int, vector<int>, greater<int>> pq;
+    int k;
+
+    KthLargest(int k, vector<int>& nums) {
+        this->k = k;
+
+        for(int i = 0; i < nums.size(); i++) {
+            pq.push(nums[i]);
+            if(pq.size() > k) {
+                pq.pop();
+            }
+        }
+    }
+    
+    int add(int val) {
+        pq.push(val);
+        if(pq.size() > k) {
+            pq.pop();
+        }
+        return pq.top();
+    }
+};
+
+Q) leetcode 912. Sort an Array ?
+ans) 
+class Solution {
+public:
+    vector<int> sortArray(vector<int>& nums) {
+        priority_queue<int , vector<int> , greater<int>> py ; 
+        for(int i = 0 ; i< nums.size(); i++){
+            py.push(nums[i]);
+        }
+        for(int i = 0 ; i< nums.size(); i++){
+            int top = py.top();
+            nums[i]= top ; 
+            py.pop();
+        }
+        return nums; 
+    }
+};
+
+Q) gfg https://www.geeksforgeeks.org/problems/merge-k-sorted-arrays/1 ?
+ans) 
+class Solution {
+  public:
+    vector<int> mergeArrays(vector<vector<int>> &mat) {
+        priority_queue<int , vector<int> , greater<int>> temp;
+        for(int i = 0 ; i< mat.size(); i++){
+            for(int j = 0 ; j< mat[0].size(); j++){
+                temp.push(mat[i][j]);
+            }
+        }
+        vector<int> ans;
+        while(!temp.empty()){
+            ans.push_back(temp.top());
+            temp.pop();
+        }
+        return ans; 
+    }
+};

@@ -2,14 +2,13 @@
     "configurations": [
         {
             "name": "Mac",
+            "compilerPath": "/opt/homebrew/bin/g++-15",
+            "intelliSenseMode": "macos-gcc-arm64",
             "includePath": [
                 "${workspaceFolder}/**"
             ],
-            "defines": [],
-            "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "macos-gcc-x86"
+            "cppStandard": "c++17"
         }
     ],
     "version": 4

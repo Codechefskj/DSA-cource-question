@@ -1,0 +1,251 @@
+Q) leetcode 421. Maximum XOR of Two Numbers in an Array ?
+ans) 
+// brute are simple take two pointer and check what is maximum 
+// optimized method used the trie data structure 
+
+class Trienode{
+    public :
+    vector<Trienode*> children = vector<Trienode*>(2, nullptr);
+    bool flag = false; 
+};
+class Trie{
+    public:
+    Trienode* root = new Trienode();
+    void insert(int num){
+     Trienode* node = root ; 
+     for(int i = 31; i>=0; i--){
+        int bit = (num>>i)&1; 
+        if(node->children[bit]){
+            node= node->children[bit];
+        }
+        else{
+            node->children[bit]= new Trienode();
+            node = node->children[bit];
+        }
+     }
+     node->flag = true ;
+    }
+
+    int getMax(int num){
+     Trienode* node = root ; 
+     int ans=  0 ;
+     for(int i = 31 ; i>=0 ; i--){
+     int bit = (num>>i)&1;
+     if(node->children[!bit]){
+        ans += (1<<i);
+        node = node->children[!bit];
+     }
+     else{
+        node = node->children[bit];
+     }
+     }
+     return ans ; 
+    }
+};
+
+class Solution {
+public:
+    int findMaximumXOR(vector<int>& nums) {
+        Trie t;
+        int ans = 0;
+        for(int num : nums){
+            t.insert(num);
+            ans = max(ans, t.getMax(num));
+        }
+        return ans;
+    }
+};
+
+Q) leetcode 1642. Furthest Building You Can Reach ?
+ans) 
+// try all posible using recursion time complexity = O(2^n)
+// optimized ways 
+class Solution {
+public:
+    int furthestBuilding(vector<int>& heights, int bricks, int ladders) {
+        priority_queue<int,vector<int>, greater<int>> q; 
+        for(int i = 1 ; i<heights.size(); i++){
+            int diff = heights[i]-heights[i-1];
+            if(diff>0){
+            q.push(diff);
+            }
+            if(q.size()>ladders){
+                int req = q.top();
+                q.pop();
+                if(req > bricks){
+                    return i-1;
+                }else{
+                    bricks -= req;
+                }
+            }
+        }
+        return heights.size()-1;
+    }
+};
+time complexity are = O(mlogn)
+
+Q) leetcode 295. Find Median from Data Stream ?
+ans) 
+class MedianFinder {
+public:
+    priority_queue<int> max_heap;
+    priority_queue<int , vector<int>, greater<int>> min_heap ; 
+
+    MedianFinder() {}
+    
+    void addNum(int num) {
+        if(max_heap.size() > min_heap.size()){
+            max_heap.push(num);
+            int ele = max_heap.top();
+            max_heap.pop();
+            min_heap.push(ele);
+        }
+        else{
+            min_heap.push(num);
+            int ele = min_heap.top();
+            min_heap.pop();
+            max_heap.push(ele);
+        }
+    }
+    
+    double findMedian() {
+        if(max_heap.size() > min_heap.size()){
+            return max_heap.top();
+        }
+        else{
+            int a = max_heap.top();
+            int b = min_heap.top();
+            return (a + b) / 2.0;   
+        }
+    }
+};
+
+time complexity =  add no = O(log n);
+                   findmedium = O(n);
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q leetcode 113. Path Sum II ?
+ans) 
+
+class Solution {
+public:
+    vector<vector<int>> result ; 
+    void helper(TreeNode* root, int targetSum , vector<int>& temp, int &currsum){
+     if(root==nullptr) return ; 
+     currsum += root->val;
+     temp.push_back(root->val);
+     if(root->left==nullptr && root->right == nullptr){
+        if(currsum==targetSum){
+            result.push_back(temp);
+        }
+     }
+     helper(root->left , targetSum , temp, currsum);
+     helper(root->right , targetSum , temp, currsum);
+     currsum -= root->val;
+     temp.pop_back();
+    }
+
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        int currsum = 0 ; 
+        vector<int> temp; 
+        helper(root,targetSum, temp , currsum  );
+        return result ; 
+    }
+};
+
+time complexity : O(n*h) average complexity and worst complexity is O(n^2)
+space complexity : O(n)
+
+Q) leetcode 786. K-th Smallest Prime Fraction ?
+ans) 
+class Solution {
+public:
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        priority_queue<vector<double>> q; 
+        for(int i = 0 ; i< arr.size(); i++){
+            for(int j = i+1; j< arr.size(); j++){
+                double div = (double)arr[i]/arr[j];
+                q.push({div,(double)arr[i],(double)arr[j]});
+                if(q.size()>k){
+                    q.pop();
+                }
+            }
+        }
+        vector<int> ans(2);   
+        auto top = q.top();  
+        ans[0] = (int)top[1]; 
+        ans[1] = (int)top[2]; 
+        return ans; 
+    }
+};
+
+time complexity : O(n^2 * logn)
+space complexity : O()
+
+Q) leetcode 2416. Sum of Prefix Scores of Strings ?
+ans) 
+class Solution {
+public:
+    
+    struct Node {
+        int child[26];
+        int count;
+        
+        Node(){
+            memset(child, -1, sizeof(child));
+            count = 0;
+        }
+    };
+    
+    vector<Node> trie;
+    
+    void insert(string &word){
+        int node = 0;
+        
+        for(char c : word){
+            int idx = c - 'a';
+            
+            if(trie[node].child[idx] == -1){
+                trie[node].child[idx] = trie.size();
+                trie.push_back(Node());
+            }
+            
+            node = trie[node].child[idx];
+            trie[node].count++;
+        }
+    }
+    
+    int traversal(string &word){
+        int node = 0, sum = 0;
+        
+        for(char c : word){
+            int idx = c - 'a';
+            
+            if(trie[node].child[idx] == -1) break;
+            
+            node = trie[node].child[idx];
+            sum += trie[node].count;
+        }
+        
+        return sum;
+    }
+    
+    vector<int> sumPrefixScores(vector<string>& words) {
+        
+        trie.push_back(Node()); 
+        
+        for(string &w : words){
+            insert(w);
+        }
+        
+        vector<int> ans;
+        
+        for(string &w : words){
+            ans.push_back(traversal(w));
+        }
+        
+        return ans;
+    }
+};

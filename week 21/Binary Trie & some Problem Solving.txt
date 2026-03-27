@@ -1,0 +1,72 @@
+what is requirments of trie ?
+whenever you type some word its auto search the iteam things this is usecase
+
+TrieNode{
+    public
+    vector<TrieNode*> child(26 , NULL);
+    bool flag= false;
+}
+
+class trie{
+    TreeNode* root;
+    public:
+    trie(){
+        root = new TrieNode();
+    }
+
+    void insert(string word){
+      TrieNode* node = root;  
+      for(int i = 0 ; i< word.size(); i++){
+        if(node->children[word[i]-'a']){
+            node = node->children[word[i]-'a'];
+        }
+        else{
+            node->children[word[i]-'a']= new TrieNode();
+            node= node->children[word[i]-'a'];
+        }
+      }
+      node->flag= true ; 
+    }
+
+    bool search(string word){
+    TrieNode* node = root; 
+    for(int i = 0 ; i< word.size(); i++){
+        if(node->children[word[i]-'a']){
+            node = node->children[word[i]-'a'];
+        }
+        else{
+            return false;
+        }
+    } 
+    return node->false; 
+    }
+}
+
+time complexity = O(n) n = length of the word 
+
+Q) leetcode 1268. Search Suggestions System?
+ans) 
+// brute force method simple 
+class Solution {
+public:
+    vector<vector<string>> suggestedProducts(vector<string>& products, string searchWord) {
+        sort(products.begin(), products.end());
+        vector<vector<string>> result; 
+        string pref = "";
+        for(int i = 0; i < searchWord.size(); i++){
+            pref += searchWord[i];
+            vector<string> temp; 
+            for(int j = 0; j < products.size(); j++){
+                if(products[j].substr(0, pref.size()) == pref && temp.size() < 3){
+                    temp.push_back(products[j]);
+                }
+                if(temp.size()==3){
+                    break ; 
+                }
+            }
+            result.push_back(temp);
+        }
+        return result;
+    }
+};
+

@@ -1,0 +1,198 @@
+binary search tree = root value is <of left recurisively left subtree and root value is > of right recursive right subtree    
+
+Q) leetcode 700. Search in a Binary Search Tree ?
+ans) 
+// we will used traversal of inorder
+
+class Solution {
+public:
+    TreeNode* inorder(TreeNode* root , int val){
+        if(root==nullptr) return nullptr ; 
+        TreeNode* l = inorder(root->left , val);
+        if(root->val == val ) return root ; 
+        TreeNode* r = inorder(root->right, val);
+        if(r!= nullptr) return r ; 
+        return l ; 
+    }
+    TreeNode* searchBST(TreeNode* root, int val) {
+        return inorder(root , val);
+    }
+};
+
+// we used binary search properties 
+class Solution {
+public:
+    TreeNode* insearch(TreeNode* root , int val){
+        if(root==nullptr) return nullptr ; 
+        if(root->val > val){
+            return insearch(root->left , val);
+        }
+        else if(root->val == val){
+            return root;
+        }
+        else{
+            return insearch(root->right , val);
+        }
+    }
+    TreeNode* searchBST(TreeNode* root, int val) {
+        return insearch(root , val);
+    }
+};
+
+Q) leetcode 701. Insert into a Binary Search Tree ?
+ans) 
+class Solution {
+public:
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        if(root == NULL){
+            return new TreeNode(val);
+        }
+        if(val < root->val){
+            root->left = insertIntoBST(root->left, val);
+        }
+        else{
+            root->right = insertIntoBST(root->right, val);
+        }
+        return root;
+    }
+};  
+
+time complexity -> O(N)
+space complexity -> O(N)
+
+Q) leetcode 98. Validate Binary Search Tree ?
+ans) 
+
+// we create the vector that contain the {isbst , min upto end , max upto end} . we check the condition which contain the isbst 
+things for left ans right subtree 
+
+class Solution {
+public:
+    vector<long long> helper(TreeNode* root){
+        if(root == NULL) return {1, LLONG_MAX, LLONG_MIN};
+        vector<long long> l = helper(root->left);
+        vector<long long> r = helper(root->right);
+        bool isbst = false;
+        if(l[0] && r[0] && root->val > l[2] && root->val < r[1]){
+            isbst = true;
+        }
+        long long mn = min((long long)root->val, l[1]);
+        long long mx = max((long long)root->val, r[2]);
+        return {isbst, mn, mx};
+    }
+
+    bool isValidBST(TreeNode* root) {
+        return helper(root)[0];
+    }
+};
+
+
+Q) leetcode 1038. Binary Search Tree to Greater Sum Tree?
+ans) 
+class Solution {
+public:
+    void helper1(TreeNode* root , vector<int> &ans){
+     if(root==nullptr) return ; 
+     helper1(root->left , ans);
+     ans.push_back(root->val);
+     helper1(root->right , ans);
+    }
+    void helper(vector<int> &ans){
+     sort(ans.begin(), ans.end());
+     for(int i = ans.size()-2 ; i>=0 ; i--){
+        ans[i]+= ans[i+1];
+     }
+    }
+    TreeNode* finalhelper(TreeNode* root , vector<int> &ans , int &i){
+      if(root==nullptr) return root ; 
+      TreeNode* lft = finalhelper(root->left , ans , i);
+      root->val = ans[i];
+      i++;
+      TreeNode* rht = finalhelper(root->right , ans , i);
+      return root ; 
+    }
+    TreeNode* bstToGst(TreeNode* root) {
+        vector<int> ans ; 
+        helper1(root, ans);
+        helper(ans);
+        int i = 0 ; 
+        return finalhelper(root , ans , i);
+    }
+};
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Q) leetcode 669. Trim a Binary Search Tree ?
+ans)
+class Solution {
+public:
+    TreeNode* trimBST(TreeNode* root, int low, int high) {
+
+        if(root == nullptr) return root;
+
+        if(root->val >= low && root->val <= high){
+            root->left = trimBST(root->left , low , high);
+            root->right = trimBST(root->right , low , high);
+            return root;
+        }
+        else if(root->val > high){
+            return trimBST(root->left , low , high);
+        }
+        else{
+            return trimBST(root->right , low , high);
+        }
+    }
+};
+
+Q)leetcode  230. Kth Smallest Element in a BST?
+ans) 
+//preorder traversal always give sorted array 
+class Solution {
+public:
+
+    vector<int> ans;
+
+    void helper(TreeNode* root){
+        if(root == nullptr) return;
+
+        helper(root->left);
+        ans.push_back(root->val);
+        helper(root->right);
+    }
+
+    int kthSmallest(TreeNode* root, int k) {
+        helper(root);
+        return ans[k-1];
+    }
+};
+
+Q) leetcode 1373. Maximum Sum BST in Binary Tree?
+ans) 
+// we create a vector that contain the {isbst , max , min, sum} the ans is sum 
+
+class Solution {
+public:
+   int ans = 0 ; 
+    vector<int> helper(TreeNode* root){
+        if(root==nullptr) return {true , INT_MAX, INT_MIN, 0};
+        vector<int> lft = helper(root->left);
+        vector<int> rht = helper(root->right);
+        bool isbst = false;
+        int sum = 0; 
+        if(lft[2]<root->val && rht[1]>root->val && lft[0]&&rht[0]){
+            isbst = true ; 
+            sum  = lft[3]+rht[3]+root->val ;
+            ans = max(ans , sum);
+        }
+        int mini = min(root->val , lft[1]);
+        int maxi = max(root->val , rht[2]);
+        return {isbst,mini , maxi , sum};
+    }
+    int maxSumBST(TreeNode* root) {
+        vector<int> temp = helper(root);
+        return ans; 
+    }
+};
+
+time complexity = o(N) n = no of node 
+space complexity = o(n) n = no of stack
+
