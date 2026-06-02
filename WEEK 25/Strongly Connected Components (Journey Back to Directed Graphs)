@@ -1,0 +1,10 @@
+strongly connected components : those connected components which is travel all node and return back 
+
+condensatition graph : A Condensation Graph is a graph formed by compressing each Strongly Connected Component (SCC) of a directed graph into a single node.
+
+condensatition graph is always a DAG 
+
+A claim : tout => max tout of all the words in the scc 
+case 1 : DFS call is done first form a node in c1 
+
+Kosaraju's Algorithm::

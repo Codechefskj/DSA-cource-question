@@ -1,0 +1,121 @@
+traversal of generic tree : BFS , DFS 
+
+there are two ways to represent the tree / graph 1) adjacent matrix 2) adjacent list 
+we usually used adjacent list for storing the list 
+in adjacent matrix : O(n^2) - space complexity which is very large and N!= 10^5 
+                     we only allowed N<=10^3 
+
+in adjacent list : O(N+M) space complexity 
+                N= 10^5 , E= 10^7 maximum 
+
+but if we find the weight of graph we spent lot of time for calculate in adjacent list but spent less time to find out of 
+weight in adjacent matrix
+
+in depth first search : 
+#include <bits/stdc++.h>
+using namespace std;
+void dfs(vector<vector<int>> &adj, int node, int parent) {
+    cout << node << " ";
+    for (int i = 0; i < adj[node].size(); i++) {
+        int next = adj[node][i];
+        if (next != parent) {
+            dfs(adj, next, node);
+        }
+    }
+}
+
+int main(){
+    int n;
+    cin >> n;
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    dfs(adj, 1, -1);
+    return 0;
+}
+
+
+substree of each node :  nums[curr] = 1 + submission of nums[c]
+time complexity is O(N); 
+
+
+in breath first search :
+ #include <bits/stdc++.h>
+using namespace std;
+
+void bfs(vector<vector<int>> &adj, int start) {
+    vector<bool> vis(adj.size(), false);
+    queue<int> q;
+    q.push(start);
+    vis[start] = true;
+    while (!q.empty()) {
+        int curr = q.front();
+        q.pop();
+        cout << curr << " ";
+        for (int i = 0; i < adj[curr].size(); i++) {
+            int next = adj[curr][i];
+            if (!vis[next]) {
+                vis[next] = true;
+                q.push(next);
+            }
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<vector<int>> adj(n + 1);
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    bfs(adj, 1);
+}
+
+void dfs(vertex){
+    // 🔵 1. AFTER ENTERING NODE (pre-work)
+    for(child){
+        // 🟡 2. BEFORE GOING TO CHILD
+        dfs(child);
+        // 🟢 3. AFTER RETURNING FROM CHILD  ⭐ IMPORTANT
+    }
+    // 🔴 4. BEFORE EXITING NODE  ⭐ MOST IMPORTANT
+}
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 1443. Minimum Time to Collect All Apples in a Tree ?
+ans) 
+class Solution {
+public:
+    int dfs(int curr , int parents ,vector<vector<int>>& adj, vector<bool>& hasapple){
+    int ans = 0 ; 
+    for(int i = 0 ; i< adj[curr].size() ; i++){
+        int next = adj[curr][i];
+        if(next!=parents){
+           int x = dfs(next , curr , adj , hasapple);
+           if(x>0 || hasapple[next]){
+            ans+= x+2;
+           }
+        }
+    }
+    return ans ;
+    }
+
+    int minTime(int n, vector<vector<int>>& edges, vector<bool>& hasApple) {
+     vector<vector<int>> adj(n+1);
+     for(int i = 0 ; i < edges.size() ; i++){
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
+     }
+     return dfs(0 , -1 ,adj , hasApple );
+    }
+};
+ 

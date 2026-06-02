@@ -1,0 +1,123 @@
+why MST and what MST ?
+
+N cities , M possible roads => cost of construction for each is know 
+1) N-1 road will constructed 
+2) the resultant must be tree 
+3) sum of node is minimum 
+
+an MST is a subset of the edges are connected undirected graph 
+1) it connect all the node 
+2) no cycle 
+3) total sum of the edges weigt is minimum possible 
+
+Kruskal's : 
+
+class Solution {
+  public:
+  
+  vector<int> parents;
+  vector<int> size;
+  
+  void made(int x){
+      parents[x]= x;
+      size[x]= 1; 
+  }
+  
+  int find(int x){
+      if(parents[x]==x) return x ; 
+      return parents[x] = find(parents[x]);
+  }
+  
+  
+  void Union(int x , int y){
+      int u = find(x);
+      int v = find(y);
+      if(size[u]<size[v]){
+          swap(u , v);
+      }
+      parents[v]= u ; 
+      size[u] += size[v];
+  }
+  
+  
+   int spanningTree(int V, vector<vector<int>>& edges) {
+        parents.resize(V);
+        size.resize(V); 
+        int ans = 0 ; 
+        sort(edges.begin(), edges.end() , [](vector<int> &a , vector<int> &b){
+            return a[2]<b[2];
+        });
+        
+        for(int i = 0 ; i<V ; i++){
+        made(i);    
+        }
+        
+        for(auto x : edges){
+            int u = x[0];
+            int v = x[1];
+            int wt = x[2];
+            if(find(u) != find(v)){
+                Union(u , v);
+                ans+=wt; 
+            }
+        }
+        return ans ; 
+   }
+};
+
+time complexity of kushkal algorithum : O(E log E)
+
+Prism algorithum : in this algo we take one mst bool vector to check its it good or not 
+Idea:
+-> Start from any node (usually 0).
+-> Add all its edges to a min-heap.
+-> Pick the minimum weight edge.
+-> If the destination node is not visited, add it to MST.
+-> Push all its outgoing edges into the heap.
+-> Repeat until all vertices are included.
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdint>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<queue>
+using namespace std;
+
+void prim(vector<vector<pair<int,int>>>& adj,vector<bool>& ismst,int src,int& ans){
+    priority_queue<pair<int,int>, vector<pair<int,int>> , vector<pair<int,int>>> q ;
+    q.push({0 , src});  // weight , node
+    while(!q.empty()){
+        int wt = q.top().first ; 
+        int node = q.top().second ; 
+
+        ismst[node]= true ; 
+        ans += wt ; 
+        for(auto x : adj[node]){
+            int adjnode = x.first;
+            int cost = x.second;
+            if(ismst[adjnode]== false){
+                q.push({cost,adjnode});
+            }
+        }
+    }
+}
+
+int main(){
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pair<int,int>>> adj(n);
+    for(int i = 0; i < m; i++){
+        int u, v, wt;
+        cin >> u >> v >> wt;
+        adj[u].push_back({v, wt});
+        adj[v].push_back({u, wt});
+    }
+    vector<bool> ismst(n, false);
+    int ans = 0;
+    prim(adj, ismst, 0, ans);
+    cout << ans << endl;
+}

@@ -1,0 +1,9 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/sambhavjha/Desktop/Coding/DSA-cource-question/WEEK 20/test'
+relocations:
+  - { offset: 0x2479, size: 0x8, addend: 0x0, symName: __ZStL8__ioinit, symObjAddr: 0xECCA, symBinAddr: 0x100008000, symSize: 0x0 }
+  - { offset: 0x2586, size: 0x8, addend: 0x0, symName: __GLOBAL__sub_I_test.cpp, symObjAddr: 0x6C, symBinAddr: 0x10000070C, symSize: 0x14 }
+  - { offset: 0x259D, size: 0x8, addend: 0x0, symName: __Z41__static_initialization_and_destruction_0v, symObjAddr: 0x30, symBinAddr: 0x1000006D0, symSize: 0x3C }
+  - { offset: 0x25BB, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x1000006A8, symSize: 0x28 }
+...

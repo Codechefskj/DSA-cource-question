@@ -1,0 +1,350 @@
+we represent graph into two type 1) adjacent matrix 2) adjacent list 
+breath first search method :
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> adj;
+
+void bfs(int source, int n) {
+    queue<int> q;
+    vector<bool> vis(n + 1, false);
+    q.push(source);
+    vis[source] = true;
+    while (!q.empty()) {
+        int curr = q.front();
+        q.pop();
+        cout << curr << " ";
+        for (int x : adj[curr]) {
+            if (!vis[x]) {
+                vis[x] = true;
+                q.push(x);
+            }
+        }
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    adj.resize(n + 1);
+
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    bfs(1, n); 
+}
+
+time comeplexity : O(N+M);
+space complexity : O(N)
+
+Q) Why BFS gives shortest path? 
+ans) Visits nodes level by level
+     First time reaching a node = minimum distance
+    
+#include <bits/stdc++.h>
+using namespace std;
+vector<vector<int>> adj;
+vector<int> bfs(int source, int n) {
+    queue<int> q;
+    vector<int> dis(n + 1, -1);
+    q.push(source);
+    dis[source] = 0;
+    while (!q.empty()){
+        int curr = q.front();
+        q.pop();
+        for (int x : adj[curr]) {
+            if (dis[x]==-1) {
+                dis[x] = dis[curr]+1;
+                q.push(x);
+            }
+        }
+    }
+    return dis; 
+}
+
+int main() {
+    int n;
+    cin >> n;
+    adj.resize(n + 1);
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    vector<int> dis = bfs(1, n); 
+    for(int i = 1 ; i< dis.size(); i++){
+        cout<< dis[i]<< " ";
+    }
+}
+
+Q) given a grp and source and destination node print all the node which are a part of at least one shortest path source to destination 
+   print -1 is no path fron source to destination ?
+ans) 
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<int>> adj;
+int n ; 
+
+vector<int> bfs(int source) {
+    queue<int> q;
+    vector<int> dis(n + 1, -1);
+    q.push(source);
+    dis[source] = 0;
+    while (!q.empty()) {
+        int curr = q.front();
+        q.pop();
+        for (int x : adj[curr]) {
+            if (dis[x]==-1) {
+                dis[x] = dis[curr]+1;
+                q.push(x);
+            }
+        }
+    }
+    return dis; 
+}
+
+vector<int> helper(int s, int t){
+    vector<int> distS = bfs(s);
+    vector<int> distT = bfs(t);
+    vector<int> ans ; 
+    if(distS[t] == -1){
+        return {0};
+    }
+    int shortest = distS[t];
+    for(int i = 1 ; i<= n ; i++){
+      if(distS[i]+distT[i]== shortest && distS[i] != -1 && distT[i] != -1){
+        ans.push_back(i);
+      }
+    }
+    return ans ; 
+}
+
+int main() {
+    cin >> n;
+
+    adj.resize(n + 1);
+
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    // for testing 
+}
+
+time complexity: O(N)
+space complexity: O(n)
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 1319. Number of Operations to Make Network Connected?
+ans) 
+class Solution {
+public:
+    void dfs(int curr, vector<vector<int>>& adj, vector<bool> &vis) {
+        vis[curr] = true;
+
+        for (int next : adj[curr]) {
+            if (vis[next]) continue;
+            dfs(next, adj, vis);
+        }
+    }
+
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        if (connections.size() < n - 1) return -1;
+
+        vector<vector<int>> adj(n);
+
+        for (auto &edge : connections) {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+
+        vector<bool> vis(n, false);
+
+        int components = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (vis[i]) continue;
+            dfs(i, adj, vis);
+            components++;
+        }
+
+        return components - 1; 
+    }
+};
+
+Q) 1971. Find if Path Exists in Graph
+ans) 
+class Solution {
+public:
+    vector<int> bfs(int source, vector<vector<int>>& adj, int n) {
+        queue<int> q;
+        vector<int> dis(n, -1);
+        q.push(source);
+        dis[source] = 0;
+        while (!q.empty()) {
+            int curr = q.front();
+            q.pop();
+            for (int x : adj[curr]) {
+                if (dis[x] == -1) {
+                    dis[x] = dis[curr] + 1;
+                    q.push(x);
+                }
+            }
+        }
+        return dis;
+    }
+
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        vector<vector<int>> adj(n);
+        for (auto &e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        vector<int> dist = bfs(source, adj, n);
+        return dist[destination] != -1;  
+    }
+};
+
+Q) check how many connected components ?
+ans)
+#include <bits/stdc++.h>
+using namespace std;
+
+void dfs(int curr, vector<bool> &vis, vector<vector<int>>& adj) {
+    vis[curr] = true;
+    for (int i = 0; i < adj[curr].size(); i++) {
+        int next = adj[curr][i];
+        if (vis[next]) continue;
+        dfs(next, vis, adj);
+    }
+}
+
+int main() {
+    int n, m;
+cin >> n >> m;
+vector<vector<int>> adj(n + 1);
+for (int i = 0; i < m; i++) {
+    int u, v;
+    cin >> u >> v;
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+}
+    vector<bool> vis(n + 1, false);
+    int connected_components = 0;
+    for (int i = 1; i <= n; i++) {
+        if (vis[i]) continue;
+        dfs(i, vis, adj);
+        connected_components++;
+    }
+    cout << "connected components. "<<connected_components << " ";
+}
+
+Q) gfg Undirected Graph Cycle?
+ans) 
+class Solution {
+public:
+    bool dfs(vector<vector<int>> &adj, vector<bool> &vis, int curr, int parent) {
+        vis[curr]=true ; 
+        for(int i = 0 ; i< adj[curr].size(); i++){
+            int next = adj[curr][i];
+            if(vis[next] && next!= parent) return true ; 
+            if(next == parent) continue ; 
+            if(vis[next]!=true){
+                if(dfs(adj, vis , next , curr)) return true;
+            }
+        }
+        return false ; 
+    }
+    
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(V);
+        for (auto &e : edges) {
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        vector<bool> vis(V, false);
+        for (int i = 0; i < V; i++) {
+            if (!vis[i]) {
+                if (dfs(adj, vis, i, -1)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+
+Q) 733. Flood Fill ?
+ans) 
+class Solution {
+public:
+    void dfs(int i, int j, vector<vector<int>> &image, int color, int initialcolour) {
+        int n = image.size();
+        int m = image[0].size();
+        if (i < 0 || j < 0 || i >= n || j >= m) return;
+
+        if (image[i][j] != initialcolour) return;
+
+        image[i][j] = color;
+
+        dfs(i + 1, j, image, color, initialcolour);
+        dfs(i - 1, j, image, color, initialcolour);
+        dfs(i, j + 1, image, color, initialcolour);
+        dfs(i, j - 1, image, color, initialcolour);
+    }
+
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int initialcolour = image[sr][sc];
+
+        if (initialcolour == color) return image;
+
+        dfs(sr, sc, image, color, initialcolour);
+
+        return image;
+    }
+};
+
+Q) leetcode 200. Number of Islands ?
+ans) 
+class Solution {
+public:
+    void dfs(int i , int j , vector<vector<char>> &grid , vector<vector<bool>>& vis){
+    // check 
+    int n = grid.size();
+    int m = grid[0].size();
+    if(i < 0 || j < 0 || i>=n || j>=m || grid[i][j]=='0'|| vis[i][j]) return;
+    // put condition
+    vis[i][j]= true ;  
+     dfs(i+1 , j , grid , vis);
+     dfs(i , j+1 , grid , vis);
+     dfs(i-1 , j , grid , vis);
+     dfs(i , j-1 , grid , vis);
+    }
+
+    int numIslands(vector<vector<char>>& grid) {
+        vector<vector<bool>> vis(grid.size(), vector<bool>(grid[0].size(), false));
+        int ans = 0 ; 
+        for(int i = 0 ; i< grid.size(); i++){
+            for(int j = 0 ; j< grid[0].size(); j++){
+               if(grid[i][j]=='1' && vis[i][j]==false){
+                 dfs(i , j, grid , vis);
+                 ans++;
+               }
+            }
+        }
+        return ans ; 
+    }
+};
+

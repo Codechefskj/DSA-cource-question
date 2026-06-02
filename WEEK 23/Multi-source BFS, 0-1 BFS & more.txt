@@ -1,0 +1,179 @@
+multiple source BFS :
+instead of putting a single source to the queue 
+.) put all of the source to the queue 
+.) make d[] value of all of them => 0 
+
+// psudo code :
+for(int src : source){
+    q.push(src);
+    d[src]= 0 ; 
+}
+while(!Q.empty()){
+    // exactly same as bfs 
+}
+
+Q) https://codeforces.com/problemset/problem/1272/E ?
+ans) 
+#include <iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+void multibsf(vector<int> source , vector<vector<int>> &value , vector<int> &dist ,  int a){
+queue<int> temp ;
+vector<bool> visited(a , false); 
+for(auto x : source){
+    temp.push(x);
+    visited[x]= true ; 
+    dist[x]= 0 ; 
+}
+while(!temp.empty()){
+    int frnt = temp.front();
+    temp.pop();
+    for(int i = 0 ; i< value[frnt].size() ; i++){
+        int next = value[frnt][i];
+        if(visited[next]==false){
+            temp.push(next);  
+            visited[next]= true ; 
+            dist[next]=dist[frnt]+1;
+        }
+    }
+}
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> value(n);
+    for(int i = 0; i < n; i++) {
+        cin >> value[i];
+    }
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n; i++) {
+        if(i + value[i] < n) {
+            adj[i + value[i]].push_back(i);
+        }
+        if(i - value[i] >= 0) {
+            adj[i - value[i]].push_back(i);
+        }
+    }
+
+    vector<int> even;
+    vector<int> odd;
+
+    for(int i = 0; i < n; i++) {
+        if(value[i] % 2 == 0) {
+            even.push_back(i);
+        }
+        else {
+            odd.push_back(i);
+        }
+    }
+
+    vector<int> disteven(n , -1) ;
+    vector<int> distodd(n , -1) ; 
+
+    multibsf(even , adj , disteven , n);
+    multibsf(odd , adj , distodd , n);
+
+    for(int i = 0 ; i< n ; i++){
+        if(value[i]%2==0){
+          cout<< distodd[i]<<" ";
+        }
+        else{
+             cout<< disteven[i]<<" ";
+        }
+    }
+
+}
+
+they explain the 0-1 bsf :
+when we have weight of 0 we push on front and when we have weight of 1 we push on back 
+we used deque 
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q) codechef https://www.codechef.com/SNCKPB17/problems/SNSOCIAL/?tab=statement
+ans) 
+// this is multisource bsf in matrix 
+#include <iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+vector<pair<int,int>> movements= {
+    {1,0}, {0,1}, {-1,0},{0,-1} , {1,1} , {1, -1}, {-1,1}, {-1,-1}
+};
+
+bool valid(int i , int j , int n , int m ){
+ return  i>=0 && j>=0 && i<n && j<m;
+} 
+
+void bsf(int n , int m , vector<vector<int>> &value , vector<vector<bool>> &visisted , vector<vector<int>> &level){
+int maxi = 0 ; 
+for(int i = 0 ; i< n; i++){
+    for(int j = 0 ; j< m; j++){
+      maxi = max(value[i][j] , maxi);
+    }
+}
+
+queue<pair<int,int>> temp ; 
+
+for(int i = 0 ; i< n ; i++){
+    for(int j = 0 ; j< m ; j++){
+        if(value[i][j] == maxi){
+                temp.push({i,j});
+                visisted[i][j]= true ; 
+            }
+        }
+    }
+   
+   while(!temp.empty()){
+    auto v = temp.front();
+    int v_i = v.first;
+    int v_j = v.second;
+    temp.pop();
+    for(auto x : movements){
+        int new_v_i = v_i + x.first;
+        int new_v_j = v_j + x.second;
+        if(valid(new_v_i , new_v_j , n , m)==true ){
+        if(visisted[new_v_i][new_v_j]==true){
+               continue; 
+        }
+         temp.push({new_v_i, new_v_j});
+         visisted[new_v_i][new_v_j]= true ; 
+         level[new_v_i][new_v_j]= level[v_i][v_j]+1;
+        }
+    }
+   }
+}
+
+int main() {
+    int t ; 
+    cin >> t ; 
+    while(t--){
+        int n ;
+        cin >> n ; 
+        int m ;
+        cin >> m ;
+        vector<vector<int>> value(n ,vector<int> (m));
+        vector<vector<bool>> vis(n , vector<bool>(m, false));
+        vector<vector<int>> dis(n , vector<int>(m , 0));
+        for(int i = 0 ; i< n ; i++){
+            for(int j = 0 ; j< m ; j++){
+                 cin>>value[i][j];
+            }
+        }
+        int ans = 0 ;
+        bsf(n , m , value , vis , dis);
+        for(int i = 0 ; i< n ; i++){
+            for(int j = 0 ; j< m ; j++){
+                ans = max(ans , dis[i][j]);
+            }
+        }
+        cout<< ans << endl ; 
+        
+    }
+}

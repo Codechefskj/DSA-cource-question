@@ -1,0 +1,241 @@
+strong connected components :
+In a directed graph, a Strongly Connected Component is a group of vertices where:
+Every vertex can reach every other vertex.
+Path must follow the direction of edges.
+
+directed acyclic graph : 
+where edges have direction
+(Directed)
+and there is no cycle
+(Acyclic)
+
+type of edges ->
+
+tree edges: An edge used to visit a node for the first time.
+
+back edges: An edge from a node to its ancestor in DFS tree.
+
+forward edges : An edge from a node to its descendant but not a tree edge.
+
+cross edges : An edge connecting two unrelated subtrees/nodes.
+
+
+
+topological sort :
+topo sort exists only if and only if the given directed graph doest have the an cycle (the grp should be a DAG)
+
+an ording of the nodes of a DAG in such ways that for the every edges u->v , u should comes before v in the ordering 
+
+back edge = cycle are present 
+
+topological sorting using dfs:
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std ; 
+
+bool iscycle(vector<bool>& visited , vector<bool>& isrecusion , int curr , vector<vector<int>>& adj){
+visited[curr]= true ; 
+for(auto x : adj[curr]){
+if(visited[x]== true && isrecusion[x]==true ) return true ; 
+if(visited[x]== false){
+    if(iscycle(visited , isrecusion , x , adj)==true){
+        return true ; 
+    }
+}
+}
+isrecusion[curr]= false ; 
+return false ; 
+}
+
+void findans(int curr , vector<bool>& visited , vector<int>& ans , vector<vector<int>>& adj ){
+visited[curr]= true ;
+ for(auto x : adj[curr]){
+    if(visited[x]==false){
+        findans(x , visited , ans , adj);
+    }
+ }
+ ans.push_back(curr);
+}
+
+
+int main (){
+    int n , m ; 
+    cin >> n >> m ; 
+    vector<vector<int>> adj(n);
+    for(int i = 0 ; i< m ; i++){
+        int x , y ; 
+        cin >> x >> y ; 
+        adj[x].push_back(y);
+    }
+    // we can check it is cycle or not 
+    vector<bool> visited(n , false);
+    vector<bool> isrecusion(n , false);
+
+    bool cycleornot = false ;
+    for(int i = 0 ; i< n ; i++){
+        cycleornot |= iscycle(visited , isrecusion , i , adj);
+    }
+    visited.assign(n , false);
+    vector<int> ans; 
+    if(cycleornot== false){
+        for(int i = 0 ; i< n ; i++){
+            if(visited[i]==false){
+                  findans(i , visited , ans, adj);
+            }
+        }
+    }
+    reverse(ans.begin() , ans.end());
+    for(int i = 0 ; i< n ; i++){
+        cout<< ans[i]<<" "; 
+    }
+}
+
+
+
+Q) leetcode 210. Course Schedule II ?
+ans) 
+class Solution {
+public:
+    bool iscycle(int curr,vector<bool>& visited,vector<bool>& isrecursion,vector<vector<int>>& adj){
+        visited[curr] = true;
+        isrecursion[curr] = true;
+        for(auto x : adj[curr]){
+            if(visited[x] && isrecursion[x]){
+                return true;
+            }
+            if(!visited[x]){
+                if(iscycle(x, visited, isrecursion, adj)){
+                    return true;
+                }
+            }
+        }
+        isrecursion[curr] = false;
+        return false;
+    }
+
+    void findans(int curr,vector<int>& visitedd,vector<int>& ans,vector<vector<int>>& adj){
+        visitedd[curr] = 0;
+        for(auto x : adj[curr]){
+            if(visitedd[x] == -1){
+                findans(x, visitedd, ans, adj);
+            }
+        }
+        ans.push_back(curr);
+    }
+
+    vector<int> findOrder(int n,vector<vector<int>>& edges) {
+        vector<vector<int>> adj(n);
+        for(int i = 0; i < edges.size(); i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            adj[v].push_back(u);
+        }
+        vector<int> visitedd(n, -1);
+        vector<int> ans;
+
+        vector<bool> isrecursion(n, false);
+        vector<bool> visited(n, false);
+        bool iscycleornot = false;
+        for(int i = 0; i < n; i++){
+            if(!visited[i]){
+                iscycleornot |= iscycle(i,visited,isrecursion,adj);
+            }
+        }
+        for(int i = 0; i < n; i++){ 
+            if(visitedd[i] == -1){
+                findans(i,visitedd,ans,adj);
+            }
+        }
+
+        reverse(ans.begin(), ans.end());
+
+        return (!iscycleornot) ? ans : vector<int>{};
+    }
+};
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q) leetcoad 1462. Course Schedule IV ?
+ans) 
+class Solution {
+public:
+    bool findans(int src , int des, vector<bool>& visited , vector<vector<int>>& adj){
+    visited[src]= true ; 
+    if(src==des) return true ; 
+    bool ans = false ; 
+    for(auto x : adj[src]){
+        if(visited[x]==false){
+           if(findans(x , des , visited , adj)){
+            ans = true ; 
+           }
+        }
+    }
+    return ans ;
+    }
+
+    vector<bool> checkIfPrerequisite(int n, vector<vector<int>>& edges, vector<vector<int>>& queries) {
+        vector<vector<int>> adj(n);
+        for(auto x : edges){
+         int u = x[0];
+         int v = x[1];
+         adj[u].push_back(v);
+        }
+        vector<bool> ans(queries.size());
+        vector<bool> visited(n , false);
+        for(int i = 0 ; i<queries.size(); i++){
+            int u = queries[i][0];
+            int v = queries[i][1];
+            visited.assign(n , false);
+            if(findans(u , v , visited , adj)){
+                ans[i]= true; 
+            }
+        }
+        return ans ; 
+    }
+};
+
+Q) leetcoad 802. Find Eventual Safe States ?
+ans) 
+// we check cycle exists then we dont count that path because its is not a safe path 
+class Solution {
+public:
+
+    bool iscycleisnot(int curr,vector<vector<int>>& adj,vector<bool>& visited,vector<bool>& isrecursion) {
+        visited[curr] = true;
+        isrecursion[curr] = true;
+        for (auto x : adj[curr]) {
+            if (visited[x] && isrecursion[x]) {
+                return true;
+            }
+            if (!visited[x]) {
+                if (iscycleisnot(x, adj, visited, isrecursion)) {
+                    return true;
+                }
+            }
+        }
+        isrecursion[curr] = false;
+        return false;
+    }
+
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+
+        int n = graph.size();
+
+        vector<int> ans;
+
+        for (int i = 0; i < n; i++) {
+
+            vector<bool> visited(n, false);
+            vector<bool> isrecursion(n, false);
+
+            if (!iscycleisnot(i, graph, visited, isrecursion)) {
+                ans.push_back(i);
+            }
+        }
+        sort(ans.begin(), ans.end());
+
+        return ans;
+    }
+};
+

@@ -1,0 +1,140 @@
+Q) leetcode 2049. Count Nodes With the Highest Score ?
+ans) 
+class Solution {
+public:
+    long long maxscore = 0 ;
+    int ans = 0 ; 
+    int dfs(vector<vector<int>> &adj , int curr , int parents , int n ){
+     long long localscore = 1;
+     int size = 1 ;
+     for(int i = 0 ; i< adj[curr].size(); i++){
+        int next = adj[curr][i];
+        if(next==parents) continue ;
+        int s = dfs(adj , next , curr , n);
+        size += s ; 
+        localscore *= s; 
+     } 
+     int rem = (n-size);
+     if(rem>0){
+        localscore *= rem ;
+     }
+     if(localscore>maxscore){
+        maxscore = localscore ; 
+        ans = 1 ; 
+     }
+     else if(maxscore == localscore){
+       ans++;
+     }
+     return size; 
+    }
+
+    int countHighestScoreNodes(vector<int>& parents) {
+        int n = parents.size();
+        vector<vector<int>> adj(n+1);
+        for(int i = 0 ; i< n ; i++){
+            int par = parents[i];
+            if(par!=-1){
+             adj[i].push_back(par);
+             adj[par].push_back(i);
+            }
+        }
+        int c = dfs(adj , 0 , -1 , n);
+        return ans ; 
+    }
+};
+time complexity = O(N);
+space complexity = O(N);
+
+
+Q) leetcode 834. Sum of Distances in Tree ?
+ans) 
+class Solution {
+public:
+    vector<int> subtree;
+    vector<int> downsum;
+    vector<int> ans;
+    int dfsdown(vector<vector<int>> &adj, int curr, int parent){
+        int sub = 1;
+        int sum = 0;
+        for(int i = 0; i < adj[curr].size(); i++){
+            int next = adj[curr][i];
+            if(next == parent) continue;
+            int childSub = dfsdown(adj, next, curr);
+            sub += childSub;
+            sum += downsum[next] + childSub;
+        }
+        subtree[curr] = sub;
+        downsum[curr] = sum;
+        return sub;
+    }
+
+    void dfs2(vector<vector<int>> &adj, int curr, int parent, int n){
+        for(int i = 0; i < adj[curr].size(); i++){
+            int next = adj[curr][i];
+            if(next == parent) continue;
+            ans[next] = ans[curr] 
+                        - subtree[next] 
+                        + (n - subtree[next]);
+            dfs2(adj, next, curr, n);
+        }
+    }
+
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(n);
+        for(int i = 0; i < edges.size(); i++){
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);   
+        }
+        subtree.resize(n);
+        downsum.resize(n);
+        ans.resize(n);
+        dfsdown(adj, 0, -1);
+        ans[0] = downsum[0];  
+        dfs2(adj, 0, -1, n);
+        return ans;
+    }
+};
+
+time complexity : 
+space complexity : 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ Q) leetcode 2925. Maximum Score After Applying Operations on a Tree ?
+ ans)
+ class Solution {
+public:
+    long long dfs(vector<vector<int>> &adj , vector<int> &value , int curr , int parents){
+    long long ans = 0 ;
+    bool isleaf = true ; 
+    for(int i = 0 ; i< adj[curr].size(); i++){
+        int next = adj[curr][i];
+        if(next == parents) continue;
+        isleaf = false ; 
+        ans += dfs(adj , value , next , curr);
+    }
+    if(isleaf) return value[curr];
+    return min((long long)value[curr] , ans);
+    }
+
+    long long maximumScoreAfterOperations(vector<vector<int>>& edges, vector<int>& values) {
+    int n = values.size();
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < edges.size(); i++){
+        adj[edges[i][0]].push_back(edges[i][1]);
+        adj[edges[i][1]].push_back(edges[i][0]);
+    }
+    long long totalSum = 0;
+    for(int x : values){
+        totalSum += x;
+    }
+    long long keep = dfs(adj, values, 0, -1);
+    return totalSum - keep;
+}
+};
+
+// time complexity : O(n)
+// space comeplexity : O(n)
+
+
+

@@ -1,0 +1,387 @@
+Q) Question
+
+1. Given N computers and M pairs of computers between which there is a direct connection.
+2. Now, for the next D days, every day a spy cuts the wire between a pair of computers.
+    Basically, D lines of input will be given, where each line will contain C1 & C2.
+3. We need to print D numbers, i.e. after each day, how many different networks of computers will be there?
+
+⸻
+
+Constraints
+
+* 1 \le N \le 10^5
+* 1 \le M \le \min(10^5,\binom{N}{2})
+* 1 \le D \le M
+* 1 \le C_1, C_2 \le N
+
+ans) 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <set>
+
+using namespace std;
+
+vector<int> parents(10000007);
+vector<int> sz(10000007);
+
+int components = 0;
+
+void make(int x) {
+    parents[x] = x;
+    sz[x] = 1;
+    components++;
+}
+
+int find(int a) {
+    if(parents[a] == a)
+        return a;
+    return parents[a]
+           = find(parents[a]);
+}
+
+bool Union(int a, int b) {
+    int roota = find(a);
+    int rootb = find(b);
+    if(roota == rootb)
+        return false;
+    if(sz[roota] < sz[rootb])
+        swap(roota, rootb);
+    parents[rootb] = roota;
+    sz[roota] += sz[rootb];
+    components--;
+    return true;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    set<pair<int,int>> edges;
+    for(int i = 0; i < m; i++) {
+        int x, y;
+        cin >> x >> y;
+        if(x > y)
+            swap(x,y);
+        edges.insert({x,y});
+    }
+
+    int d;
+    cin >> d;
+    vector<pair<int,int>> days(d);
+    for(int i = 0; i < d; i++) {
+        int x, y;
+        cin >> x >> y;
+        if(x > y)
+            swap(x,y);
+        days[i] = {x,y};
+        edges.erase({x,y});
+    }
+
+    // initialize DSU
+    for(int i = 1; i <= n; i++) {
+        make(i);
+    }
+
+    // remaining edges
+    for(auto x : edges) {
+        Union(x.first, x.second);
+    }
+
+    vector<int> ans;
+    // reverse processing
+    for(int i = d-1; i >= 0; i--) {
+        ans.push_back(components);
+        Union(days[i].first,
+              days[i].second);
+    }
+    reverse(ans.begin(), ans.end());
+    for(auto x : ans) {
+        cout << x << " ";
+    }
+}
+
+Q) Question: Minimize Path Cost
+
+1. In a given weighted graph, the cost of a path is defined as the maximum edge weight among all the edges present in that path.
+2. Given a source node (src) and a destination node (dest), find the minimum possible cost to reach dest from src.
+3. Print -1 if no path exists between src and dest.
+
+Note
+
+* The graph is directed (as marked in the image).
+ans) 
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+int n ; 
+
+bool isvalid(int src , int ed , int threshold , vector<vector<pair<int,int>>>& adj){
+queue<int> temp ; 
+vector<bool> visiter(n , false);
+temp.push(src);
+visiter[src]= true ; 
+while(!temp.empty()){
+auto curr = temp.front();
+temp.pop();
+if(curr==ed) return true ;
+for(auto x : adj[curr]){
+    int child_x = x.first ; 
+    int wt = x.second;
+    if(wt<=threshold && visiter[child_x]!= true){
+       temp.push(child_x);
+       visiter[child_x]= true ; 
+    }
+}
+}
+return  false ; 
+}
+
+int main() {
+    cin >> n ; 
+    int m ; 
+    cin >>m ;
+    vector<vector<pair<int,int>>> adj(n);
+    int maxi = 0 ; 
+    for(int i = 0 ; i< m ; i++){
+      int x , y , wt ;
+      cin>>x>>y>>wt ; 
+      adj[x].push_back({y, wt});
+      adj[y].push_back({x, wt});
+      maxi = max(maxi , wt);
+    }
+    int start = 1 , end = maxi ;
+    int ans = 0 ; 
+     while(start<=end){
+       int mid = start + (end-start)/2;
+        if(isvalid(start , end , mid , adj)){
+            ans = mid ; 
+            end = mid-1; 
+        }
+        else{
+            start = mid+1; 
+        }
+     }
+     cout<< ans << " " ; 
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q) codeforces https://codeforces.com/problemset/problem/1093/D ?
+ans) 
+#include<iostream>
+#include<vector>
+using namespace std ; 
+
+int ans = 1 ; 
+int MOD= 998244353 ;
+
+long long power(long long x,long long a){
+    long long temp = 1;
+    while(a){
+        if(a&1) temp =(temp*x)%MOD;
+        x = (x*x)%MOD;
+        a >>= 1;
+    }
+    return temp;
+}
+
+bool checkbipatatite(vector<vector<int>> & adj , int currno , vector<int> &colour , int currnodeno , int &cnt0 , int &cnt1){
+(currnodeno==0)? cnt0++ : cnt1++;
+colour[currno]=currnodeno; 
+for(auto x : adj[currno]){
+    if(colour[x] != -1 && colour[currno]==colour[x]){
+        return false;
+    }
+    if(colour[x]==-1){
+        int y = 1- currnodeno; 
+        if(checkbipatatite(adj , x , colour , y , cnt0 , cnt1)==false){
+               return false ; 
+        }
+    }
+}
+return true ; 
+}
+
+int main (){
+    int t ; 
+    cin >> t ; 
+    while(t--){
+        ans = 1 ; 
+        int n , m ; 
+        cin>> n >> m ; 
+        vector<vector<int>> adj(n+1);
+        for(int i = 0 ; i< m ; i++){
+            int x ; 
+            int y ; 
+            cin >> x >> y ;
+            adj[x].push_back(y);
+            adj[y].push_back(x);
+        }
+        int cnt0 = 0 ;
+        int cnt1 = 0 ;
+        bool ok = true  ; 
+       vector<int> colour(n+1 , -1) ; 
+       for(int i = 1 ; i<= n ; i++){
+        if(colour[i] == -1){
+          cnt0 = 0 , cnt1 = 0; 
+        if(checkbipatatite(adj , i , colour , 1 , cnt0 , cnt1)){
+            ok = true; 
+            int ways = (power(2 , cnt0) + power(2 , cnt1 ))%MOD;
+            ans = (ans * ways) % MOD;
+        }
+        else{
+            ok = false ; 
+            break ;  
+        }
+        }
+       }
+       (ok==true)? cout<< ans << endl : cout<< 0 << endl ; 
+    }
+}
+
+Q) leetcode 990. Satisfiability of Equality Equations ?
+ans) 
+class Solution {
+public:
+    vector<int> parents;
+    vector<int> sz;
+    void make(int x) {
+        parents[x] = x;
+        sz[x] = 1;
+    }
+
+    int find(int x) {
+        if(parents[x] == x) return x;
+        return parents[x] = find(parents[x]);
+    }
+
+    void Union(int x, int y) {
+        int rootx = find(x);
+        int rooty = find(y);
+        if(rootx == rooty)
+            return;
+        if(sz[rootx] < sz[rooty]) {
+            swap(rootx, rooty);
+        }
+        parents[rooty] = rootx;
+        sz[rootx] += sz[rooty];
+    }
+
+    bool equationsPossible(vector<string>& equations) {
+        parents.resize(26);
+        sz.resize(26);
+
+        for(int i = 0; i < 26; i++) {
+            make(i);
+        }
+
+        for(auto x : equations) {
+            if(x[1] == '=') {
+                int first = x[0] - 'a';
+                int second =x[3] - 'a';
+                Union(first, second);
+            }
+        }
+
+        for(auto x : equations) {
+            if(x[1] == '!') {
+                int first = x[0] - 'a';
+                int second = x[3] - 'a';
+                if(find(first)==find(second)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+};
+
+Q) detected cycle present or not in directed graph ?
+ans) 
+class Solution {
+  public:
+   bool iscycle(int curr , vector<bool> &visited , vector<bool> &isrecurse , vector<vector<int>> &adj){
+        isrecurse[curr]= true ; 
+        visited[curr]= true ; 
+        for(int i = 0 ; i< adj[curr].size(); i++){
+            if(visited[adj[curr][i]] == true && isrecurse[adj[curr][i]] == true){
+             return true ; 
+            }
+            if(visited[adj[curr][i]]==false){
+                if(iscycle(adj[curr][i] , visited , isrecurse, adj)){
+                    return true ; 
+                    break ; 
+                }
+            }
+        }
+        isrecurse[curr] = false;
+        return false ; 
+    }
+    
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        vector<vector<int>> adj(V);
+
+        for(auto x : edges){
+
+            int u = x[0];
+            int v = x[1];
+
+            adj[u].push_back(v);
+        }
+
+        
+        vector<bool> visited(V , false);
+        vector<bool> isrecurse(V , false);
+        bool ans = false ; 
+        for(int i = 0 ; i< V ; i++){
+            if(visited[i]== false){
+                ans |= iscycle(i , visited , isrecurse , adj);
+            }
+        }
+        return ans ; 
+    }
+};
+
+Q) leetcode 207. Course Schedule ?
+ans) 
+class Solution {
+public:
+    bool iscycle(int curr ,vector<bool>& visited , vector<bool>& isrecursion , vector<vector<int>>& adj){
+    visited[curr]= true ; 
+    isrecursion[curr]= true ; 
+    for(auto x : adj[curr]){
+        if(visited[x]== true && isrecursion[x]==true){
+            return true ; 
+        }
+        if(visited[x]==false){
+            if(iscycle(x, visited , isrecursion , adj)){
+                return true; 
+            }
+        }
+    }
+    isrecursion[curr]= false ; 
+    return false ; 
+    }
+
+    bool canFinish(int n, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> adj(n);
+        for(auto x : prerequisites){
+            int u = x[0];
+            int v = x[1];
+            adj[u].push_back(v);
+        }
+        vector<bool> visited(n , false);
+        vector<bool> isrursion(n, false);
+        bool ans = false ;
+        for(int i = 0 ; i< n ; i++){
+            if(visited[i]== false){
+               ans |= iscycle(i ,visited ,isrursion , adj);
+            }
+        } 
+        return !ans ; 
+    }
+};
+
+

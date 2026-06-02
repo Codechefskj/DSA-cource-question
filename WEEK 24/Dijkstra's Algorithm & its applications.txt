@@ -1,0 +1,165 @@
+weight graph (with non - negative weight) - short distance path : dijkstra algorithum 
+
+the main idea : 
+1) d[src]= 0 & d[all other]= infinite , mark[all]= false;
+2) N iteration 
+  - find node with shortest distance (out of unwanted mark it node)
+
+
+in dijkstra we used shorted path to find from one souce to another source 
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+void dijkastra(int src  , vector<vector<pair<int,int>>>& adj , vector<int>& dist){
+priority_queue<pair<int,int>, vector<pair<int,int>> , greater<pair<int,int>>> q ; 
+q.push({0 , src});
+dist[src]= 0 ; 
+while(!q.empty()){
+int distance = q.top().first;
+int node = q.top().second; 
+q.pop();
+for(auto x : adj[node]){ 
+int adjnode = x.first ; 
+int wt = x.second ; 
+// relaxaction 
+if(distance + wt < dist[adjnode]){
+dist[adjnode]= distance + wt ; 
+q.push({dist[adjnode], adjnode});
+}
+}
+}
+}
+
+int main(){
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pair<int,int>>> adj(n);
+    for(int i = 0; i < m; i++){
+        int u, v, wt;
+        cin >> u >> v >> wt;
+        adj[u].push_back({v, wt});
+    }
+    vector<int> dist(n, 1e9);
+    int src;
+    cin >> src;
+    dijkastra(src, adj, dist);
+    for(int i = 0; i < n; i++){
+        cout << dist[i] << " ";
+    }
+}
+
+
+Q) leetcode 743. Network Delay Time ?
+ans) 
+class Solution {
+public:
+    void dijkastra(int src , vector<vector<pair<int,int>>>& adj , vector<int>& dist){
+    priority_queue<pair<int,int>, vector<pair<int,int>> , greater<pair<int,int>>> q ; 
+    q.push({0 , src});
+    dist[src]= 0 ; 
+    while(!q.empty()){
+        int distance = q.top().first ; 
+        int node = q.top().second;
+        q.pop();
+        for(auto x : adj[node]){
+            int adjnode = x.first ; 
+            int wt = x.second ; 
+            if(dist[node]+wt < dist[adjnode]){
+               dist[adjnode]= dist[node]+wt ; 
+               q.push({dist[node]+wt , adjnode});
+            }
+        }
+    }
+    }
+
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<vector<pair<int,int>>> adj(n+1) ; 
+        for(int i = 0 ; i<times.size() ; i++){
+            int x = times[i][0];
+            int y = times[i][1];
+            int wt = times[i][2];
+            adj[x].push_back({y , wt});
+        }
+        vector<int> dist(n+1 , INT_MAX);
+        dijkastra(k , adj , dist);
+        int ans = 0 ;
+        for(int i = 1 ; i<= n ; i++){
+         if(dist[i]==INT_MAX){
+            ans = -1 ; 
+            break ; 
+         }
+         else{
+            ans = max(ans , dist[i]);
+         }
+        }
+        return ans ; 
+    }
+};
+
+Q) codeforces https://codeforces.com/problemset/problem/20/C ?
+ans) 
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+
+using namespace std;
+
+void dijkstra(int src,vector<vector<pair<int,int>>>& adj,vector<int>& dist,vector<int>& parent){
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> q;
+    q.push({0, src});
+    dist[src] = 0;
+    while(!q.empty()){
+        int distance = q.top().first;
+        int node = q.top().second;
+        q.pop();
+        if(distance > dist[node]){
+            continue;
+        }
+        for(auto x : adj[node]){
+            int adjnode = x.first;
+            int wt = x.second;
+            if(dist[node] + wt < dist[adjnode]){
+                dist[adjnode] = dist[node] + wt;
+                parent[adjnode] = node;
+                q.push({dist[adjnode], adjnode});
+            }
+        }
+    }
+}
+
+int main(){
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pair<int,int>>> adj(n + 1);
+    for(int i = 0; i < m; i++){
+        int u, v, wt;
+        cin >> u >> v >> wt;
+        adj[u].push_back({v, wt});
+        adj[v].push_back({u, wt});
+    }
+    vector<int> dist(n + 1, 1e9);
+    vector<int> parent(n + 1);
+    for(int i = 1; i <= n; i++){
+        parent[i] = i;
+    }
+    dijkstra(1, adj, dist, parent);
+    if(dist[n] == 1e9){
+        cout << -1;
+        return 0;
+    }
+    vector<int> path;
+    int node = n;
+    while(parent[node] != node){
+        path.push_back(node);
+        node = parent[node];
+    }
+    path.push_back(1);
+    reverse(path.begin(), path.end());
+    for(auto x : path){
+        cout << x << " ";
+    }
+}
+

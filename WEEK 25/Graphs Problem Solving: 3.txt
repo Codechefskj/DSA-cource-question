@@ -1,0 +1,304 @@
+Q) Closest Hospital
+Question:
+1. A weighted directed graph is given. Some nodes are hospitals while others are not. For each node, find the distance to the nearest hospital.
+Constraints
+* 1 \leq N, M \leq 10^5
+* 1 \leq \text{numHospitals} \leq N
+Input:
+1. First Line: Integers N and M
+2. Next M Lines: A B W
+    (Edge from A to B of weight W)
+3. Next Line: numHospitals
+    (number of hospitals)
+4. Next Line: numHospitals integers which represent the node numbers that are hospitals.
+
+ans) 
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+using namespace std;
+
+
+void multisourcedijkastra(vector<vector<pair<int,int>>>& adj , vector<int>& hospitalno , vector<int>& dist){
+priority_queue<pair<int,int>, vector<pair<int,int>> , greater<pair<int,int>>> q ; 
+for(int i = 0 ; i< hospitalno.size(); i++){
+    q.push({0, hospitalno[i]});
+    dist[hospitalno[i]] = 0;
+}
+while(!q.empty()){
+    int distance = q.top().first;
+    int node =q.top().second;
+    q.pop();
+    for(auto x : adj[node]){
+        int adjnode = x.first ; 
+        int wt = x.second ; 
+        if(dist[node]+wt < dist[adjnode]){
+             dist[adjnode]= dist[node]+ wt ; 
+             q.push({dist[adjnode], adjnode});
+        }
+    }
+}
+}
+
+int main(){
+int n , m ; 
+cin >> n >> m ; 
+vector<vector<pair<int,int>>> adj(n);
+for(int i = 0 ; i< m ; i++){
+    int u , v , wt ; 
+    cin >> u >> v>> wt ; 
+    adj[v].push_back({u, wt});
+}
+int noofhospital ; 
+cin >> noofhospital ;
+vector<int> src(noofhospital);
+for(int i = 0 ; i< noofhospital ; i++){
+    cin>> src[i];
+}
+vector<int> dist(n , 1e9);
+multisourcedijkastra(adj , src , dist);
+for(auto x : dist){
+        if(x == 1e9){
+            cout << -1 << " ";
+        }
+        else{
+            cout << x << " ";
+        }
+    }
+}
+
+Q) codechef https://www.codechef.com/problems/BESTPATH?utm_source=chatgpt.com ?
+ans) 
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+#define int long long
+
+const long long INF = 1e18;
+
+void bellmanFord(int N,vector<vector<int>>& edges,vector<int>& dist,vector<int>& affected,vector<vector<int>>& adj) {
+    dist.assign(N + 1, 0);
+    for(int i = 1; i <= N; i++) {
+        for(auto &e : edges) {
+            int u = e[0];
+            int v = e[1];
+            int w = e[2];
+            if(dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                if(i == N) {
+                    if(!affected[v]) {
+                        affected[v] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    queue<int> q;
+    for(int i = 1; i <= N; i++) {
+        if(affected[i]) q.push(i);
+    }
+
+    while(!q.empty()) {
+        int node = q.front();
+        q.pop();
+        for(auto nbr : adj[node]) {
+            if(!affected[nbr]) {
+                affected[nbr] = 1;
+                q.push(nbr);
+            }
+        }
+    }
+}
+
+int32_t main() {
+    int T;
+    cin >> T;
+    while(T--) {
+        int N, M;
+        cin >> N >> M;
+        vector<vector<int>> edges;
+        vector<vector<int>> revEdges;
+        vector<vector<int>> adj(N + 1);
+        vector<vector<int>> revAdj(N + 1);
+        for(int i = 0; i < M; i++) {
+            int u, v, w;
+            cin >> u >> v >> w;
+            edges.push_back({u, v, w});
+            revEdges.push_back({v, u, w});
+            adj[u].push_back(v);
+            revAdj[v].push_back(u);
+        }
+
+        vector<int> inDist, outDist;
+        vector<int> neg1(N + 1, 0);
+        vector<int> neg2(N + 1, 0);
+        bellmanFord(N, edges, inDist, neg1, adj);
+        bellmanFord(N, revEdges, outDist, neg2, revAdj);
+        for(int i = 1; i <= N; i++) {
+            if(neg1[i] || neg2[i]) {
+                cout << "INF\n";
+            }
+            else {
+                cout << inDist[i] + outDist[i] << "\n";
+            }
+        }
+    }
+}
+
+Q) codeforces https://codeforces.com/problemset/problem/1196/F ?
+ans) 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdint>
+using namespace std;
+#define int long long
+
+const long long INF = 1e18;
+
+vector<vector<int>> FloydWarshall(vector<vector<int>>& edges, int n) {
+    vector<vector<int>> dist(n + 1, vector<int>(n + 1, INF));
+    for (int i = 1; i <= n; i++) dist[i][i] = 0;
+
+    for (auto& e : edges) {
+        int wt = e[0], u = e[1], v = e[2];
+        dist[u][v] = min(dist[u][v], wt);
+        dist[v][u] = min(dist[v][u], wt);
+    }
+    for (int k = 1; k <= n; k++)
+        for (int i = 1; i <= n; i++) {
+            if (dist[i][k] == INF) continue;
+            for (int j = 1; j <= n; j++) {
+                if (dist[k][j] == INF) continue;
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+            }
+        }
+    return dist;
+}
+
+int32_t main() {
+    int n, m, k;
+    cin >> n >> m >> k;   
+    vector<vector<int>> edges;
+    for (int i = 0; i < m; i++) {
+        int u, v, wt;
+        cin >> u >> v >> wt;
+        edges.push_back({wt, u, v});
+    }
+    sort(edges.begin(), edges.end());
+    while ((int)edges.size() > k)
+        edges.pop_back();
+    vector<bool> useful(n + 1, false);
+    for (auto& e : edges) { useful[e[1]] = true; useful[e[2]] = true; }
+    vector<int> code(n + 1);
+    int curr = 1;
+    for (int i = 1; i <= n; i++)
+        if (useful[i]) code[i] = curr++;
+    int newN = curr - 1;
+    for (auto& e : edges) { e[1] = code[e[1]]; e[2] = code[e[2]]; }
+    auto d = FloydWarshall(edges, newN);
+    vector<int> ans;
+    for (int i = 1; i <= newN; i++)
+        for (int j = i + 1; j <= newN; j++)
+            if (d[i][j] != INF)
+                ans.push_back(d[i][j]);
+
+    sort(ans.begin(), ans.end());
+    cout << ans[k - 1] << "\n";
+    return 0;
+}
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Q) leetcode 3112. Minimum Time to Visit Disappearing Nodes
+ans) 
+class Solution {
+public:
+    void dijkastra(vector<vector<pair<int,int>>>& adj,vector<int>& dist,vector<int>& disappear,int src){
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> q;
+        dist[src] = 0;
+        q.push({0, src});
+        while(!q.empty()){
+            int distance = q.top().first;
+            int node = q.top().second;
+            q.pop();
+            if(distance > dist[node])
+                continue;
+            for(auto x : adj[node]){
+                int adjnode = x.first;
+                int wt = x.second;
+                int newDist = distance + wt;
+                if(newDist < dist[adjnode] && newDist < disappear[adjnode]){
+                    dist[adjnode] = newDist;
+                    q.push({newDist, adjnode});
+                }
+            }
+        }
+    }
+
+    vector<int> minimumTime(int n,vector<vector<int>>& edges,vector<int>& disappear) {
+        vector<vector<pair<int,int>>> adj(n);
+        for(int i = 0; i < edges.size(); i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int wt = edges[i][2];
+            adj[u].push_back({v, wt});
+            adj[v].push_back({u, wt});
+        }
+        vector<int> dist(n, 1e9);
+        dijkastra(adj, dist, disappear, 0);
+        for(int i = 0; i < n; i++){
+
+            if(dist[i] == 1e9){
+
+                dist[i] = -1;
+            }
+        }
+
+        return dist;
+    }
+};
+
+Q) leetcode 1514. Path with Maximum Probability ?
+ans) 
+class Solution {
+public:
+
+    void dijkastra(vector<vector<pair<int,double>>>& adj,vector<double>& dist,int src){
+        priority_queue<pair<double,int>> q;
+        dist[src] = 1.0;
+        q.push({1.0, src});
+        while(!q.empty()){
+            double probability = q.top().first;
+            int node = q.top().second;
+            q.pop();
+            if(probability < dist[node])
+                continue;
+            for(auto x : adj[node]){
+                int adjnode = x.first;
+                double wt = x.second;
+                if(dist[node] * wt > dist[adjnode]){
+                    dist[adjnode] = dist[node] * wt;
+                    q.push({dist[adjnode], adjnode});
+                }
+            }
+        }
+    }
+
+    double maxProbability(int n,vector<vector<int>>& edges,vector<double>& succProb,int start_node,int end_node) {
+        vector<vector<pair<int,double>>> adj(n);
+        for(int i = 0; i < edges.size(); i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            adj[u].push_back({v, succProb[i]});
+            adj[v].push_back({u, succProb[i]});
+        }
+        vector<double> dist(n, 0.0);
+        dijkastra(adj, dist, start_node);
+        return dist[end_node];
+    }
+};

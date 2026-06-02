@@ -95,3 +95,30 @@ we made the vector<vector<int>>
 not in the common used 
 
 4) parent array : in this method we store the information of parent tree 
+
+
+
+overview : 
+an generic tree where : each node can have any no of children 
+                        there are no fixed limit of binary tree 
+key properties : 
+1)root node exists 
+2)each node can have there are 0 to N child
+3)no cycle 
+4)Exactly one path between one node to another node  
+5)no of edges is N-1
+
+| Feature           | Generic Tree      | Binary Tree         |
+| ----------------- | ----------------- | ------------------- |
+| Children per node | Unlimited         | Max 2               |
+| Structure         | Flexible          | Strict (left/right) |
+| Usage             | File systems, DOM | Heaps, BST          |
+
+
+represent of generic tree : vector<vector<int>> adj; 
+                           example : 
+                           1 → 2, 3, 4
+                           2 → 5, 6
+                           4 → 7
+
+                           

@@ -1,0 +1,64 @@
+why study bellman ford algorithum ?
+single source shortest path with negative weight edges 
+
+given that there are no negative cycle present in graph then max no of node that in the shortest path of src & destination 
+ans) N 
+
+after the kth phases , d[i] is represent shorte distance from src to i s.t there at most k edges in the path 
+
+d[src]= 0 , d[...]= infinite 
+for(int i = 1 ; i<=k-1 ; i++){
+for(auto edges : edges){
+    d[v]= min(d[v], d[u]+wt)
+}
+}
+
+bellman ford can discover only those negative cycle which impact the shortest distance of some node from node 
+
+time complexity = O(N*M)
+
+floyd warshall algorithm ->
+why we need floyd warshall algorithm ?
+-help to building the d[][], st d[i][j] represent the shortest distance from i to j 
+-capable to dealing with negative weights 
+-easy to implements 
+
+
+introduction of the algorithm : 
+d[i][j] will represent from i to j only the node {1,2,3,4...kth} are allowed to the intermediate node between them 
+
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<algorithm>
+using namespace std;
+int inf= 1e1; 
+
+void FloydWarshall(vector<vector<int>>& dist , int n){
+for(int k = 0 ; k< n; k++){
+    for(int i = 0 ; i< n; i++){
+        for(int j = 0 ; j< n ; j++){
+            if(dist[i][k]==1e9 || dist[k][j]==1e9) continue; 
+            dist[i][j]= min(dist[i][j], dist[i][k]+dist[k][j]);
+        }
+    }
+}
+}
+
+int main(){
+int N ; 
+cin >> N ; 
+vector<vector<int>> dist(N, vector<int>(N , 1e1));
+for(int i = 0 ; i< N ; i++){
+    dist[i][i]= 0 ; 
+}
+int n , m ; 
+cin >> n>> m; 
+for(int i = 0 ; i< N; i++){
+    int u , v, wt ; 
+    cin >> u>> v>> wt ; 
+    dist[u][v]= wt ; 
+    dist[v][u]= wt ; 
+}
+FloydWarshall(dist , n);
+}
